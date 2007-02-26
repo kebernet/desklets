@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>Eyeball</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Watches your mouse very closely</description>
+    <class>eyeball.EyeballDesklet</class>
+    <repository>https://maven-repository.dev.java.net/nonav/repository/</repository>
+</desklet>
