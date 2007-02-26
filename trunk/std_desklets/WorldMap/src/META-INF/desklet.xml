@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>World Map</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Lets you find addresses on the world map</description>
+    <class>worldmap.WorldMapDesklet</class>
+</desklet>
