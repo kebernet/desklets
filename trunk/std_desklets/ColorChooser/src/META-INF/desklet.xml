@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>Color Chooser</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Lets you choose colors onscreen</description>
+    <class>colorchooser.CCDesklet</class>
+</desklet>
