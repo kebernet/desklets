@@ -9,6 +9,7 @@
 
 package ab5k;
 
+import ab5k.actions.Closer;
 import ab5k.actions.CollapseWindowAction;
 import ab5k.actions.LoadDeskletAction;
 import ab5k.actions.LoginToServerAction;
@@ -184,7 +185,7 @@ public class Main {
                     frame.add(main.getMainPanel());
                     frame.pack();
                     frame.setBounds(main.getCollapseWindowAction().getStartupPosition());
-                    main.getCollapseWindowAction().setWindowClosed(true);
+                    main.getCloser().setWindowClosed(true);
                     frame.setVisible(true);
                     
                     main.getLoginToServerAction().loginToServer();
@@ -218,4 +219,9 @@ public class Main {
         return loadDeskletAction;
     }
 
+    
+    private Closer closer = new Closer(this);
+    public Closer getCloser() {
+        return closer;
+    }
 }

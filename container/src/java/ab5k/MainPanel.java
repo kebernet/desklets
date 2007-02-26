@@ -9,18 +9,28 @@ package ab5k;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
+import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.geom.Point2D;
+import java.util.Date;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.xml.stream.events.StartDocument;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.painter.PinstripePainter;
+import org.joshy.util.u;
 
 /**
  *
@@ -30,8 +40,7 @@ public class MainPanel extends javax.swing.JPanel {
     public enum DockingSide { Left, Right };
     private DockingSide side = DockingSide.Right;
     public Main main;
-
-    private boolean microdocking = false;
+    
     
     /** Creates new form MainPanel */
     public MainPanel() {
@@ -57,8 +66,11 @@ public class MainPanel extends javax.swing.JPanel {
         logo.setForegroundPainter(cp);
         miniModePanel.setLayout(new BoxLayout(miniModePanel,BoxLayout.Y_AXIS));
         
-        stripButton.addActionListener(main.getCollapseWindowAction());
+        stripButtonLeft.addActionListener(main.getCollapseWindowAction());
+        stripButtonRight.addActionListener(main.getCollapseWindowAction());
+        
     }
+    
     
     public void showGlasspane() {
         // first test of a glasspane
@@ -124,7 +136,8 @@ public class MainPanel extends javax.swing.JPanel {
         collapseButton = new javax.swing.JButton();
         logoButton = new JXButton();
         jButton1 = new javax.swing.JButton();
-        stripButton = new javax.swing.JButton();
+        stripButtonLeft = new javax.swing.JButton();
+        stripButtonRight = new javax.swing.JButton();
         miniModePanel = new javax.swing.JPanel();
 
         setLayout(new java.awt.BorderLayout());
@@ -139,7 +152,7 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         dockPanel.add(jButton3, gridBagConstraints);
@@ -156,7 +169,7 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         dockPanel.add(collapseButton, gridBagConstraints);
 
@@ -167,7 +180,7 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         dockPanel.add(logoButton, gridBagConstraints);
 
@@ -176,26 +189,35 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         dockPanel.add(jButton1, gridBagConstraints);
 
-        stripButton.setBorder(null);
-        stripButton.setBorderPainted(false);
-        stripButton.setMinimumSize(new java.awt.Dimension(10, 10));
-        stripButton.setPreferredSize(new java.awt.Dimension(10, 10));
+        stripButtonLeft.setBorder(null);
+        stripButtonLeft.setMinimumSize(new java.awt.Dimension(1, 1));
+        stripButtonLeft.setPreferredSize(new java.awt.Dimension(10, 10));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        dockPanel.add(stripButtonLeft, gridBagConstraints);
+
+        stripButtonRight.setBorder(null);
+        stripButtonRight.setMinimumSize(new java.awt.Dimension(1, 1));
+        stripButtonRight.setPreferredSize(new java.awt.Dimension(10, 10));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        dockPanel.add(stripButton, gridBagConstraints);
+        dockPanel.add(stripButtonRight, gridBagConstraints);
 
         miniModePanel.setLayout(new java.awt.GridLayout(20, 1));
 
         miniModePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
@@ -206,7 +228,7 @@ public class MainPanel extends javax.swing.JPanel {
         add(dockPanel, java.awt.BorderLayout.WEST);
 
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void collapseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_collapseButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_collapseButtonActionPerformed
@@ -218,13 +240,7 @@ public class MainPanel extends javax.swing.JPanel {
     public JPanel getDockPanel() {
         return miniModePanel;
     }
-
-    public boolean isMicrodocking() {
-        return microdocking;
-    }
-    public void setMicrodocking(boolean microdocking) {
-        this.microdocking = microdocking;
-    }
+    
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -235,7 +251,9 @@ public class MainPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton logoButton;
     private javax.swing.JPanel miniModePanel;
-    private javax.swing.JButton stripButton;
+    private javax.swing.JButton stripButtonLeft;
+    private javax.swing.JButton stripButtonRight;
     // End of variables declaration//GEN-END:variables
+    
     
 }

@@ -156,7 +156,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void useMicroDockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useMicroDockActionPerformed
-        main.getMainPanel().setMicrodocking(true);
+        main.getCloser().setMicrodocking(useMicroDock.isSelected());
     }//GEN-LAST:event_useMicroDockActionPerformed
     
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
