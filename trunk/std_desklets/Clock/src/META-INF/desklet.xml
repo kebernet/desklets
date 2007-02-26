@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : desklet.xml
+    Created on : August 4, 2006, 8:29 PM
+    Author     : cooper
+    Description:
+        Purpose of the document follows.
+-->
+
+<desklet version="0.1">
+    <name>Clock Desklet</name>
+    <author>Robert Cooper</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>What do you think this does?</description>
+    <class>clockdesklet.Desklet</class>
+</desklet>
