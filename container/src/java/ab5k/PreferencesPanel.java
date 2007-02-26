@@ -56,6 +56,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
         backgroundList = new javax.swing.JList();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
+        useMicroDock = new javax.swing.JCheckBox();
 
         jLabel1.setText("Preferences");
 
@@ -93,6 +94,15 @@ public class PreferencesPanel extends javax.swing.JPanel {
             }
         });
 
+        useMicroDock.setText("micro dock");
+        useMicroDock.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        useMicroDock.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        useMicroDock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                useMicroDockActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -106,8 +116,10 @@ public class PreferencesPanel extends javax.swing.JPanel {
                             .add(layout.createSequentialGroup()
                                 .add(jLabel3)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                        .add(336, 336, 336))
+                                .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(86, 86, 86)
+                                .add(useMicroDock)))
+                        .add(157, 157, 157))
                     .add(layout.createSequentialGroup()
                         .add(jCheckBox1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
                         .add(19, 19, 19))
@@ -129,7 +141,8 @@ public class PreferencesPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel3)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(useMicroDock))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jCheckBox1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -141,6 +154,10 @@ public class PreferencesPanel extends javax.swing.JPanel {
                 .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void useMicroDockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useMicroDockActionPerformed
+        main.getMainPanel().setMicrodocking(true);
+    }//GEN-LAST:event_useMicroDockActionPerformed
     
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
 
@@ -174,6 +191,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JCheckBox useMicroDock;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -39,7 +39,7 @@ public class SingleLaunchSupport {
                 });
             }
         } catch (UnavailableServiceException ex) {
-            ex.printStackTrace();
+            System.out.println("the SingleInstanceService was not available");
         }
         
     }
