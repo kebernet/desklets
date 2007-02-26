@@ -30,7 +30,6 @@ import org.joshy.util.u;
  */
 public class CollapseWindowAction extends AbstractAction {
     Main main;
-    private boolean windowClosed = false;
     
     /** Creates a new instance of CollapseWindowAction */
     public CollapseWindowAction(Main main) {
@@ -38,7 +37,7 @@ public class CollapseWindowAction extends AbstractAction {
     }
     
     
-    private Rectangle getClosedBounds() {
+    public Rectangle getClosedBounds() {
         Toolkit tk = Toolkit.getDefaultToolkit();
         GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         Rectangle rect = gc.getBounds();
@@ -49,7 +48,7 @@ public class CollapseWindowAction extends AbstractAction {
         Rectangle closedBounds = null;
         if(main.getMainPanel().getDockingSide() == MainPanel.DockingSide.Right) {
             closedBounds = new Rectangle(
-                    rect.width-insets.right-main.getMainPanel().getDockWidth(), // all the way right minus insets and width of panel
+                    rect.width - insets.right - main.getMainPanel().getDockWidth(), // all the way right minus insets and width of panel
                     top_edge, // top
                     main.getMainPanel().getDockWidth(),
                     height);
@@ -84,7 +83,7 @@ public class CollapseWindowAction extends AbstractAction {
     
     
     public void actionPerformed(ActionEvent e) {
-        if(isWindowClosed()) {
+        if(main.getCloser().isWindowClosed()) {
             doExpand();
         } else {
             doCollapse();
@@ -100,7 +99,7 @@ public class CollapseWindowAction extends AbstractAction {
         if(current.getHeight() != opened.getHeight()) {
             anim.addTarget(new PropertySetter(this.main.getFrame(),"size",current.getSize(),opened.getSize()));
         }
-        setWindowClosed(false);
+        main.getCloser().setWindowClosed(false);
         if(main.getMainPanel().getDockingSide() == MainPanel.DockingSide.Right) {
             this.putValue(Action.NAME, ">>");
         } else {
@@ -119,7 +118,7 @@ public class CollapseWindowAction extends AbstractAction {
             anim.addTarget(new PropertySetter(this.main.getFrame(),"size",current.getSize(),closed.getSize()));
         }
         
-        setWindowClosed(true);
+        main.getCloser().setWindowClosed(true);
         if(main.getMainPanel().getDockingSide() == MainPanel.DockingSide.Right) {
             this.putValue(Action.NAME, "<<");
         } else {
@@ -132,12 +131,5 @@ public class CollapseWindowAction extends AbstractAction {
         return getClosedBounds();
     }
     
-    public boolean isWindowClosed() {
-        return windowClosed;
-    }
-    
-    public void setWindowClosed(boolean windowClosed) {
-        this.windowClosed = windowClosed;
-    }
     
 }
