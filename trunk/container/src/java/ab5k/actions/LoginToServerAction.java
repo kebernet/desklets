@@ -36,13 +36,13 @@ public class LoginToServerAction {
                     while(true) {
                         int n = in.read(buf);
                         if(n == -1) break;
-                        System.out.print("read: ");
+                        //System.out.print("read: ");
                         for(int i=0; i<n; i++) {
-                            System.out.print((char)buf[i]);
+                            //System.out.print((char)buf[i]);
                         }
-                        System.out.println("");
+                        //System.out.println("");
                     }
-                    u.p("finished reading");
+                    //u.p("finished reading");
                 } catch (MalformedURLException ex) {
                     ex.printStackTrace();
                 } catch (IOException ex) {

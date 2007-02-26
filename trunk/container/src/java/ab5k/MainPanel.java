@@ -30,6 +30,8 @@ public class MainPanel extends javax.swing.JPanel {
     public enum DockingSide { Left, Right };
     private DockingSide side = DockingSide.Right;
     public Main main;
+
+    private boolean microdocking = false;
     
     /** Creates new form MainPanel */
     public MainPanel() {
@@ -215,6 +217,13 @@ public class MainPanel extends javax.swing.JPanel {
     
     public JPanel getDockPanel() {
         return miniModePanel;
+    }
+
+    public boolean isMicrodocking() {
+        return microdocking;
+    }
+    public void setMicrodocking(boolean microdocking) {
+        this.microdocking = microdocking;
     }
     
     
