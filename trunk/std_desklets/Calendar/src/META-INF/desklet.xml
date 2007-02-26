@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>Calendar Desklet</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>The canonical calendar</description>
+    <class>calendar.CalendarDesklet</class>
+    <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>1.4</version>
+        <type>jar</type>
+    </dependency>
+</desklet>
