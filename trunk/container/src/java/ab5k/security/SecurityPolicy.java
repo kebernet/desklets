@@ -189,7 +189,7 @@ public class SecurityPolicy extends Policy {
         Iterator<Entry<URL, ArrayList<String>>> uit = perms.entrySet().iterator();
         StringBuffer urls = new StringBuffer();
         
-        while (uit.hasNext()) {
+        for (int i=0; uit.hasNext(); i++) {
             Entry<URL, ArrayList<String>> entry = uit.next();
             URL source = entry.getKey();
             ArrayList<String> grants = entry.getValue();
@@ -200,11 +200,11 @@ public class SecurityPolicy extends Policy {
                 sb.append("\n");
                 
             }
-            LOG.info( "Serializing for: "+ source.toExternalForm());
+            LOG.info( "Serializing for:  "+i+" -- "+ source.toExternalForm());
             LOG.info( sb.toString() );
-            prefs.remove(mode+"-"+source.toExternalForm());
-            prefs.put( mode+"-"+source.toExternalForm(), sb.toString() );
-            urls.append( source.toString() );
+            prefs.remove(mode+"-"+i);
+            prefs.put( mode+"-"+i, sb.toString() );
+            urls.append( i+"\t"+ source.toString() );
             
             if (uit.hasNext()) {
                 urls.append("\n");
@@ -223,13 +223,14 @@ public class SecurityPolicy extends Policy {
             
             
             try {
-                
-                URL url = new URL(urls.nextToken() );
+                StringTokenizer idUrl = new StringTokenizer( urls.nextToken(), "\t");
+                String id = idUrl.nextToken();
+                URL url = new URL(idUrl.nextToken() );
                 StringTokenizer entries = new StringTokenizer(
-                        prefs.get(mode+"-"+url.toExternalForm(),""),
+                        prefs.get(mode+"-"+id,""),
                         "\n");
-                LOG.info( "Deserializing for: "+ url.toExternalForm());
-                LOG.info(prefs.get(mode+"-"+url.toExternalForm(),""));
+                LOG.info( "Deserializing for: "+id+" -- "+ url.toExternalForm());
+                LOG.info(prefs.get(mode+"-"+id,""));
                 ArrayList<String> grants = new ArrayList<String>();
                 
                 while (entries.hasMoreTokens()) {

@@ -125,7 +125,7 @@
         <property name="alias" value="joshy"/>
 
         <signjar alias="${alias}" storepass="password" keystore="${keystore}"
-            verbose="true" lazy="true">
+            verbose="false" lazy="true">
             <fileset dir="${jnlp.lib.dir}">
                 <include name="*.jar"/>
             </fileset>
