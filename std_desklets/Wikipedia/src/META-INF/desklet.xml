@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>Wikipedia Searcher</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Searches Wikipedia and displays a summary</description>
+    <class>wikipediadesklet.MainDesklet</class>
+    <repository>https://maven-repository.dev.java.net/nonav/repository/</repository>
+</desklet>
