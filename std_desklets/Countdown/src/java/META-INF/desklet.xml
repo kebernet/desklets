@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>Countdown Clock</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Counts down the days until date X</description>
+    <class>org.joshy.countdown.CountdownMain</class>
+</desklet>
