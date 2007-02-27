@@ -78,18 +78,18 @@ public class InternalFrameContainer implements DeskletContainer {
             iframe.setMaximizable(false);
             //panel.setLayout(new BorderLayout());
             panel.setOpaque(false);
-            iframe.setContentPane(panel);
+            //iframe.setContentPane(panel);
             iframe.setBorder(BorderFactory.createEmptyBorder());
-            panel.setOpaque(false);
-            panel.setBackground(Color.YELLOW);
+            //panel.setBackground(Color.YELLOW);
         } else {
             iframe.setOpaque(true);
+            panel.setOpaque(true);
             iframe.setClosable(false);
-            iframe.setIconifiable(true);
-            iframe.setMaximizable(true);
+            iframe.setIconifiable(false);
+            iframe.setMaximizable(false);
         }
         this.shaped = true;
-        iframe.pack();
+        //iframe.pack();
     }
     
     public void setResizable(boolean resizable) {
