@@ -63,7 +63,7 @@ public class Desklet extends AbstractDesklet{
         context.getContainer().setContent(display);
         context.getContainer().setBackgroundDraggable(true);
         context.getContainer().setResizable(false);
-        context.getContainer().setShaped(true);
+        context.getContainer().setShaped(false);
         context.getContainer().setVisible(true);
     }
     
