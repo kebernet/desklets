@@ -11,6 +11,7 @@ package clockdesklet;
 
 import ab5k.desklet.AbstractDesklet;
 import ab5k.desklet.DeskletContext;
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.SwingUtilities;
@@ -24,6 +25,7 @@ public class Desklet extends AbstractDesklet{
     private ClockDisplay display;
     private boolean running = false;
     final SimpleDateFormat format = new SimpleDateFormat("hh:mm");
+    final SimpleDateFormat ampm = new SimpleDateFormat("aa");
     
     /** Creates a new instance of Desklet */
     public Desklet() {
@@ -43,6 +45,13 @@ public class Desklet extends AbstractDesklet{
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
                                 display.currentTime.setText(format.format(new Date()));
+                                if(ampm.format(new Date()).equals("am")) {
+                                    display.amLabel.setForeground(Color.RED);
+                                    display.pmLabel.setForeground(Color.RED.darker().darker());
+                                } else {
+                                    display.amLabel.setForeground(Color.RED.darker().darker());
+                                    display.pmLabel.setForeground(Color.RED);
+                                }
                             }
                         });
                     } catch (InterruptedException ex) {

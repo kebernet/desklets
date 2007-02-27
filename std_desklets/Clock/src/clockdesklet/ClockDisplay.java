@@ -7,6 +7,10 @@
 package clockdesklet;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Insets;
+import java.awt.LinearGradientPaint;
+import java.awt.Paint;
 import java.awt.Point;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.RectanglePainter;
@@ -26,33 +30,39 @@ public class ClockDisplay extends JXPanel {
             currentTime.setFont(
                     Font.createFont(Font.TRUETYPE_FONT,
                         this.getClass().getResourceAsStream("Digir___.ttf")
-                        ).deriveFont(Font.PLAIN,60));
+                        ).deriveFont(Font.PLAIN,80));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         //currentTime.setFont(new Font("Sanserif",Font.BOLD,12));
         
-        /*
-        RectanglePainter rp = new RectanglePainter(1,1,1,1, 15,15);
-        rp.setFillPaint(Color.ORANGE);
         
-        CompoundPainter cp = new CompoundPainter(rp, new GlossPainter());
+        // shiny metal gradient
+        Paint bp = new org.apache.batik.ext.awt.LinearGradientPaint(new Point(0,0),new Point(0,10),
+                new float[] {0.0f,0.37f,1.0f},
+                new Color[] {new Color(100,100,100,255),new Color(255,255,255,255),new Color(150,150,150,255)});
+        
+        RectanglePainter clip = new RectanglePainter(2,2,2,2, 20,20, true, Color.BLACK, 1f, Color.GRAY);
+        clip.setStyle(RectanglePainter.Style.BOTH);
+        clip.setBorderPaint(Color.BLACK);
+        clip.setFillPaint(bp);
+        clip.setSnapPaint(true);
+        
+        int ins = 10;
+        RectanglePainter border = new RectanglePainter(ins,ins,ins,ins, 10,10, true, Color.BLACK, 3f, Color.RED);
+        border.setStyle(RectanglePainter.Style.FILLED);
+        
+        TextPainter tp = new TextPainter();
+        tp.setFillPaint(Color.RED);
+        
+        GlossPainter gloss = new GlossPainter();
+        CompoundPainter cp = new CompoundPainter(clip,border,gloss);
         cp.setClipPreserved(true);
+        
+        currentTime.setForegroundPainter(tp);
+        
         this.setBackgroundPainter(cp);
-        TextPainter text = new TextPainter();
-        text.setFillPaint(Color.RED);
-        ShadowPathEffect spe = new ShadowPathEffect();
-        spe.setOffset(new Point(2,2));
-        spe.setEffectWidth(4);
-        text.setPathEffects(spe);
-        currentTime.setForegroundPainter(text);*/
-        try {
-        Painter ptr = new URLPainter(ClockDisplay.class,"c3.xml");
-        currentTime.setForegroundPainter(ptr);
-        } catch (Exception ex) {
-            System.out.println(ex);
-            ex.printStackTrace();
-        }
+        
     }
     
     
@@ -66,8 +76,11 @@ public class ClockDisplay extends JXPanel {
     private void initComponents() {
         currentTime = new org.jdesktop.swingx.JXLabel();
         jButton1 = new javax.swing.JButton();
+        amLabel = new javax.swing.JLabel();
+        pmLabel = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(0, 255, 0));
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 15));
         setOpaque(false);
         currentTime.setBackground(new java.awt.Color(0, 255, 153));
         currentTime.setForeground(new java.awt.Color(255, 0, 0));
@@ -78,28 +91,46 @@ public class ClockDisplay extends JXPanel {
         jButton1.setText("setup");
         jButton1.setOpaque(false);
 
+        amLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        amLabel.setText("AM");
+
+        pmLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13));
+        pmLabel.setText("PM");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(128, Short.MAX_VALUE)
-                .add(jButton1))
-            .add(currentTime, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                .add(currentTime, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(amLabel)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(pmLabel))
+                    .add(jButton1))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(currentTime, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jButton1))
+            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .add(jButton1)
+                .add(currentTime, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(amLabel)
+                    .add(pmLabel)))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JLabel amLabel;
     public org.jdesktop.swingx.JXLabel currentTime;
     private javax.swing.JButton jButton1;
+    public javax.swing.JLabel pmLabel;
     // End of variables declaration//GEN-END:variables
     
 }
