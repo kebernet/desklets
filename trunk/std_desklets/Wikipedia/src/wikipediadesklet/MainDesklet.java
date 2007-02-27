@@ -26,9 +26,10 @@ public class MainDesklet extends AbstractDesklet {
     public void init(DeskletContext context) throws Exception {
         this.context = context;
         this.form = new MainForm();
+        form.setOpaque(false);
         form.context = context;
         context.getContainer().setContent( form );
-        context.getContainer().setShaped(false);
+        context.getContainer().setShaped(true);
         context.getContainer().setBackgroundDraggable(true);
         context.getContainer().setResizable(true);
         context.getContainer().setVisible(true);
