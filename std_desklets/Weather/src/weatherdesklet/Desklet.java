@@ -11,6 +11,7 @@ package weatherdesklet;
 
 import ab5k.desklet.AbstractDesklet;
 import ab5k.desklet.DeskletContext;
+import javax.swing.JLabel;
 import org.joshy.util.u;
 import org.joshy.weather.Weather;
 import org.joshy.weather.WeatherFactory;
@@ -21,6 +22,7 @@ import org.joshy.weather.WeatherFactory;
 public class Desklet extends AbstractDesklet{
     
     private WeatherWatcher display;
+    private JLabel dockLabel;
     private boolean running = false;;
     /** Creates a new instance of Desklet */
     public Desklet() {
@@ -40,6 +42,7 @@ public class Desklet extends AbstractDesklet{
                         Weather wth = WeatherFactory.newInstance().getWeather("KATL");
                         display.setWeather(wth);
                         u.p("got weather: " + wth);
+                        dockLabel.setText(wth.getTempF()+" " + wth.getWeather());
                         Thread.currentThread().sleep(30 * 60 * 1000);
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -59,6 +62,8 @@ public class Desklet extends AbstractDesklet{
     
     public void init(DeskletContext context) throws Exception {
         this.context = context;
+        dockLabel = new JLabel();
+        context.getDockingContainer().setContent(dockLabel);
         display = new WeatherWatcher();
         context.getContainer().setContent(display);
         context.getContainer().setBackgroundDraggable(false);
