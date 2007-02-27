@@ -14,9 +14,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import org.jdesktop.swingx.painter.PinstripePainter;
 
 /**
  *
@@ -39,8 +41,13 @@ public class GradientBackground extends DesktopBackground {
         g.setPaint(new GradientPaint(new Point(0,0), 
                 new Color(190,190,204),
                 new Point(desktopPane.getWidth(), desktopPane.getHeight()),
-                new Color(0,0,204)));
+                new Color(50,50,204)));
         g.fillRect(0, 0, desktopPane.getWidth(), desktopPane.getHeight());
+        
+        PinstripePainter pin = new PinstripePainter(new Color(50,50,204,30), 45.0,8.0,8.0);
+        Graphics2D gfx = (Graphics2D) g.create();
+        pin.paint(gfx, desktopPane, desktopPane.getWidth(), desktopPane.getHeight());
+        gfx.dispose();
         
         // the text
         String text = "AB5k";
