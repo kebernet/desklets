@@ -40,6 +40,12 @@ public class MacSupport {
                     u.p("Apple API: open file called:" + applicationEvent);
                     u.p("filename = " + applicationEvent.getFilename());
                     String filename = applicationEvent.getFilename();
+                    u.p("already running = " + SingleLaunchSupport.isAlreadyRunning());
+                    if(SingleLaunchSupport.isAlreadyRunning()) {
+                        SingleLaunchSupport.relaunch(filename);
+                        System.exit(0);
+                        return;
+                    }
                     try {
                         main.getLoadDeskletAction().load(new File(filename).toURL());
                     } catch (MalformedURLException ex) {

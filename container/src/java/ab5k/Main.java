@@ -79,7 +79,6 @@ public class Main {
         if(!doFadeStartup) {
             setupBackgrounds();
         }
-        SingleLaunchSupport.setupSingleLaunchSupport();
         try {
             MacSupport.setupMacSupport(this);
         } catch (Throwable thr) {
@@ -159,7 +158,19 @@ public class Main {
         return loginToServerAction;
     }
     
-    public static void main(String args[]) {
+    public static void main(String ... args) {
+        final Main main = new Main();
+        if(SingleLaunchSupport.setupSingleLaunchSupport(main,args)){
+            u.p("already running. sent the args and skipping out early");
+            
+            try {
+                MacSupport.setupMacSupport(main);
+            } catch (Throwable thr) {
+                thr.printStackTrace();
+            }
+            //System.exit(0);
+        }
+        
         Toolkit.getDefaultToolkit().setDynamicLayout(false);
         Policy.setPolicy( new SecurityPolicy() );
         System.setSecurityManager( new SecurityManager() );
@@ -170,7 +181,6 @@ public class Main {
             public void run() {
                 try {
                     new ShowSplashscreen().show();
-                    final Main main = new Main();
                     final JFrame frame = new JFrame("AB5k");
                     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     frame.addWindowListener(new WindowAdapter() {
