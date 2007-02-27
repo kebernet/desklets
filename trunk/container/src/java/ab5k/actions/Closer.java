@@ -95,6 +95,7 @@ public class Closer {
             while (true) {
                 u.sleep(100);
                 PointerInfo info = MouseInfo.getPointerInfo();
+                if(main.getFrame() == null) continue;
                 if (intime < 0) {
                     if (main.getFrame().getBounds().contains(info.getLocation())) {
 //                        u.p("inside the dock");
