@@ -40,8 +40,8 @@ import javax.swing.SwingUtilities;
 public class SecurityPolicy extends Policy {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private HashMap<CodeSource, Permissions> permissions = new HashMap<CodeSource, Permissions>();
-    private HashMap<URL, ArrayList<String>> nevers;
-    private HashMap<URL, ArrayList<String>> always;
+    private HashMap<String, ArrayList<String>> nevers;
+    private HashMap<String, ArrayList<String>> always;
     private Preferences prefs = Preferences.userNodeForPackage(SecurityPolicy.class);
     
     /** Creates a new instance of SecurityPolicy */
@@ -90,8 +90,10 @@ public class SecurityPolicy extends Policy {
                 return true;
             }
             
-            ArrayList<String> grants = always.get(protectionDomain.getCodeSource()
-            .getLocation());
+            ArrayList<String> grants = always.get(protectionDomain
+                    .getCodeSource()
+                    .getLocation()
+                    .toExternalForm());
             
             if (grants == null) {
                 grants = new ArrayList<String>();
@@ -101,8 +103,10 @@ public class SecurityPolicy extends Policy {
                 return true;
             }
             
-            ArrayList<String> denies = nevers.get(protectionDomain.getCodeSource()
-            .getLocation());
+            ArrayList<String> denies = nevers.get(protectionDomain
+                    .getCodeSource()
+                    .getLocation()
+                    .toExternalForm());
             
             if (denies == null) {
                 denies = new ArrayList<String>();
@@ -137,7 +141,10 @@ public class SecurityPolicy extends Policy {
                     if( ! grants.contains( permission.getName()) ){
                         grants.add(permission.getName());
                     }
-                    always.put(protectionDomain.getCodeSource().getLocation(),
+                    always.put(protectionDomain
+                            .getCodeSource()
+                            .getLocation()
+                            .toExternalForm(),
                             grants);
                     this.storeRemembered( always, "always");
                     try{
@@ -146,12 +153,14 @@ public class SecurityPolicy extends Policy {
                         e.printStackTrace();
                     }
                     return true;
-                    
                 case 3:
                     if( !denies.contains( permission.getName()) ){
                         denies.add(permission.getName());
                     }
-                    nevers.put(protectionDomain.getCodeSource().getLocation(),
+                    nevers.put(protectionDomain
+                            .getCodeSource()
+                            .getLocation()
+                            .toExternalForm(),
                             denies);
                     storeRemembered(nevers, "never");
                     try{
@@ -184,27 +193,28 @@ public class SecurityPolicy extends Policy {
         return p;
     }
     
-    void storeRemembered(HashMap<URL, ArrayList<String>> perms, String mode) {
-        StringBuffer sb = new StringBuffer();
-        Iterator<Entry<URL, ArrayList<String>>> uit = perms.entrySet().iterator();
+    void storeRemembered(HashMap<String, ArrayList<String>> perms, String mode) {
+        
+        Iterator<Entry<String, ArrayList<String>>> uit = perms.entrySet().iterator();
         StringBuffer urls = new StringBuffer();
         
         for (int i=0; uit.hasNext(); i++) {
-            Entry<URL, ArrayList<String>> entry = uit.next();
-            URL source = entry.getKey();
-            ArrayList<String> grants = entry.getValue();
-            Iterator<String> it = grants.iterator();
+            StringBuffer sb = new StringBuffer();
+            Entry<String, ArrayList<String>> entry = uit.next();
+            String source = entry.getKey();
+            ArrayList<String> entries = entry.getValue();
+            Iterator<String> it = entries.iterator();
             
             while (it.hasNext()) {
                 sb.append(it.next());
                 sb.append("\n");
                 
             }
-            LOG.info( "Serializing for:  "+i+" -- "+ source.toExternalForm());
+            LOG.info( "Serializing for:  "+mode+" "+i+" -- "+ source);
             LOG.info( sb.toString() );
             prefs.remove(mode+"-"+i);
             prefs.put( mode+"-"+i, sb.toString() );
-            urls.append( i+"\t"+ source.toString() );
+            urls.append( i+"\t"+ source );
             
             if (uit.hasNext()) {
                 urls.append("\n");
@@ -215,9 +225,9 @@ public class SecurityPolicy extends Policy {
         
     }
     
-    HashMap<URL, ArrayList<String>> deserializeRemembered(String mode) {
+    HashMap<String, ArrayList<String>> deserializeRemembered(String mode) {
         StringTokenizer urls = new StringTokenizer(prefs.get(mode+"-urls", ""), "\n");
-        HashMap<URL, ArrayList<String>> perms = new HashMap<URL, ArrayList<String>>();
+        HashMap<String, ArrayList<String>> perms = new HashMap<String, ArrayList<String>>();
         
         while (urls.hasMoreTokens()) {
             
@@ -225,11 +235,11 @@ public class SecurityPolicy extends Policy {
             try {
                 StringTokenizer idUrl = new StringTokenizer( urls.nextToken(), "\t");
                 String id = idUrl.nextToken();
-                URL url = new URL(idUrl.nextToken() );
+                String url = idUrl.nextToken();
                 StringTokenizer entries = new StringTokenizer(
                         prefs.get(mode+"-"+id,""),
                         "\n");
-                LOG.info( "Deserializing for: "+id+" -- "+ url.toExternalForm());
+                LOG.info( "Deserializing for: "+mode+" "+id+" -- "+ url);
                 LOG.info(prefs.get(mode+"-"+id,""));
                 ArrayList<String> grants = new ArrayList<String>();
                 
