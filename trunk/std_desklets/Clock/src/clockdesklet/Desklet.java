@@ -14,6 +14,7 @@ import ab5k.desklet.DeskletContext;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 /**
@@ -24,8 +25,11 @@ public class Desklet extends AbstractDesklet{
     
     private ClockDisplay display;
     private boolean running = false;
+    final SimpleDateFormat miniFormat = new SimpleDateFormat("hh:mm aa");
     final SimpleDateFormat format = new SimpleDateFormat("hh:mm");
     final SimpleDateFormat ampm = new SimpleDateFormat("aa");
+
+    private JLabel timeLabel;
     
     /** Creates a new instance of Desklet */
     public Desklet() {
@@ -45,6 +49,7 @@ public class Desklet extends AbstractDesklet{
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
                                 display.currentTime.setText(format.format(new Date()));
+                                timeLabel.setText(miniFormat.format(new Date()));
                                 if(ampm.format(new Date()).equals("am")) {
                                     display.amLabel.setForeground(Color.RED);
                                     display.pmLabel.setForeground(Color.RED.darker().darker());
@@ -72,6 +77,11 @@ public class Desklet extends AbstractDesklet{
     public void init(DeskletContext context) throws Exception {
         this.context = context;
         running = true;
+        
+        timeLabel = new JLabel("00:00 am");
+        context.getDockingContainer().setContent(timeLabel);
+        
+        
         display = new ClockDisplay();
         display.setOpaque( false );
         context.getContainer().setContent(this.display);
