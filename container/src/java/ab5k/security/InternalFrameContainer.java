@@ -28,18 +28,24 @@ public class InternalFrameContainer implements DeskletContainer {
     JDesktopPane desktop;
     JInternalFrame iframe = new JInternalFrame(){
         protected void paintComponent(Graphics g) {
+            //g.setColor(Color.RED);
+            //g.fillRect(0,0,getWidth(),getHeight());
             if( !shaped ){
                 super.paintComponent( g );
             }
         }
     };
+    
     JPanel panel = new JPanel(){
         protected void paintComponent(Graphics g) {
+            //g.setColor(Color.GREEN);
+            //g.fillRect(0,0,getWidth(),getHeight());
             if( !shaped ){
                 super.paintComponent( g );
             }
         }
     };
+    
     JComponent content;
     MoveMouseListener mml = new MoveMouseListener(panel);
     boolean shaped = false;
@@ -66,18 +72,18 @@ public class InternalFrameContainer implements DeskletContainer {
         if( this.shaped == shaped )
             return;
         if (shaped ) {
-            iframe.setOpaque(true);
+            iframe.setOpaque(false);
             iframe.setClosable(true);
             iframe.setIconifiable(false);
             iframe.setMaximizable(false);
-            panel.setLayout(new BorderLayout());
-            panel.setOpaque(true);
+            //panel.setLayout(new BorderLayout());
+            panel.setOpaque(false);
             iframe.setContentPane(panel);
             iframe.setBorder(BorderFactory.createEmptyBorder());
             panel.setOpaque(false);
             panel.setBackground(Color.YELLOW);
         } else {
-            iframe.setOpaque(false);
+            iframe.setOpaque(true);
             iframe.setClosable(false);
             iframe.setIconifiable(true);
             iframe.setMaximizable(true);
