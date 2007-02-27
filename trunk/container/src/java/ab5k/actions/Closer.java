@@ -82,13 +82,13 @@ public class Closer {
     public boolean isWindowClosed() {
         return windowClosed;
     }
-    
+     
     public void setWindowClosed(boolean windowClosed) {
         this.windowClosed = windowClosed;
     }
     
     private class MicroCloser implements Runnable {
-        
+         
         public void run() {
             long intime = -1;
             long outtime = -1;

@@ -6,12 +6,10 @@
     <vendor>AB5k</vendor>
     <homepage href="http://www.ab5k.org/"/>
     <description>Runs AB5k widgets</description>
-<!--
     <offline-allowed/>
--->
-
-    <shortcut online="true">
+    <shortcut >
       <desktop/>    
+      <menu submenu="AB5k.org"/>
     </shortcut>
 
     <association mime-type="application/x-ab5k" extensions="desklet">
@@ -23,9 +21,11 @@
     
   </information>
   
-
+<!-- check in the background and alert next time. don't do this for dailies
+  because you must double launch -->
+<!--
   <update check="background" policy="prompt-update"/>
-  
+  -->
   <resources locale="" os="">
     <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6+"/>
   </resources>
@@ -57,6 +57,7 @@
     <jar download="eager" href="lib/commons-httpclient-3.0.1.jar" version=""/>
     <jar download="eager" href="lib/commons-logging-1.1.jar" version=""/>
     <jar download="eager" href="lib/swingx.jar" version=""/>
+    <jar download="eager" href="lib/MultipleGradientPaint.jar" version=""/>
 
     <!-- flying saucer -->
     <jar download="eager" href="lib/core-renderer.jar" version=""/>

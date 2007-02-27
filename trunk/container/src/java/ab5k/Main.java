@@ -58,7 +58,7 @@ public class Main {
     public PreferencesPanel prefs;
     
     private MainPanel mainPanel;
-
+    
     private JFrame frame;
     
     
@@ -80,7 +80,12 @@ public class Main {
             setupBackgrounds();
         }
         SingleLaunchSupport.setupSingleLaunchSupport();
-        MacSupport.setupMacSupport(this);
+        try {
+            MacSupport.setupMacSupport(this);
+        } catch (Throwable thr) {
+            u.p("setting up mac support failed");
+            thr.printStackTrace();
+        }
         containerFactory = ContainerFactory.getInstance();
         containerFactory.init( getDesktop(), mainPanel.getDockPanel() );
         //setupSystemTray();
@@ -196,15 +201,15 @@ public class Main {
         });
         
     }
-
+    
     public MainPanel getMainPanel() {
         return mainPanel;
     }
-
+    
     public JFrame getFrame() {
         return frame;
     }
-
+    
     public void showURL(URI uri) {
         getCollapseWindowAction().doCollapse();
         try {
@@ -213,12 +218,12 @@ public class Main {
             ex.printStackTrace();
         }
     }
-
+    
     private LoadDeskletAction loadDeskletAction = new LoadDeskletAction(this);
     public LoadDeskletAction getLoadDeskletAction() {
         return loadDeskletAction;
     }
-
+    
     
     private Closer closer = new Closer(this);
     public Closer getCloser() {
