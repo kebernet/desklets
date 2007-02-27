@@ -61,9 +61,9 @@ public class Desklet extends AbstractDesklet{
         this.context = context;
         display = new WeatherWatcher();
         context.getContainer().setContent(display);
-        context.getContainer().setBackgroundDraggable(true);
+        context.getContainer().setBackgroundDraggable(false);
         context.getContainer().setResizable(false);
-        context.getContainer().setShaped(false);
+        context.getContainer().setShaped(true);
         context.getContainer().setVisible(true);
     }
     
