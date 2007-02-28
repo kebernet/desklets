@@ -51,8 +51,6 @@ public class DeskletRunner extends Thread {
             throw new LifeCycleException("Unable to init desklet: " +
                     config.getName(), e);
         }
-        
-        //this.setupMiniFrame();
     }
     
     public void destroyDesklet() {
@@ -74,14 +72,6 @@ public class DeskletRunner extends Thread {
         return context.isShutdownWhenIdle();
     }
     
-    /*private void setupMiniFrame() {
-        if(desklet.isDockable()) {
-            JPanel dockingContainer = (JPanel) context.getDockingContainer();
-            dockingContainer.setBorder(BorderFactory.createMatteBorder(0,0,1,0,Color.BLACK));
-            main.getMainPanel().getDockPanel().add(dockingContainer);
-            u.p("added the desklet to the dock");
-        }
-    }*/
     public void run() {
         try {
             desklet.start();
