@@ -6,6 +6,7 @@
 
 package ab5k;
 
+import ab5k.security.DockSkinner;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -57,18 +58,20 @@ public class MainPanel extends javax.swing.JPanel {
         
         JXButton logo = (JXButton) logoButton;
         logo.setContentAreaFilled(false);
-        GradientPaint grad = new GradientPaint(new Point(0,0), Color.GRAY, new Point(10,0), Color.WHITE);
-        MattePainter bg = new MattePainter(grad);
-        bg.setSnapPaint(true);
+        //GradientPaint grad = new GradientPaint(new Point(0,0), Color.GRAY, new Point(10,0), Color.WHITE);
+        //MattePainter bg = new MattePainter(grad);
+        //bg.setSnapPaint(true);
         
-        Painter comp = logo.getForegroundPainter();
-        CompoundPainter cp = new CompoundPainter(bg,comp);
-        logo.setForegroundPainter(cp);
+        //Painter comp = logo.getForegroundPainter();
+        //CompoundPainter cp = new CompoundPainter(bg,comp);
+        //logo.setForegroundPainter(cp);
         miniModePanel.setLayout(new BoxLayout(miniModePanel,BoxLayout.Y_AXIS));
         
         stripButtonLeft.addActionListener(main.getCollapseWindowAction());
         stripButtonRight.addActionListener(main.getCollapseWindowAction());
+        logoButton.addActionListener(main.getCollapseWindowAction());
         
+        DockSkinner.skinDock(this);
     }
     
     
@@ -131,11 +134,11 @@ public class MainPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         desktop = new CustomDesktopPane();
-        dockPanel = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
+        dockPanel = new JXPanel();
+        manageButton = new javax.swing.JButton();
         collapseButton = new javax.swing.JButton();
         logoButton = new JXButton();
-        jButton1 = new javax.swing.JButton();
+        quitButton = new javax.swing.JButton();
         stripButtonLeft = new javax.swing.JButton();
         stripButtonRight = new javax.swing.JButton();
         miniModePanel = new javax.swing.JPanel();
@@ -146,16 +149,18 @@ public class MainPanel extends javax.swing.JPanel {
 
         dockPanel.setLayout(new java.awt.GridBagLayout());
 
-        dockPanel.setPreferredSize(new java.awt.Dimension(100, 500));
-        jButton3.setAction(getShowManageDialogAction());
-        jButton3.setText("Manage");
+        dockPanel.setBackground(new java.awt.Color(255, 0, 51));
+        dockPanel.setPreferredSize(new java.awt.Dimension(180, 500));
+        manageButton.setAction(getShowManageDialogAction());
+        manageButton.setText("Manage");
+        manageButton.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        dockPanel.add(jButton3, gridBagConstraints);
+        dockPanel.add(manageButton, gridBagConstraints);
 
         collapseButton.setAction(getCollapseWindowAction());
         collapseButton.setText("<");
@@ -173,10 +178,8 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         dockPanel.add(collapseButton, gridBagConstraints);
 
-        logoButton.setAction(getCollapseWindowAction());
-        logoButton.setText("Logo");
-        logoButton.setBorder(null);
         logoButton.setBorderPainted(false);
+        logoButton.setContentAreaFilled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -184,18 +187,20 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         dockPanel.add(logoButton, gridBagConstraints);
 
-        jButton1.setAction(getQuitAction());
-        jButton1.setText("quit");
+        quitButton.setAction(getQuitAction());
+        quitButton.setText("quit");
+        quitButton.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
-        dockPanel.add(jButton1, gridBagConstraints);
+        dockPanel.add(quitButton, gridBagConstraints);
 
         stripButtonLeft.setBorder(null);
         stripButtonLeft.setMinimumSize(new java.awt.Dimension(1, 1));
+        stripButtonLeft.setOpaque(false);
         stripButtonLeft.setPreferredSize(new java.awt.Dimension(10, 10));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -206,6 +211,7 @@ public class MainPanel extends javax.swing.JPanel {
 
         stripButtonRight.setBorder(null);
         stripButtonRight.setMinimumSize(new java.awt.Dimension(1, 1));
+        stripButtonRight.setOpaque(false);
         stripButtonRight.setPreferredSize(new java.awt.Dimension(10, 10));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -215,7 +221,7 @@ public class MainPanel extends javax.swing.JPanel {
 
         miniModePanel.setLayout(new java.awt.GridLayout(20, 1));
 
-        miniModePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        miniModePanel.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -246,11 +252,11 @@ public class MainPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton collapseButton;
     public javax.swing.JDesktopPane desktop;
-    private javax.swing.JPanel dockPanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton logoButton;
+    public javax.swing.JPanel dockPanel;
+    public javax.swing.JButton logoButton;
+    private javax.swing.JButton manageButton;
     private javax.swing.JPanel miniModePanel;
+    private javax.swing.JButton quitButton;
     private javax.swing.JButton stripButtonLeft;
     private javax.swing.JButton stripButtonRight;
     // End of variables declaration//GEN-END:variables
