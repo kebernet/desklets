@@ -9,15 +9,21 @@
 
 package ab5k.security;
 
+import ab5k.security.DockSkinner;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
@@ -85,8 +91,9 @@ public class ContainerFactory {
     }
     
     public DockContainer createDockContainer(DefaultContext context ){
-        DockContainer dock = new DockContainer();
+        final DockContainer dock = new DockContainer();
         this.dock.add( dock.panel );
+        DockSkinner.configureDockConatiner(dock);
         return dock;
     }
     
