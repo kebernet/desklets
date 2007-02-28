@@ -2,9 +2,6 @@
  * DeskletRunner.java
  *
  * Created on August 3, 2006, 10:10 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 package ab5k.security;
 
@@ -12,27 +9,10 @@ import ab5k.Main;
 
 import ab5k.desklet.Desklet;
 
-import ab5k.util.MoveMouseListener;
-import java.awt.Rectangle;
-import java.io.IOException;
-
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
 import java.net.URI;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import org.joshy.util.u;
-
 
 /**
  *
@@ -40,10 +20,10 @@ import org.joshy.util.u;
  */
 public class DeskletRunner extends Thread {
     private static final Logger LOG = Logger.getLogger("AB5K");
-    
-    private Desklet desklet;
     private DefaultContext context;
+    private Desklet desklet;
     private Main main;
+    
     /** Creates a new instance of DeskletRunner */
     public DeskletRunner(Main main, DefaultContext context)
     throws LifeCycleException {
@@ -55,36 +35,43 @@ public class DeskletRunner extends Thread {
                 DeskletRunner.this.main.showURL(uri);
             }
         });
+        
         DeskletConfig config = context.getConfig();
         ClassLoader loader = context.getConfig().getClassLoader();
         
         this.setContextClassLoader(loader);
         
-        
         try {
-            this.desklet = (Desklet) config.getClassLoader().loadClass( config.getClassName())
+            this.desklet = (Desklet) config.getClassLoader()
+            .loadClass(config.getClassName())
             .newInstance();
             
             desklet.init(context);
-        } catch (ClassNotFoundException e) {
-            throw new LifeCycleException("Unable to init desklet: " +
-                    config.getName(), e);
-        } catch (InstantiationException e) {
-            throw new LifeCycleException("Unable to init desklet: " +
-                    config.getName(), e);
-        }catch (IllegalAccessException e) {
-            throw new LifeCycleException("Unable to init desklet: " +
-                    config.getName(), e);
-        }catch (Exception e) {
-            throw new LifeCycleException("Unable to init desklet: " +
-                    config.getName(), e);
-        } catch (Throwable e) {
+        } catch(Throwable e) {
             throw new LifeCycleException("Unable to init desklet: " +
                     config.getName(), e);
         }
+        
         //this.setupMiniFrame();
-        
-        
+    }
+    
+    public void destroyDesklet() {
+        try {
+            ContainerFactory.getInstance().cleanup(context);
+            desklet.destroy();
+        } catch(Exception e) {
+            LOG.log(Level.WARNING,
+                    "Desklet " + getConfig().getName() +
+                    " threw an exception from .destroy() ", e);
+        }
+    }
+    
+    public DeskletConfig getConfig() {
+        return context.getConfig();
+    }
+    
+    public boolean isShutdownWhenIdle() {
+        return context.isShutdownWhenIdle();
     }
     
     /*private void setupMiniFrame() {
@@ -95,13 +82,10 @@ public class DeskletRunner extends Thread {
             u.p("added the desklet to the dock");
         }
     }*/
-    
-    
     public void run() {
-        
         try {
             desklet.start();
-        } catch (Exception e) {
+        } catch(Exception e) {
             LOG.log(Level.WARNING,
                     "Desklet " + getConfig().getName() +
                     " threw an exception from .start() ", e);
@@ -113,20 +97,23 @@ public class DeskletRunner extends Thread {
     public void stopDesklet() {
         try {
             desklet.stop();
+            
             long begin = System.currentTimeMillis();
-            while( !context.isStopped() ){
-                try{
-                    Thread.sleep( 1000 );
-                    if( System.currentTimeMillis() - begin > 20 * 1000 ){
+            
+            while(!context.isStopped()) {
+                try {
+                    Thread.sleep(1000);
+                    
+                    if((System.currentTimeMillis() - begin) > (20 * 1000)) {
                         this.interrupt();
-                        throw new RuntimeException("20 Second timeout waiting for notifyStop expired.");
+                        throw new RuntimeException(
+                                "20 Second timeout waiting for notifyStop expired.");
                     }
-                } catch(java.lang.InterruptedException e){
+                } catch(java.lang.InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            
-        } catch (Exception e) {
+        } catch(Exception e) {
             LOG.log(Level.WARNING,
                     "Desklet " + getConfig().getName() +
                     " threw an exception from .stop() ", e);
@@ -134,30 +121,8 @@ public class DeskletRunner extends Thread {
         }
     }
     
-    public void destroyDesklet() {
-        try{
-            ContainerFactory.getInstance().cleanup(context);
-            desklet.destroy();
-        } catch (Exception e) {
-            LOG.log(Level.WARNING,
-                    "Desklet " + getConfig().getName() +
-                    " threw an exception from .destroy() ", e);
-        }
-        
+    public String toString() {
+        return context.getConfig().getName() + "(" +
+                context.getConfig().getUUID() + ")";
     }
-    
-    public DeskletConfig getConfig() {
-        return context.getConfig();
-    }
-    
-    
-    public String toString(){
-        return context.getConfig().getName() + "("+context.getConfig().getUUID()+")";
-    }
-    
-    
-    public boolean isShutdownWhenIdle(){
-        return context.isShutdownWhenIdle();
-    }
-    
 }

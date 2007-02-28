@@ -6,18 +6,16 @@
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
  */
-
 package ab5k.security;
+
 
 /**
  *
  * @author cooper
  */
 public class LifeCycleException extends Exception {
-    
     /** Creates a new instance of LifeCycleException */
-    public LifeCycleException(String message, Throwable cause ) {
-        super( message, cause );
+    public LifeCycleException(String message, Throwable cause) {
+        super(message, cause);
     }
-    
 }
