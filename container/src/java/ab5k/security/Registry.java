@@ -65,6 +65,7 @@ public class Registry {
 
     /** Creates a new instance of Registry */
     private Registry() {
+        u.p("registry created");
         try {
             if (!HOME.exists()) {
                 if (!HOME.mkdirs()) {
@@ -72,7 +73,7 @@ public class Registry {
                             "Unable to make ab5k configuration directory.");
                 }
             }
-
+            
             if (!REPO.exists()) {
                 if (!REPO.mkdirs()) {
                     throw new Exception(
