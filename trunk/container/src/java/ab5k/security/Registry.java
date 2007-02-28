@@ -16,6 +16,8 @@ import org.jdom.JDOMException;
 
 import org.jdom.input.SAXBuilder;
 
+import org.joshy.util.u;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,7 +36,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.joshy.util.u;
 
 
 /**
@@ -58,7 +59,7 @@ public class Registry {
             "all");
     public static final File HOME = new File(System.getProperty("user.home") +
             File.separator + ".ab5k");
-    public static final File REPO = new File( HOME, "repository");
+    public static final File REPO = new File(HOME, "repository");
     private static final Registry INSTANCE = new Registry();
     private BeanArrayList<DeskletConfig> deskletConfigs = new BeanArrayList<DeskletConfig>("deskletConfigs",
             this);
@@ -66,146 +67,49 @@ public class Registry {
     /** Creates a new instance of Registry */
     private Registry() {
         u.p("registry created");
+
         try {
-            if (!HOME.exists()) {
-                if (!HOME.mkdirs()) {
+            if(!HOME.exists()) {
+                if(!HOME.mkdirs()) {
                     throw new Exception(
-                            "Unable to make ab5k configuration directory.");
+                        "Unable to make ab5k configuration directory.");
                 }
             }
-            
-            if (!REPO.exists()) {
-                if (!REPO.mkdirs()) {
+
+            if(!REPO.exists()) {
+                if(!REPO.mkdirs()) {
                     throw new Exception(
-                            "Unable to make ab5k repository directory.");
+                        "Unable to make ab5k repository directory.");
                 }
             }
-            
+
             final File[] inHome = HOME.listFiles();
 
-            for (File checkDesklet : inHome) {
+            for(File checkDesklet : inHome) {
                 boolean isDesklet = false;
                 File[] search = checkDesklet.listFiles();
 
-                for (int i = 0;
-                (search != null) && (i < search.length) && !isDesklet;
-                i++)
-                    if (search[i].getName().equals("META-INF")) {
-                    isDesklet = true;
+                for(int i = 0;
+                        (search != null) && (i < search.length) && !isDesklet;
+                        i++)
+                    if(search[i].getName().equals("META-INF")) {
+                        isDesklet = true;
                     }
 
-                if (isDesklet) {
+                if(isDesklet) {
                     try {
                         readDeskletConfig(checkDesklet);
-                    } catch (Exception e) {
+                    } catch(Exception e) {
                         LOG.log(Level.WARNING,
-                                "Unable to read desklet: " +
-                                checkDesklet.getName(), e);
+                            "Unable to read desklet: " +
+                            checkDesklet.getName(), e);
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             LOG.log(Level.SEVERE,
-                    "Critical Exception loading desklet registry!", e);
+                "Critical Exception loading desklet registry!", e);
         }
-    }
-
-    DeskletConfig readDeskletConfig(File file)
-    throws IOException, JDOMException {
-        SecurityManager sm = System.getSecurityManager();
-        Object ctx = sm.getSecurityContext();
-        sm.checkPermission(Registry.PERMISSION, ctx);
-
-        final DeskletConfig config = new DeskletConfig();
-        config.setHomeDir(file);
-        config.setUUID(file.getName());
-
-        SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(new File(file,
-                "META-INF" + File.separator + "desklet.xml"));
-        Element root = doc.getRootElement();
-        String name = root.getChildTextTrim("name");
-        config.setName(name);
-        config.setVersion(root.getAttributeValue("version"));
-
-        if ((config.getName() == null) || (config.getVersion() == null)) {
-            throw new RuntimeException(
-                    "A name and version are required for desklet " +
-                    file.getName());
-        }
-
-        String className = root.getChildTextTrim("class");
-        config.setClassName(className);
-
-        List<Element> depNodes = (List<Element>) root.getChildren("dependency");
-        ArrayList<Dependency> deps = new ArrayList<Dependency>();
-
-        for (int i = 0; i < depNodes.size(); i++) {
-            try {
-                Element depNode = (Element) depNodes.get(i);
-                String groupId = depNode.getChildTextTrim("groupId");
-                String artifactId = depNode.getChildTextTrim("artifactId");
-                String version = depNode.getChildTextTrim("version");
-                String type = depNode.getChildTextTrim("type");
-                deps.add(new Dependency(groupId, artifactId, version, type));
-            } catch (Exception e) {
-                LOG.log(Level.WARNING, "Exception reading dependency.", e);
-            }
-        }
-
-        config.setDependencies(deps.toArray(new Dependency[deps.size()]));
-
-        List<Element> repoNodes = (List<Element>) root.getChildren("repository");
-        ArrayList<URL> repos = new ArrayList<URL>();
-        repos.add(new URL("http://ibiblio.org/maven/"));
-
-        for (int i = 0; (repoNodes != null) && (i < repoNodes.size()); i++) {
-            try {
-                Element repoNode = repoNodes.get(i);
-                repos.add(new URL(repoNode.getTextTrim()));
-            } catch (Exception e) {
-                LOG.log(Level.WARNING, "Exception reading repository URL.", e);
-            }
-        }
-
-        config.setRepositories(repos.toArray(new URL[repos.size()]));
-
-        config.setAuthorName(root.getChildText("author"));
-        config.setHomePage((root.getChildText("homepage") != null)
-        ? new URL(root.getChildTextTrim("homepage")) : null);
-        config.setVersion(root.getAttributeValue("version"));
-        config.setDescription(root.getChildText("description"));
-
-        try {
-            ClassLoader loader = (ClassLoader) AccessController.doPrivileged(new PrivilegedAction() {
-                public Object run() {
-                    try {
-                        return new ClassLoader(config.getUUID(),
-                                config.getName(), getDependencies(config));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-
-                        return null;
-                    }
-                }
-            });
-
-            config.setClassLoader(loader);
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
-
-        this.deskletConfigs.add(config);
-
-        return config;
-    }
-
-    public static Registry getInstance() {
-        SecurityManager sm = System.getSecurityManager();
-        Object ctx = sm.getSecurityContext();
-        sm.checkPermission(PERMISSION, ctx);
-
-        return Registry.INSTANCE;
     }
 
     URL[] getDependencies(DeskletConfig config) throws IOException {
@@ -217,41 +121,48 @@ public class Registry {
 
         File[] commonLibs = common.listFiles();
 
-        
-
         File libs = new File(config.getHomeDir(),
                 "META-INF" + File.separator + "lib");
         libs.mkdirs();
 
-        for (Dependency dep : config.getDependencies()) {
+        for(Dependency dep : config.getDependencies()) {
             File libsDest = new File(libs,
                     dep.getGroupId() + File.separator +
                     TYPE_TO_DIRECTORY.getProperty(dep.getType(), "./"));
-            
+
             File libArtifact = new File(libsDest,
                     dep.getArtifactId() + "-" + dep.getVersion() + "." +
                     dep.getType());
 
-            if( libArtifact.exists() ){
-                 LOG.log( Level.INFO , "Depedency found in desklet lib: "+ libArtifact.getAbsolutePath() );
-                 urls.add(libArtifact.toURI().toURL());
-                 continue;
+            if(libArtifact.exists()) {
+                LOG.log(Level.INFO,
+                    "Depedency found in desklet lib: " +
+                    libArtifact.getAbsolutePath());
+                urls.add(libArtifact.toURI().toURL());
+
+                continue;
             }
-            
+
             File repoDest = new File(REPO,
                     dep.getGroupId() + File.separator +
                     TYPE_TO_DIRECTORY.getProperty(dep.getType(), "./"));
             repoDest.mkdirs();
+
             File artifact = new File(repoDest,
                     dep.getArtifactId() + "-" + dep.getVersion() + "." +
                     dep.getType());
-            LOG.log( Level.INFO, "Dependency needed in repository: "+ artifact.getAbsolutePath() );
-            if (!artifact.exists()) {
+            LOG.log(Level.INFO,
+                "Dependency needed in repository: " +
+                artifact.getAbsolutePath());
+
+            if(!artifact.exists()) {
                 boolean downloaded = false;
-                LOG.log( Level.INFO, "Downloading: "+ artifact.getAbsolutePath());
-                for (int i = 0;
-                !downloaded && (i < config.getRepositories().length);
-                i++) {
+                LOG.log(Level.INFO, "Downloading: " +
+                    artifact.getAbsolutePath());
+
+                for(int i = 0;
+                        !downloaded && (i < config.getRepositories().length);
+                        i++) {
                     URL repo = config.getRepositories()[i];
 
                     try {
@@ -261,12 +172,12 @@ public class Registry {
                                 dep.getArtifactId() + "-" + dep.getVersion() +
                                 "." + dep.getType());
                         StreamUtility.copyStream(source.openStream(),
-                                new FileOutputStream(artifact));
+                            new FileOutputStream(artifact));
                         downloaded = true;
-                    } catch (Exception e) {
+                    } catch(Exception e) {
                         LOG.log(Level.FINEST,
-                                "Unable to get " + dep.getArtifactId() + "-" +
-                                dep.getVersion() + " from " + repo, e);
+                            "Unable to get " + dep.getArtifactId() + "-" +
+                            dep.getVersion() + " from " + repo, e);
                     }
                 }
             }
@@ -274,10 +185,29 @@ public class Registry {
             urls.add(artifact.toURI().toURL());
         }
 
-        for (File commonLib : commonLibs) {
+        for(File commonLib : commonLibs) {
             urls.add(commonLib.toURI().toURL());
         }
+
         return urls.toArray(new URL[urls.size()]);
+    }
+
+    public DeskletConfig getDeskletConfig(String uuid) {
+        if(!(new File(HOME, uuid).exists())) {
+            return null;
+        }
+
+        for(DeskletConfig config : this.deskletConfigs) {
+            if(config.getUUID().equals(uuid)) {
+                return config;
+            }
+        }
+
+        return null;
+    }
+
+    public BeanArrayList<DeskletConfig> getDeskletConfigs() {
+        return this.deskletConfigs;
     }
 
     public String getDeskletName(String uuid) {
@@ -286,29 +216,23 @@ public class Registry {
         return (result == null) ? null : result.getName();
     }
 
-    public DeskletConfig getDeskletConfig(String uuid) {
-        if (!(new File(HOME, uuid).exists())) {
-            return null;
-        }
+    public static Registry getInstance() {
+        SecurityManager sm = System.getSecurityManager();
+        Object ctx = sm.getSecurityContext();
+        sm.checkPermission(PERMISSION, ctx);
 
-        for (DeskletConfig config : this.deskletConfigs) {
-            if (config.getUUID().equals(uuid)) {
-                return config;
-            }
-        }
-
-        return null;
+        return Registry.INSTANCE;
     }
 
     public DeskletConfig installDesklet(URL installFrom)
-    throws MalformedURLException, IOException, JDOMException {
+        throws MalformedURLException, IOException, JDOMException {
         SecurityManager sm = System.getSecurityManager();
         Object ctx = sm.getSecurityContext();
         sm.checkPermission(PERMISSION, ctx);
 
         URL url = installFrom;
 
-        if (url.getProtocol().equals(PROTOCOL)) {
+        if(url.getProtocol().equals(PROTOCOL)) {
             String ext = installFrom.toExternalForm();
             url = new URL("http" +
                     ext.substring(PROTOCOL.length(), ext.length()));
@@ -317,7 +241,7 @@ public class Registry {
         String uuid = UUID.nextUUID();
         File file = new File(HOME, uuid + ".jar");
 
-        while (file.exists()) {
+        while(file.exists()) {
             file = new File(HOME, uuid + ".jar");
         }
 
@@ -329,26 +253,131 @@ public class Registry {
 
         Enumeration<JarEntry> entries = jar.entries();
 
-        while (entries.hasMoreElements()) {
+        while(entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
             LOG.log(Level.FINE, "Writing: " + entry.getName());
 
-            if (entry.isDirectory()) {
+            if(entry.isDirectory()) {
                 new File(destination, entry.getName()).mkdirs();
             } else {
                 StreamUtility.copyStream(jar.getInputStream(entry),
-                        new FileOutputStream(new File(destination, entry.getName())));
+                    new FileOutputStream(new File(destination, entry.getName())));
             }
         }
 
         DeskletConfig cfg = this.readDeskletConfig(destination);
+
         return cfg;
+    }
+
+    DeskletConfig readDeskletConfig(File file)
+        throws IOException, JDOMException {
+        SecurityManager sm = System.getSecurityManager();
+        Object ctx = sm.getSecurityContext();
+        sm.checkPermission(Registry.PERMISSION, ctx);
+
+        final DeskletConfig config = new DeskletConfig();
+        config.setHomeDir(file);
+        config.setUUID(file.getName());
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build(new File(file,
+                    "META-INF" + File.separator + "desklet.xml"));
+        Element root = doc.getRootElement();
+        String name = root.getChildTextTrim("name");
+        config.setName(name);
+        config.setVersion(root.getAttributeValue("version"));
+
+        if((config.getName() == null) || (config.getVersion() == null)) {
+            throw new RuntimeException(
+                "A name and version are required for desklet " +
+                file.getName());
+        }
+
+        String className = root.getChildTextTrim("class");
+        config.setClassName(className);
+
+        List<Element> depNodes = (List<Element>) root.getChildren("dependency");
+        ArrayList<Dependency> deps = new ArrayList<Dependency>();
+
+        for(int i = 0; i < depNodes.size(); i++) {
+            try {
+                Element depNode = (Element) depNodes.get(i);
+                String groupId = depNode.getChildTextTrim("groupId");
+                String artifactId = depNode.getChildTextTrim("artifactId");
+                String version = depNode.getChildTextTrim("version");
+                String type = depNode.getChildTextTrim("type");
+                deps.add(new Dependency(groupId, artifactId, version, type));
+            } catch(Exception e) {
+                LOG.log(Level.WARNING, "Exception reading dependency.", e);
+            }
+        }
+
+        config.setDependencies(deps.toArray(new Dependency[deps.size()]));
+
+        List<Element> repoNodes = (List<Element>) root.getChildren("repository");
+        ArrayList<URL> repos = new ArrayList<URL>();
+        repos.add(new URL("http://ibiblio.org/maven/"));
+
+        for(int i = 0; (repoNodes != null) && (i < repoNodes.size()); i++) {
+            try {
+                Element repoNode = repoNodes.get(i);
+                repos.add(new URL(repoNode.getTextTrim()));
+            } catch(Exception e) {
+                LOG.log(Level.WARNING, "Exception reading repository URL.", e);
+            }
+        }
+
+        config.setRepositories(repos.toArray(new URL[repos.size()]));
+
+        config.setAuthorName(root.getChildText("author"));
+        config.setHomePage((root.getChildText("homepage") != null)
+            ? new URL(root.getChildTextTrim("homepage")) : null);
+        config.setVersion(root.getAttributeValue("version"));
+        config.setDescription(root.getChildText("description"));
+
+        try {
+            ClassLoader loader = (ClassLoader) AccessController.doPrivileged(new PrivilegedAction() {
+                        public Object run() {
+                            try {
+                                return new ClassLoader(config.getUUID(),
+                                    config.getName(), getDependencies(config));
+                            } catch(IOException e) {
+                                e.printStackTrace();
+
+                                return null;
+                            }
+                        }
+                    });
+
+            config.setClassLoader(loader);
+        } catch(ClassCastException e) {
+            e.printStackTrace();
+        }
+
+        this.deskletConfigs.add(config);
+
+        return config;
+    }
+
+    public static void recursiveDelete(File f) {
+        if(f.isDirectory()) {
+            File[] children = f.listFiles();
+
+            if(children != null) {
+                for(File child : children) {
+                    recursiveDelete(child);
+                }
+            }
+        }
+
+        f.delete();
     }
 
     public void uninstallDesklet(String uuid) {
         DeskletConfig config = this.getDeskletConfig(uuid);
 
-        if (config != null) {
+        if(config != null) {
             uninstallDesklet(config);
         }
     }
@@ -362,7 +391,7 @@ public class Registry {
 
         try {
             manager.shutdownDesklet(config.getUUID());
-        } catch (Exception e) {
+        } catch(Exception e) {
             LOG.log(Level.INFO, "Exception on shutdown before uninstall.", e);
         }
 
@@ -370,23 +399,5 @@ public class Registry {
         jar.delete();
         this.deskletConfigs.remove(config);
         recursiveDelete(config.getHomeDir());
-    }
-
-    public static void recursiveDelete(File f) {
-        if (f.isDirectory()) {
-            File[] children = f.listFiles();
-
-            if (children != null) {
-                for (File child : children) {
-                    recursiveDelete(child);
-                }
-            }
-        }
-
-        f.delete();
-    }
-
-    public BeanArrayList<DeskletConfig> getDeskletConfigs() {
-        return this.deskletConfigs;
     }
 }
