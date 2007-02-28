@@ -25,6 +25,7 @@ import ab5k.backgrounds.TronWorld;
 import ab5k.security.ContainerFactory;
 import ab5k.security.DeskletManager;
 import ab5k.security.LifeCycleException;
+import ab5k.security.Registry;
 import ab5k.security.SecurityPolicy;
 import ab5k.util.PlafUtil;
 import java.awt.Desktop;
@@ -32,8 +33,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.security.Policy;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +52,8 @@ import org.joshy.util.u;
  * @author joshy
  */
 public class Main {
-    private static final boolean trayEnabled = false;
-    private static final boolean doFadeStartup = false;
+    //private static final boolean trayEnabled = false;
+    //private static final boolean doFadeStartup = false;
     public Map iframes = new HashMap();
     private DeskletManager deskletManager;
     private ContainerFactory containerFactory;
@@ -60,7 +63,7 @@ public class Main {
     private MainPanel mainPanel;
     
     private JFrame frame;
-    
+    private static boolean firstRun = false;
     
     /** Creates a new instance of Main */
     public Main() {
@@ -69,6 +72,7 @@ public class Main {
     
     
     public void init() {
+        u.p("first run = " + firstRun);
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -76,9 +80,7 @@ public class Main {
         }
         
         setBackgroundManager(new BackgroundManager(this));
-        if(!doFadeStartup) {
-            setupBackgrounds();
-        }
+        setupBackgrounds();
         try {
             MacSupport.setupMacSupport(this);
         } catch (Throwable thr) {
@@ -87,7 +89,6 @@ public class Main {
         }
         containerFactory = ContainerFactory.getInstance();
         containerFactory.init( getDesktop(), mainPanel.getDockPanel() );
-        //setupSystemTray();
         deskletManager = DeskletManager.getInstance();
         
         try{
@@ -96,21 +97,45 @@ public class Main {
             e.printStackTrace();
         }
         if(PlafUtil.isMacOSX()) {
+            quitAction.putValue(Action.NAME,"Quit");
+            preferencesAction.putValue(Action.NAME,"Preferences");
+        } else {
+            quitAction.putValue(Action.NAME,"Exit");
+            preferencesAction.putValue(Action.NAME,"Options");
         }
         
-        quitAction.putValue(Action.NAME,"Quit");
-        preferencesAction.putValue(Action.NAME,"Preferences");
+        
+        if(firstRun) {
+            new Thread(new Runnable() {
+                public void run() {
+                    u.p("this is the first run so we must auto-install the standard desklets");
+                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/WeatherDesklet.desklet");
+                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/RSSReader.desklet");
+                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/ColorChooserDesklet.desklet");
+                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet");
+                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet");
+                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/Eyeball.desklet");
+                }
+            }).start();
+        }
+    }
+    
+    private void preinstall(String url) {
+        try {
+            u.p("preinstalling: " + url);
+            getLoadDeskletAction().load(new URL(url));
+        } catch (Exception ex) {
+            u.p(ex);
+        }
     }
     
     private void setupBackgrounds() {
-        
         getBackgroundManager().addBackground(new GradientBackground());
         getBackgroundManager().addBackground(new RadarSweep());
         //getBackgroundManager().addBackground(new NasaBackground());
         getBackgroundManager().addBackground(new TronWorld());
         getBackgroundManager().setDesktopBackground(
                 (DesktopBackground)getBackgroundManager().getBackgrounds().get(0));
-        
     }
     
     public void handleException(Exception ex) {
@@ -159,6 +184,13 @@ public class Main {
     }
     
     public static void main(String ... args) {
+        // check the existence of the .ab5k dir first
+        firstRun = true;
+        if(new File(System.getProperty("user.home") + File.separator + ".ab5k").exists()) {
+            firstRun = false;
+        }
+        
+        
         final Main main = new Main();
         if(SingleLaunchSupport.setupSingleLaunchSupport(main,args)){
             u.p("already running. sent the args and skipping out early");
@@ -174,6 +206,9 @@ public class Main {
         Toolkit.getDefaultToolkit().setDynamicLayout(false);
         Policy.setPolicy( new SecurityPolicy() );
         System.setSecurityManager( new SecurityManager() );
+        
+        // force the creation of the registry
+        Registry.getInstance();
         
         u.p("args");
         u.p(args);
