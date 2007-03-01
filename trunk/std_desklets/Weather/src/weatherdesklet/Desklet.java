@@ -22,7 +22,7 @@ import org.joshy.weather.WeatherFactory;
 public class Desklet extends AbstractDesklet{
     
     private WeatherWatcher display;
-    private JLabel dockLabel;
+    JLabel dockLabel;
     private boolean running = false;;
     private String stationID = null;
     /** Creates a new instance of Desklet */
@@ -44,7 +44,7 @@ public class Desklet extends AbstractDesklet{
                         display.setWeather(wth);
                         u.p("got weather: " + wth);
                         dockLabel.setText(wth.getTempF()+" " + wth.getWeather());
-                        Thread.currentThread().sleep(30 * 60 * 1000);
+                        Thread.currentThread().sleep(30 * 60 * 1000); //sleep for 30 min
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
