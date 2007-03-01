@@ -240,11 +240,7 @@ public class Registry {
 
         String uuid = UUID.nextUUID();
         File file = new File(HOME, uuid + ".jar");
-
-        while(file.exists()) {
-            file = new File(HOME, uuid + ".jar");
-        }
-
+        
         StreamUtility.copyStream(url.openStream(), new FileOutputStream(file));
 
         JarFile jar = new JarFile(file);

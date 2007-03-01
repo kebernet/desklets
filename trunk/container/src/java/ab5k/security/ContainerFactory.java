@@ -2,35 +2,23 @@
  * ContainerFactory.java
  *
  * Created on February 22, 2007, 6:12 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 package ab5k.security;
-
-import ab5k.security.DockSkinner;
 
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
-import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 
 /**
@@ -86,14 +74,6 @@ public class ContainerFactory {
 
             an.start();
             iframes.remove(ifc.panel);
-        }
-
-        try {
-            context.flushPreferences();
-        } catch(IOException ex) {
-            LOG.log(Level.WARNING,
-                "Exception saving prefs for " + context.getConfig().getName(),
-                ex);
         }
     }
 

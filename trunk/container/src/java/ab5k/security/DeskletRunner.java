@@ -8,6 +8,7 @@ package ab5k.security;
 import ab5k.Main;
 
 import ab5k.desklet.Desklet;
+import java.io.IOException;
 
 import java.net.URI;
 
@@ -54,6 +55,13 @@ public class DeskletRunner extends Thread {
     }
     
     public void destroyDesklet() {
+        try {
+            context.flushPreferences();
+        } catch(IOException ex) {
+            LOG.log(Level.WARNING,
+                "Exception saving prefs for " + context.getConfig().getName(),
+                ex);
+        }
         try {
             ContainerFactory.getInstance().cleanup(context);
             desklet.destroy();
