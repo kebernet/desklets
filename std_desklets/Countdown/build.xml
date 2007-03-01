@@ -74,4 +74,7 @@
             </fileset>
         </copy>
     </target>
+    <target name="-post-jar">
+        <copy file="dist/Countdown.jar" tofile="dist/Countdown.desklet"/>
+    </target>
 </project>
