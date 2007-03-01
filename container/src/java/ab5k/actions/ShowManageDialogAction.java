@@ -16,6 +16,7 @@ import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.PinstripePainter;
 
 public class ShowManageDialogAction extends AbstractAction {
@@ -38,15 +39,16 @@ public class ShowManageDialogAction extends AbstractAction {
                 // set up an overlay to disable the widgets
                 final JXPanel gpanel = new JXPanel();
                 gpanel.setOpaque(false);
-                PinstripePainter pinStripe = new PinstripePainter(new Color(255,255,255,0),0,10,5);
-                gpanel.setBackgroundPainter(pinStripe);
+                MattePainter disablePainter = new MattePainter(new Color(255,255,255,0));
+                //PinstripePainter pinStripe = new PinstripePainter(new Color(255,255,255,0),0,10,5);
+                gpanel.setBackgroundPainter(disablePainter);
                 gpanel.setSize(desktopSize);
                 gpanel.setLocation(desktopLocation);
                 layeredPane.add(gpanel,JLayeredPane.PALETTE_LAYER);
                 gpanel.setVisible(true);
                 
                 final Animator anim = new Animator(600);
-                anim.addTarget(new PropertySetter(pinStripe,"paint",new Color(255,255,255,0),new Color(255,255,255,100)));
+                anim.addTarget(new PropertySetter(disablePainter,"fillPaint",new Color(255,255,255,0),new Color(255,255,255,100)));
                 anim.addTarget(new TimingTargetAdapter() {
                     public void timingEvent(float f) {
                         gpanel.repaint();
