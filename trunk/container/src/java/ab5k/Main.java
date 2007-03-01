@@ -22,6 +22,7 @@ import ab5k.actions.SingleLaunchSupport;
 import ab5k.backgrounds.GradientBackground;
 import ab5k.backgrounds.RadarSweep;
 import ab5k.backgrounds.TronWorld;
+import ab5k.prefs.PrefsBean;
 import ab5k.security.ContainerFactory;
 import ab5k.security.DeskletManager;
 import ab5k.security.LifeCycleException;
@@ -65,6 +66,10 @@ public class Main {
     private JFrame frame;
     private static boolean firstRun = false;
     
+    public static File HOME_DIR = new File(System.getProperty("user.home") + File.separator + ".ab5k");
+
+    PrefsBean prefsBean;
+    
     /** Creates a new instance of Main */
     public Main() {
         this.collapseWindowAction = new CollapseWindowAction(this);
@@ -104,6 +109,14 @@ public class Main {
             preferencesAction.putValue(Action.NAME,"Options");
         }
         
+        prefsBean = new PrefsBean(this);
+        prefsBean.loadFromPrefs();
+        u.p("done loading prefs");
+        mainPanel.setDockingSide(MainPanel.DockingSide.valueOf(
+                prefsBean.getString(PrefsBean.DOCKINGSIDE,
+                MainPanel.DockingSide.Right.toString())));
+        getCloser().setMicrodocking(prefsBean.getBoolean(PrefsBean.MICRODOCKING,false));
+        u.p("done with setup");
         
         if(firstRun) {
             new Thread(new Runnable() {
@@ -186,7 +199,7 @@ public class Main {
     public static void main(String ... args) {
         // check the existence of the .ab5k dir first
         firstRun = true;
-        if(new File(System.getProperty("user.home") + File.separator + ".ab5k").exists()) {
+        if(HOME_DIR.exists()) {
             firstRun = false;
         }
         
@@ -234,6 +247,9 @@ public class Main {
                     frame.setLayout(new StackLayout());
                     frame.add(main.getMainPanel());
                     frame.pack();
+                    
+                    
+                    
                     frame.setBounds(main.getCollapseWindowAction().getStartupPosition());
                     main.getCloser().setWindowClosed(true);
                     frame.setVisible(true);
