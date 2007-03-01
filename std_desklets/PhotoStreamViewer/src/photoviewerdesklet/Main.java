@@ -59,7 +59,7 @@ public class Main extends AbstractDesklet {
         photos = new BeanArrayList("photos",this);
         panel = new PhotoViewerPanel();
         panel.setList(photos);
-        context.getContainer().add(panel);
+        context.getContainer().setContent(panel);
     }
     
     public void start() throws Exception {
