@@ -66,4 +66,7 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+        <copy file="dist/WorldMap.jar" tofile="dist/WorldMap.desklet"/>
+    </target>
 </project>
