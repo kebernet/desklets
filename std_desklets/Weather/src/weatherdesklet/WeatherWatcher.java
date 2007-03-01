@@ -31,10 +31,12 @@ public class WeatherWatcher extends JXPanel {
     WeatherFactory fact = WeatherFactory.newInstance();
     private Weather weather;
     private Map<Integer,Icon> icons;
+    private Desklet desklet;
     
     
     /** Creates new form WeatherWatcher */
-    public WeatherWatcher() {
+    public WeatherWatcher(Desklet desklet) {
+        this.desklet = desklet;
         icons = new HashMap<Integer,Icon>();
         initComponents();
         
@@ -157,16 +159,22 @@ public class WeatherWatcher extends JXPanel {
     }// </editor-fold>//GEN-END:initComponents
     
     private void setupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setupButtonActionPerformed
+        getWeather().getStationID();
         WeatherDialog dia = new WeatherDialog((JFrame)SwingUtilities.windowForComponent(this),true);
         dia.setVisible(true);
         u.p("selected station = " + dia.selectedStation);
         try {
             setWeather(fact.getWeather(dia.selectedStation));
+            setSelectedStation(dia.selectedStation);
         } catch (Exception ex) {
             u.p(ex);
         }
         
     }//GEN-LAST:event_setupButtonActionPerformed
+
+    private void setSelectedStation(String selectedStation) {
+        desklet.setStationID(selectedStation);
+    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

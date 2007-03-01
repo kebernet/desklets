@@ -24,6 +24,7 @@ public class Desklet extends AbstractDesklet{
     private WeatherWatcher display;
     private JLabel dockLabel;
     private boolean running = false;;
+    private String stationID = null;
     /** Creates a new instance of Desklet */
     public Desklet() {
         super();
@@ -39,7 +40,7 @@ public class Desklet extends AbstractDesklet{
                 running = true;
                 while( running ){
                     try {
-                        Weather wth = WeatherFactory.newInstance().getWeather("KATL");
+                        Weather wth = WeatherFactory.newInstance().getWeather(getStationID());
                         display.setWeather(wth);
                         u.p("got weather: " + wth);
                         dockLabel.setText(wth.getTempF()+" " + wth.getWeather());
@@ -64,12 +65,23 @@ public class Desklet extends AbstractDesklet{
         this.context = context;
         dockLabel = new JLabel();
         context.getDockingContainer().setContent(dockLabel);
-        display = new WeatherWatcher();
+        display = new WeatherWatcher(this);
         context.getContainer().setContent(display);
         context.getContainer().setBackgroundDraggable(false);
         context.getContainer().setResizable(false);
         context.getContainer().setShaped(true);
         context.getContainer().setVisible(true);
+        stationID = context.getPreference("STATION_ID","KATL");
+    }
+
+    public String getStationID() {
+        return stationID;
+    }
+
+    public void setStationID(String stationID) {
+        this.stationID = stationID;
+        System.out.println("saved station ID"+ stationID);
+        context.setPreference("STATION_ID",stationID);
     }
     
     
