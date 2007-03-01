@@ -131,14 +131,29 @@
             </fileset>
         </signjar>
     </target>
-    
-    <target name="package-and-upload" depends="copy-dist-jars, sign-all-jars">
-        
+
+    <target name="init-ftp">
         <property name="upload.username" value="web54_ab5kadmin"/>
         <property name="upload.hostname" value="www.ab5k.org"/>
         <property name="upload.path" value="web/downloads/daily/"/>
         <property name="user.overrides" location="${user.home}/.antoverrides/build.properties"/>
         <property file="${user.overrides}"/>
+    </target>
+    
+    <target name="upload-main-force" depends="copy-dist-jars, sign-all-jars, init-ftp">
+        <ftp server="${upload.hostname}" userid="${upload.username}"
+            password="${ab5k.upload.password}"
+            remotedir="${upload.path}lib"
+            verbose="true"
+            depends="false" timediffauto="true">
+            <fileset dir="${jnlp.lib.dir}">
+                <include name="AB5k.jar"/>
+            </fileset>
+        </ftp>
+    </target>
+    
+    <target name="package-and-upload" depends="copy-dist-jars, sign-all-jars, init-ftp">
+        
         
         <echo message="uploading the jnlp"/>
         <ftp server="${upload.hostname}" userid="${upload.username}"
@@ -164,7 +179,7 @@
                 <include name="*.jar"/>
             </fileset>
         </ftp>
-     
+        
     </target>
     
     

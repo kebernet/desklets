@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.TimeZone;
 import org.joshy.util.u;
 
 /**
@@ -31,7 +33,17 @@ public class LoginToServerAction {
             public void run() {
                 try {
                     u.p("logging in to the server");
-                    InputStream in = new URL("http://joshy.org:8088/AB5kTracker/login.jsp?hostname=blahfoo.com").openStream();
+                    String query =  
+                            "hostname=blahfoo2.com"+
+                            "&osname="+URLEncoder.encode(System.getProperty("os.name"),"UTF-8")+
+                            "&javaver="+URLEncoder.encode(System.getProperty("java.runtime.version"),"UTF-8")+
+                            "&timezone="+URLEncoder.encode(TimeZone.getDefault().getID(),"UTF-8");
+                    u.p("unencoded query: \n" + query);
+                    String login_url = "http://joshy.org:8088/AB5kTracker/login.jsp?";
+                    //login_url = "http://localhost:8080/AB5kTracker/login.jsp?";
+                    String url = login_url+query;
+                    u.p("final encoded url = \n" + url);
+                    InputStream in = new URL(url).openStream();
                     byte[] buf = new byte[256];
                     while(true) {
                         int n = in.read(buf);
