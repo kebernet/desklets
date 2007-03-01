@@ -83,6 +83,8 @@ public class WeatherWatcher extends JXPanel {
         type.setText(getWeather().getWeather());
         weatherIcon.setText("");
         weatherIcon.setIcon(icons.get(getWeather().getType()));
+        desklet.dockLabel.setText(weather.getTempF()+" " + weather.getWeather());
+        u.p("set dock weather to: " + desklet.dockLabel.getText());
     }
     
     
@@ -171,7 +173,7 @@ public class WeatherWatcher extends JXPanel {
         }
         
     }//GEN-LAST:event_setupButtonActionPerformed
-
+    
     private void setSelectedStation(String selectedStation) {
         desklet.setStationID(selectedStation);
     }
