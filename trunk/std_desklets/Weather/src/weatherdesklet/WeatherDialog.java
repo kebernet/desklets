@@ -25,6 +25,7 @@ import org.joshy.weather.WeatherFactory;
  */
 public class WeatherDialog extends javax.swing.JDialog {
     WeatherFactory fact = WeatherFactory.newInstance();
+    public String selectedStation = "KATL";
     
     /** Creates new form WeatherDialog */
     public WeatherDialog(java.awt.Frame parent, boolean modal) {
@@ -51,7 +52,6 @@ public class WeatherDialog extends javax.swing.JDialog {
         });
     }
     
-    public String selectedStation = "KATL";
     
     /** This method is called from within the constructor to
      * initialize the form.
