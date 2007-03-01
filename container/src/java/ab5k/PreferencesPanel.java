@@ -6,8 +6,15 @@
 
 package ab5k;
 
+import ab5k.prefs.PrefsBean;
 import ab5k.util.BeanArrayListModel;
 import java.awt.Component;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -20,6 +27,9 @@ import org.joshy.util.u;
  */
 public class PreferencesPanel extends javax.swing.JPanel {
     private Main main;
+    private boolean isPanelLoaded = false;
+
+    
     /** Creates new form PreferencesPanel */
     public PreferencesPanel(Main main) {
         initComponents();
@@ -39,7 +49,11 @@ public class PreferencesPanel extends javax.swing.JPanel {
             }
         });
         backgroundList.setSelectedIndex(0);
+        loadFromPrefs();
     }
+    
+    
+    
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -55,7 +69,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         backgroundList = new javax.swing.JList();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
+        dockingSideCombo = new javax.swing.JComboBox();
         useMicroDock = new javax.swing.JCheckBox();
 
         jLabel1.setText("Preferences");
@@ -87,10 +101,10 @@ public class PreferencesPanel extends javax.swing.JPanel {
 
         jLabel3.setText("Dock side:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Right", "Left" }));
-        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+        dockingSideCombo.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Right", "Left" }));
+        dockingSideCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox1ItemStateChanged(evt);
+                dockingSideComboItemStateChanged(evt);
             }
         });
 
@@ -116,7 +130,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
                             .add(layout.createSequentialGroup()
                                 .add(jLabel3)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .add(dockingSideCombo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .add(86, 86, 86)
                                 .add(useMicroDock)))
                         .add(157, 157, 157))
@@ -141,7 +155,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel3)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(dockingSideCombo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(useMicroDock))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jCheckBox1)
@@ -154,21 +168,22 @@ public class PreferencesPanel extends javax.swing.JPanel {
                 .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void useMicroDockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useMicroDockActionPerformed
         main.getCloser().setMicrodocking(useMicroDock.isSelected());
+        main.prefsBean.setProperty(PrefsBean.MICRODOCKING, useMicroDock.isSelected());
     }//GEN-LAST:event_useMicroDockActionPerformed
     
-    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
-
+    private void dockingSideComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_dockingSideComboItemStateChanged
+        u.p("docking changed to : " + evt.getItem());
         if("Right".equals(evt.getItem())) {
             main.getMainPanel().setDockingSide(MainPanel.DockingSide.Right);
         } else {
             main.getMainPanel().setDockingSide(MainPanel.DockingSide.Left);
         }
-        
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ItemStateChanged
+        main.prefsBean.setProperty(PrefsBean.DOCKINGSIDE,
+                main.getMainPanel().getDockingSide().toString());
+    }//GEN-LAST:event_dockingSideComboItemStateChanged
     
     private void backgroundListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_backgroundListValueChanged
         if(!evt.getValueIsAdjusting()) {
@@ -180,13 +195,18 @@ public class PreferencesPanel extends javax.swing.JPanel {
             main.getBackgroundManager().setDesktopBackground((DesktopBackground)bg);
         }
     }//GEN-LAST:event_backgroundListValueChanged
-        
+
+    private void loadFromPrefs() {
+        useMicroDock.setSelected(main.prefsBean.getBoolean(PrefsBean.MICRODOCKING,false));
+        dockingSideCombo.setSelectedItem(main.prefsBean.getString(PrefsBean.DOCKINGSIDE,"Right"));
+    }
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList backgroundList;
+    private javax.swing.JComboBox dockingSideCombo;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -53,11 +53,21 @@ public class CollapseWindowAction extends AbstractAction {
                     main.getMainPanel().getDockWidth(),
                     height);
         } else {
-            closedBounds = new Rectangle(
-                    -rect.width + insets.left + insets.right + main.getMainPanel().getDockWidth(), // all the way right minus insets and width of panel
-                    top_edge, // top
-                    main.getMainPanel().getDockWidth(),
-                    height);
+            u.p("current width = " + main.getFrame().getWidth());
+            if(main.getFrame().getWidth() == main.getMainPanel().getDockWidth()) {
+                u.p("still closed");
+                closedBounds = new Rectangle(
+                        0 + insets.left, // all the way right minus insets and width of panel
+                        top_edge, // top
+                        main.getMainPanel().getDockWidth(),
+                        height);
+            } else {
+                closedBounds = new Rectangle(
+                        -rect.width + insets.left*2 + insets.right + main.getMainPanel().getDockWidth(), // all the way right minus insets and width of panel
+                        top_edge, // top
+                        main.getMainPanel().getDockWidth(),
+                        height);
+            }
             
         }
         return closedBounds;
@@ -128,6 +138,7 @@ public class CollapseWindowAction extends AbstractAction {
     }
     
     public Rectangle getStartupPosition() {
+        u.p("returning a startup pos of: " + getClosedBounds());
         return getClosedBounds();
     }
     

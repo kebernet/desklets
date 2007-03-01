@@ -121,6 +121,7 @@ public class MainPanel extends javax.swing.JPanel {
         }
         this.validate();
         dockPanel.validate();
+        u.p("dock side set to : " + side);
     }
     
     
