@@ -109,6 +109,7 @@ public class Main {
             preferencesAction.putValue(Action.NAME,"Options");
         }
         
+        
         prefsBean = new PrefsBean(this);
         prefsBean.loadFromPrefs();
         u.p("done loading prefs");
@@ -116,6 +117,7 @@ public class Main {
                 prefsBean.getString(PrefsBean.DOCKINGSIDE,
                 MainPanel.DockingSide.Right.toString())));
         getCloser().setMicrodocking(prefsBean.getBoolean(PrefsBean.MICRODOCKING,false));
+        getLoginToServerAction().setShouldLogin(prefsBean.getBoolean(PrefsBean.TRACKINGENABLED,true));
         u.p("done with setup");
         
         if(firstRun) {

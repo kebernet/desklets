@@ -71,6 +71,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         dockingSideCombo = new javax.swing.JComboBox();
         useMicroDock = new javax.swing.JCheckBox();
+        reportUsageCheckbox = new javax.swing.JCheckBox();
 
         jLabel1.setText("Preferences");
 
@@ -117,6 +118,15 @@ public class PreferencesPanel extends javax.swing.JPanel {
             }
         });
 
+        reportUsageCheckbox.setText("report usage");
+        reportUsageCheckbox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        reportUsageCheckbox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        reportUsageCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportUsageCheckboxActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -132,20 +142,22 @@ public class PreferencesPanel extends javax.swing.JPanel {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(dockingSideCombo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .add(86, 86, 86)
-                                .add(useMicroDock)))
-                        .add(157, 157, 157))
-                    .add(layout.createSequentialGroup()
-                        .add(jCheckBox1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
-                        .add(19, 19, 19))
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(reportUsageCheckbox)
+                                    .add(useMicroDock))))
+                        .add(154, 154, 154))
                     .add(layout.createSequentialGroup()
                         .add(jCheckBox2)
-                        .addContainerGap(349, Short.MAX_VALUE))
+                        .addContainerGap(418, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(jLabel2)
-                        .addContainerGap(403, Short.MAX_VALUE))
+                        .addContainerGap(472, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
-                        .add(324, 324, 324))))
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                        .add(324, 324, 324))
+                    .add(layout.createSequentialGroup()
+                        .add(jCheckBox1)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -158,7 +170,9 @@ public class PreferencesPanel extends javax.swing.JPanel {
                     .add(dockingSideCombo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(useMicroDock))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jCheckBox1)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(reportUsageCheckbox)
+                    .add(jCheckBox1))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jCheckBox2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -168,6 +182,11 @@ public class PreferencesPanel extends javax.swing.JPanel {
                 .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void reportUsageCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportUsageCheckboxActionPerformed
+        main.getLoginToServerAction().setShouldLogin(reportUsageCheckbox.isSelected());
+        main.prefsBean.setProperty(PrefsBean.TRACKINGENABLED, reportUsageCheckbox.isSelected());
+    }//GEN-LAST:event_reportUsageCheckboxActionPerformed
     
     private void useMicroDockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useMicroDockActionPerformed
         main.getCloser().setMicrodocking(useMicroDock.isSelected());
@@ -199,6 +218,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
     private void loadFromPrefs() {
         useMicroDock.setSelected(main.prefsBean.getBoolean(PrefsBean.MICRODOCKING,false));
         dockingSideCombo.setSelectedItem(main.prefsBean.getString(PrefsBean.DOCKINGSIDE,"Right"));
+        reportUsageCheckbox.setSelected(main.prefsBean.getBoolean(PrefsBean.TRACKINGENABLED,true));
     }
     
     
@@ -211,6 +231,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JCheckBox reportUsageCheckbox;
     private javax.swing.JCheckBox useMicroDock;
     // End of variables declaration//GEN-END:variables
     

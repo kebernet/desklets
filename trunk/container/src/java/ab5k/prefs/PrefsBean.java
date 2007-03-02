@@ -25,7 +25,9 @@ import org.joshy.util.u;
 public class PrefsBean {
     public static final String MICRODOCKING = "Main.Closer.Microdocking";
     public static final String DOCKINGSIDE = "Main.MainPanel.DockingSide";
+    public static String TRACKINGENABLED = "Main.LoginToServerAction.TrackingEnabled";
     private Properties props = null;
+
     
     /** Creates a new instance of PrefsBean */
     public PrefsBean(Main main) {

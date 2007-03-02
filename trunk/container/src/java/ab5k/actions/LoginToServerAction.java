@@ -22,6 +22,8 @@ import org.joshy.util.u;
  * @author joshy
  */
 public class LoginToServerAction {
+
+    private boolean shouldLogin = true;
     
     /** Creates a new instance of LoginToServerAction */
     public LoginToServerAction() {
@@ -31,6 +33,10 @@ public class LoginToServerAction {
     public void loginToServer() {
         new Thread(new Runnable() {
             public void run() {
+                if(!shouldLogin) {
+                    u.p("skipping the auto-login");
+                    return;
+                }
                 try {
                     u.p("logging in to the server");
                     String query =  
@@ -63,6 +69,10 @@ public class LoginToServerAction {
             }
         }
         ).start();
+    }
+
+    public void setShouldLogin(boolean b) {
+        this.shouldLogin = b;
     }
     
 }
