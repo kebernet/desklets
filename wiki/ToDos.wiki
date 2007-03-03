@@ -32,3 +32,4 @@ Write a quick tutorial on building your first desklet. new proj, import jar, mak
 
 Fix loading desklet through new open event on windows
 
+Build a proper database driving gallery. allow upload to staging, approval, and then download.
