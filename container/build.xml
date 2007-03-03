@@ -93,8 +93,8 @@
                 <include name="*.jnlp"/>
             </fileset>
             <fileset dir="src/images/">
-                <include name="Splash01.png"/>
-                <include name="Icon01.icns"/>
+                <include name="*.png"/>
+                <include name="*.icns"/>
                 <include name="Desklet.icon01.*"/>
             </fileset>
         </copy>
