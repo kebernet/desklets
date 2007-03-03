@@ -14,10 +14,10 @@
 
     <association mime-type="application/x-ab5k" extensions="desklet">
         <description>AB5k Desklet</description>
-        <icon href="ying-yang.icns"/>
-        <icon href="ying-yang.png"/>
+        <icon href="ying-yang-desklet-icon.icns"/>
+        <icon href="ying-yang-desklet-icon.png"/>
     </association>
-    <icon kind="splash" href="Splash01.png"/>
+    <icon kind="splash" href="ying-yang-splash.png"/>
     <icon href="ying-yang.icns"/>
     <icon href="ying-yang.png"/>
     
