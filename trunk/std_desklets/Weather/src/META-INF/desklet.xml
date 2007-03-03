@@ -6,4 +6,12 @@
     <homepage>http://svn.joshy.org</homepage>
     <description>This is a description!</description>
     <class>weatherdesklet.Desklet</class>
+    <dependency>
+        <groupId>weatherlib</groupId>
+        <artifactId>weatherlib</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
 </desklet>
+
+
