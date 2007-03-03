@@ -73,7 +73,9 @@ public class DefaultContext implements DeskletContext {
 
     void flushPreferences() throws IOException {
         FileOutputStream fos = new FileOutputStream(props);
-
+        InternalFrameContainer ifc = (InternalFrameContainer) this.container;
+        prefs.setProperty(ContainerFactory.LOCATION_X, Integer.toString( (int) ifc.iframe.getLocation().getX() ) );
+        prefs.setProperty(ContainerFactory.LOCATION_Y, Integer.toString( (int) ifc.iframe.getLocation().getY()) );
         try {
             prefs.store(fos, null);
             fos.flush();
@@ -91,10 +93,11 @@ public class DefaultContext implements DeskletContext {
     }
 
     public DeskletContainer getContainer() {
-        return (this.container == null)
-        ? (this.container = ContainerFactory.getInstance()
-                                            .createInternalFrameContainer(this))
+        this.container = (this.container == null)
+        ? ContainerFactory.getInstance()
+                                          .createInternalFrameContainer(this)
         : this.container;
+       return this.container;
     }
 
     public Container getDialog() {
