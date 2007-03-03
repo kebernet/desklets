@@ -2,7 +2,7 @@
 <!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc.//DTD JNLP 1.5//EN" "http://www.netbeans.org/jnlp/DTD/jnlp.dtd">
 <jnlp codebase="http://www.ab5k.org/downloads/daily/" href="AB5k.jnlp">
   <information>
-    <title>AB5k Widget Box</title>
+    <title>AB5k</title>
     <vendor>AB5k</vendor>
     <homepage href="http://www.ab5k.org/"/>
     <description>Runs AB5k widgets</description>
@@ -14,10 +14,12 @@
 
     <association mime-type="application/x-ab5k" extensions="desklet">
         <description>AB5k Desklet</description>
-        <icon href="Desklet.icon01.png"/>
+        <icon href="ying-yang.icns"/>
+        <icon href="ying-yang.png"/>
     </association>
     <icon kind="splash" href="Splash01.png"/>
-    <icon href="Icon01.icns"/>
+    <icon href="ying-yang.icns"/>
+    <icon href="ying-yang.png"/>
     
   </information>
   
