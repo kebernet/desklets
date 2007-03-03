@@ -5,4 +5,10 @@
     <homepage>http://svn.joshy.org</homepage>
     <description>Lets you find addresses on the world map</description>
     <class>worldmap.WorldMapDesklet</class>
+    <dependency>
+        <groupId>swingx-ws</groupId>
+        <artifactId>swingx-ws</artifactId>
+        <version>NEW_TILE_PROVIDER</version>
+        <type>jar</type>
+    </dependency>
 </desklet>
