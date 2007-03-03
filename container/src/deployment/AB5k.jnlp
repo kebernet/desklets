@@ -43,7 +43,7 @@
     <jar download="eager" href="lib/swingx_painterbranch.jar" version=""/>
     
     <!-- common libs -->
-    <jar download="eager" href="lib/weatherlib.jar" main="false" version=""/>
+    <!-- no longer needed <jar download="eager" href="lib/weatherlib.jar" main="false" version=""/> -->
     <jar download="eager" href="lib/rome-0.8.jar" main="false" version=""/>
     <jar download="eager" href="lib/jdom-1.0.jar" main="false" version=""/>
     <jar download="eager" href="lib/TimingFramework.jar" version=""/>
@@ -58,6 +58,7 @@
     <jar download="eager" href="lib/commons-logging-1.1.jar" version=""/>
     <jar download="eager" href="lib/swingx.jar" version=""/>
     <jar download="eager" href="lib/MultipleGradientPaint.jar" version=""/>
+    <jar download="eager" href="lib/jtidy-r7.jar" version=""/>
 
     <!-- flying saucer -->
     <jar download="eager" href="lib/core-renderer.jar" version=""/>
