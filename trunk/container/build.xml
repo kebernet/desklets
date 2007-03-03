@@ -160,7 +160,7 @@
             password="${ab5k.upload.password}"
             remotedir="${upload.path}"
             verbose="true"
-            depends="true" timediffauto="true">
+            depends="false" timediffauto="true">
             <fileset dir="${jnlp.dist.dir}">
                 <include name="*.jnlp"/>
                 <include name="*.png"/>
