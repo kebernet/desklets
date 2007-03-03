@@ -37,3 +37,5 @@ Build a proper database driving gallery. allow upload to staging, approval, and 
 ab5k: idea: mini-dock mode that collapses to a strip 16px wide showing just prefs, +/-, and ab5k logo
 
 ab5k: idea: collapse to 1px strip and auto-unhide when you move over it. then click to open the full container.
+
+Make the weather desklet use the full SVG weather icons rather than the pre-rendered ones. Then use the icons in the dock view as well as the main view.
