@@ -55,13 +55,7 @@ public class DeskletRunner extends Thread {
     }
     
     public void destroyDesklet() {
-        try {
-            context.flushPreferences();
-        } catch(IOException ex) {
-            LOG.log(Level.WARNING,
-                "Exception saving prefs for " + context.getConfig().getName(),
-                ex);
-        }
+        
         try {
             ContainerFactory.getInstance().cleanup(context);
             desklet.destroy();
@@ -69,6 +63,13 @@ public class DeskletRunner extends Thread {
             LOG.log(Level.WARNING,
                     "Desklet " + getConfig().getName() +
                     " threw an exception from .destroy() ", e);
+        }
+        try {
+            context.flushPreferences();
+        } catch(IOException ex) {
+            LOG.log(Level.WARNING,
+                "Exception saving prefs for " + context.getConfig().getName(),
+                ex);
         }
     }
     
