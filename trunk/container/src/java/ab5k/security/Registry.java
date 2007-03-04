@@ -20,6 +20,7 @@ import org.joshy.util.u;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 import java.net.MalformedURLException;
@@ -124,7 +125,7 @@ public class Registry {
         File libs = new File(config.getHomeDir(),
                 "META-INF" + File.separator + "lib");
         libs.mkdirs();
-
+        
         for(Dependency dep : config.getDependencies()) {
             File libsDest = new File(libs,
                     dep.getGroupId() + File.separator +
@@ -189,6 +190,19 @@ public class Registry {
             urls.add(commonLib.toURI().toURL());
         }
 
+        File[] localJars = new File( config.getHomeDir(), "META-INF"+File.separator+"lib" ).listFiles( new FilenameFilter(){
+            public boolean accept(File file, String name) {
+                return (name.toLowerCase().endsWith(".jar") || 
+                        name.toLowerCase().endsWith(".zip"));
+               
+            }
+            
+            
+        });
+        for( File localJar: localJars ){
+            urls.add( localJar.toURI().toURL());
+        }
+        
         return urls.toArray(new URL[urls.size()]);
     }
 
