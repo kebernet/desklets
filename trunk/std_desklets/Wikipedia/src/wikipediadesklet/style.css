@@ -23,4 +23,5 @@
     p {
         font-family: Serif;
     }
-    i { color: #443300; font-weight: bold; }
+    i, a { color: #443300; font-weight: bold; }
+    a { text-decoration: underline; }

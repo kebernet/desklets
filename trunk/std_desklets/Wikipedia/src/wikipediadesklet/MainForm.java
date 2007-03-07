@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
@@ -42,14 +43,15 @@ import org.xhtmlrenderer.simple.extend.XhtmlNamespaceHandler;
  * @author  joshy
  */
 public class MainForm extends javax.swing.JPanel {
+    
     private String css =
             "body { background: #ffff44; padding: 10px; font-size: 16pt; "+
-            "font-family: Georgia; }"+
-            "body { padding-left: 30px; }" +
-            "p { font-family: Georgia; }"+
-            "h1, h2, h3 { color: #444444; padding: 10px 0px;  font-family: Verdana; }"+
-            "h2 { border-bottom: solid 3px black; }"+
-            "i { color: #0011aa; }";
+            "font-family: Georgia; } "+
+            "body { padding-left: 30px; } " +
+            "p { font-family: Georgia; } "+
+            "h1, h2, h3 { color: #ff4444; padding: 10px 0px;  font-family: Verdana; } "+
+            "h2 { border: 1px solid black; } "+
+            "a { color: blue; background: green; } ";
     
     public DeskletContext context;
     
@@ -63,7 +65,7 @@ public class MainForm extends javax.swing.JPanel {
             ex.printStackTrace();
         }
         
-
+        
         ((BusyLabel)spinnerLabel).setBaseColor(new Color(214,198,156));
         ((BusyLabel)spinnerLabel).setHighlightColor(new Color(68,51,0));
         spinnerLabel.setText("");
@@ -258,42 +260,10 @@ public class MainForm extends javax.swing.JPanel {
                     if(request.getReadyState() == XmlHttpRequest.ReadyState.LOADED) {
                         ((BusyLabel)spinnerLabel).stopAnimation();
                         Document doc = request.getResponseXML();
-                        System.out.println("xml = " + XPathUtils.toXML(doc));
+                        //System.out.println("xml = " + XPathUtils.toXML(doc));
                         try {
                             String s = XPathUtils.getString("//ns:text/text()",doc,"http://www.mediawiki.org/xml/export-0.3/","ns");
-                            
-                            String text = s;
-                            String w = "[a-zA-Z0-9\\(\\) ]";
-                            
-                            // strip all html tags out
-                            System.out.println("text = " + text);
-                            // strip of the external links
-                            text = replaceAllDotAll(text,"==References.*$","");
-                            // strip out all entities
-                            text = text.replaceAll("&\\w+;","__");
-                            // strip out all html tags
-                            text = text.replaceAll("<(/?\\w+.*?)>","__[$1]__");
-                            // strip off the double {{ header
-                            text = replaceAllDotAll(text,"\\{\\{.*?\\{\\{.*?\\}\\}.*?\\}\\}","");
-                            // strip off the single {{ header
-                            text = text.replaceAll("\\{\\{.*?\\}\\}","");
-                            // turn lines into <p>'s
-                            text = Pattern.compile("^(.+)$",Pattern.MULTILINE).matcher(text).replaceAll("<p>$1</p>");
-                            // turn '''text''' into <b>'s
-                            text = text.replaceAll("'''(.*?)'''","<b>$1</b>");
-                            // turn === into H3
-                            text = text.replaceAll("<p>===(.*?)===</p>","<h3>$1</h3>");
-                            // turn == into H2
-                            text = text.replaceAll("<p>==(.*?)==</p>","<h2>$1</h2>");
-                            
-                            // turn wikiwords into italics
-                            text = text.replaceAll("\\[\\[(("+w+"+?)\\|)??("+w+"+?)\\]\\]","<i>$3</i>");
-                            
-                            String html = "<html><head><style type='text/css'>"+css+"</style></head><body>"+
-                                    "<h1>"+queryString+"</h1>\n"+
-                                    text+"\n"+
-                                    "</body></html>";
-                            System.out.println("generated: " + html);
+                            String html = convertToHTML2(s, queryString);
                             
                             String baseURL = this.getClass().getResource("").toString();
                             u.p("using a base url of: " + baseURL);
@@ -306,12 +276,6 @@ public class MainForm extends javax.swing.JPanel {
                     }
                 }
                 
-                private String replaceAllDotAll(String text, String pattern, String replacement) {
-                    // strip off the external links
-                    text = Pattern.compile(pattern,Pattern.DOTALL)
-                            .matcher(text).replaceAll(replacement);
-                    return text;
-                }
                 
             });
             request.send();
@@ -391,6 +355,123 @@ public class MainForm extends javax.swing.JPanel {
         }
         
     }
-
-
+    
+    private String convertToHTML2(String str, String queryString) {
+        StringBuffer o = new StringBuffer();
+        o.append("<html><head><style type='text/css'>"+css+"</style></head><body>");
+        o.append("<h1>"+queryString+"</h1>");
+        o.append("<div>");
+        String[] lines = str.split("\n");
+        for(String line : lines) {
+            
+            // end if we get to the external links
+            if(line.startsWith("==External links==")) { break; }
+            
+            // == -> <h3>
+            if(line.startsWith("===")) { add(line.replaceAll("===(.*)===","<h3>$1</h3>"),o); continue; }
+            if(line.startsWith("==")) { add(line.replaceAll("==(.*)==","<h2>$1</h2>"),o); continue; }
+            // {{seaalso -> <i><a>text</a></i>
+            if(line.startsWith("{{seealso")) { add(line.replaceAll("\\{\\{seealso\\|(.*)\\}\\}",
+                    "<p><i>see also <a href=''>$1</a></i></p>"),o); continue; }
+            
+            // strip out all entities
+            line  = line.replaceAll("&\\w+;","__");
+            // strip out all html tags
+            line = line.replaceAll("<(/?\\w+.*?)>","__[$1]__");
+            line = line.replaceAll("<!--","");
+            
+            //normal paragraph line
+            line = line.replaceAll("(.+)","<p>$1</p>");
+            
+            // [[wikiword|text]] -> <a>text</a>
+            //line = line.replaceAll("\\[\\[([^|\\]]+)(|(.*))?\\]\\]","<a href='$1'>$1</a>");
+            
+            // [[wikiword]] -> <a>text</a>
+            line = line.replaceAll("\\[\\[([\\w\\s\\.,]+)\\]\\]","<a href=''>$1</a>");
+            
+            // [[wikiword|text]] -> <a>text</a>
+            line = line.replaceAll("\\[\\[[\\w\\s\\.,]+\\|([\\w\\s]+)\\]\\]","<a href=''>$1</a>");
+            
+            // strip out {{POV
+            line = line.replaceAll("\\{\\{POV-statement\\}\\}","");
+            // strip out {{Fact|stuff}}
+            line = line.replaceAll("\\{\\{Fact\\|.+?\\}\\}","");
+            
+            u.p("adding: " + line);
+            o.append(line);
+        }
+        o.append("</div>");
+        o.append("</body></html>");
+        return o.toString();
+    }
+    
+    private String convertToHTML(final String s, final String queryString) {
+        
+        String text = s;
+        String w = "[a-zA-Z0-9\\(\\) ]";
+        
+        // strip all html tags out
+        System.out.println("text = " + text);
+        // strip of the external links
+        text = replaceAllDotAll(text,"==External links.*$","");
+        text = replaceAllDotAll(text,"==References.*$","");
+        // strip out all entities
+        text = text.replaceAll("&\\w+;","__");
+        // strip out all html tags
+        text = text.replaceAll("<(/?\\w+.*?)>","__[$1]__");
+        
+        
+        // turn {{seealso|.*}} into <a class='seealso'>text</a>
+        text = text.replaceAll("^\\{\\{seealso\\|(.*)\\}\\}$","<p><a class='seealso'>$1</a></p>");
+        // strip out all embedded comments {{}}
+        text = text.replaceAll("\\{\\{.+\\}\\}","");
+        
+        
+        
+        // strip off the double {{ header
+        //text = replaceAllDotAll(text,"\\{\\{.*?\\{\\{.*?\\}\\}.*?\\}\\}","");
+        // strip off the single {{ header
+        //text = text.replaceAll("\\{\\{.*?\\}\\}","");
+        // turn lines into <p>'s
+        text = Pattern.compile("^(.+)$",Pattern.MULTILINE).matcher(text).replaceAll("<p>$1</p>");
+        // turn '''text''' into <b>'s
+        //text = text.replaceAll("'''(.*?)'''","<b>$1</b>");
+        // turn === into H3
+        text = text.replaceAll("<p>===(.*?)===</p>","<h3>$1</h3>");
+        // turn == into H2
+        text = text.replaceAll("<p>==(.*?)==</p>","<h2>$1</h2>");
+        
+        // turn ''.*'' into italics
+        text = text.replaceAll("''(.*)''","<i>$1</i>");
+        // turn wikiwords into italics
+        //text = text.replaceAll("\\[\\[(("+w+"+?)\\|)??("+w+"+?)\\]\\]","<i>$3</i>");
+        
+        String urlset = "[\\w\\:/\\.\\?\\=\\& \\-\\,\\(\\)]";
+        // turn wiki double wiki links into anchors
+        text = text.replaceAll("\\[\\[("+urlset+"+)(\\|("+urlset+"+))?\\]\\]","<a href=''>$3</a>");
+        // turn wiki links into anchors
+        text = text.replaceAll("\\[("+urlset+"+)\\]","<link href=''>$1</link>");
+        // escape the links
+        
+        String html = "<html><head><style type='text/css'>"+css+"</style></head><body>"+
+                "<h1>"+queryString+"</h1>\n"+
+                text+"\n"+
+                "</body></html>";
+        System.out.println("generated: " + html);
+        return html;
+    }
+    
+    
+    private String replaceAllDotAll(String text, String pattern, String replacement) {
+        // strip off the external links
+        text = Pattern.compile(pattern,Pattern.DOTALL)
+                .matcher(text).replaceAll(replacement);
+        return text;
+    }
+    
+    private void add(String string, StringBuffer o) {
+        u.p("adding: " + string);
+        o.append(string);
+    }
+    
 }
