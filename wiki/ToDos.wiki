@@ -6,8 +6,6 @@ Put animation back into Manager dialog when starting / stopping. At least fade i
 
 Dialogs on macosx don't repaint properly if there is animation underneath them.
 
-Make weather desklet prettier. make a better background with a glossy effect.
-
 Picture of the day needs a 'loading...' indicator
 
 You get a ton of dialogs on startup.  We must eliminate some of them. No warning when creating a thread, for example.
@@ -26,7 +24,7 @@ Add a dialog api for desklets to show and move their own dialogs. make them not 
 
 Add a dialog transition of some sort. just zooming from nothing using image scaling? Can we do 3d yet?
 
-Put swingx-ws (both) and fs jars inside the wikipedia desklet, remove from core. The same for the MapViewer app.
+*done* Put swingx-ws (both) and fs jars inside the wikipedia desklet, remove from core. The same for the MapViewer app.
 
 Write a quick tutorial on building your first desklet. new proj, import jar, make a gui, new class to extend abstract desklet. test in main method. add desklet.xml, jar and run
 
@@ -39,3 +37,7 @@ ab5k: idea: mini-dock mode that collapses to a strip 16px wide showing just pref
 ab5k: idea: collapse to 1px strip and auto-unhide when you move over it. then click to open the full container.
 
 Make the weather desklet use the full SVG weather icons rather than the pre-rendered ones. Then use the icons in the dock view as well as the main view.
+
+===Weather===
+
+Make weather desklet prettier. make a better background with a glossy effect.
