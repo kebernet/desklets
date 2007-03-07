@@ -5,6 +5,8 @@ import ab5k.desklet.DeskletContext;
 import java.awt.Container;
 import java.awt.geom.Dimension2D;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
@@ -12,9 +14,11 @@ class TestDeskletContext implements DeskletContext {
     
     private DeskletContainer frame;
     private DeskletContainer dockingFrame;
+    private Map<String, String> prefs;
     
     public TestDeskletContext(JFrame frame, JFrame dockingFrame) {
         super();
+        prefs = new HashMap<String,String>();
         this.frame = new TestContainer(frame);
         this.dockingFrame = new TestContainer( dockingFrame );
     }
@@ -35,14 +39,18 @@ class TestDeskletContext implements DeskletContext {
     }
     
     public String getPreference(String name, String defaultValue) {
-        return null;
+        if(prefs.containsKey(name)) {
+            return prefs.get(name);
+        }
+        return defaultValue;
     }
     
     public void notifyStopped() {
     }
     
     public String setPreference(String name, String value) {
-        return null;
+        prefs.put(name,value);
+        return value;
     }
     
     public void showURL(URI uri) {
