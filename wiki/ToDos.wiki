@@ -10,7 +10,7 @@ Picture of the day needs a 'loading...' indicator
 
 You get a ton of dialogs on startup.  We must eliminate some of them. No warning when creating a thread, for example.
 
-We should have our own warning dialog instead of using JOPtionPane
+We should have our own warning dialog instead of using JOptionPane
 
 Make an 'adding' transition. When the desklet appears on screen have it transition in instead of just appearing.
 
@@ -41,3 +41,5 @@ Make the weather desklet use the full SVG weather icons rather than the pre-rend
 ===Weather===
 
 Make weather desklet prettier. make a better background with a glossy effect.
+
+===Core===
