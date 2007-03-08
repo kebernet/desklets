@@ -21,6 +21,8 @@ import java.util.logging.Logger;
  */
 public class ClassLoader extends URLClassLoader {
     private static final Logger LOG = Logger.getLogger("AB5K");
+    private final java.lang.ClassLoader parent = Thread.currentThread()
+    .getContextClassLoader();
     private String deskletName;
     private String deskletUUID;
     public URL[] classPath;
@@ -76,9 +78,14 @@ public class ClassLoader extends URLClassLoader {
         
         LOG.fine("Loading class: " + name);
         
-        
-        return super.findClass(name);
-        
+        try {
+            return super.findClass(name);
+        } catch(ClassNotFoundException nfe) {
+            LOG.log(Level.FINEST, "Class not found in secured loader.", nfe);
+            if( name.startsWith("ab5k.desklet.") ){
+                return parent.loadClass(name);
+            }
+        }
     }
     
     public String getName() {
