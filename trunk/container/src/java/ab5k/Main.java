@@ -67,7 +67,7 @@ public class Main {
     private static boolean firstRun = false;
     
     public static File HOME_DIR = new File(System.getProperty("user.home") + File.separator + ".ab5k");
-
+    
     PrefsBean prefsBean;
     
     /** Creates a new instance of Main */
@@ -78,11 +78,6 @@ public class Main {
     
     public void init() {
         u.p("first run = " + firstRun);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         
         setBackgroundManager(new BackgroundManager(this));
         setupBackgrounds();
@@ -199,6 +194,12 @@ public class Main {
     }
     
     public static void main(String ... args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
         // check the existence of the .ab5k dir first
         firstRun = true;
         if(HOME_DIR.exists()) {
@@ -212,10 +213,12 @@ public class Main {
             
             try {
                 MacSupport.setupMacSupport(main);
+            } catch (NoClassDefFoundError ex) {
+                u.p("mac support not found. must not be mac. just bailing");
+                System.exit(0);
             } catch (Throwable thr) {
                 thr.printStackTrace();
             }
-            //System.exit(0);
         }
         
         Toolkit.getDefaultToolkit().setDynamicLayout(false);

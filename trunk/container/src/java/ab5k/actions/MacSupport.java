@@ -26,6 +26,16 @@ import org.joshy.util.u;
  * @author joshy
  */
 public class MacSupport {
+    public static boolean isMac() {
+        try {
+            Application.getApplication();
+            return true;
+        } catch (Throwable t) {
+            u.p(t);
+            return false;
+        }
+    }
+    
     public static void setupMacSupport(final Main main) {
         try {
             u.p("installing mac support");

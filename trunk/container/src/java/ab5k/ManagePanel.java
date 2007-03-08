@@ -396,7 +396,7 @@ public class ManagePanel extends javax.swing.JPanel {
         
         try {
             Desktop dk = Desktop.getDesktop();
-            dk.browse(new URI("http://joshy.org/project/AB5k/page2/page2.html"));
+            dk.browse(new URI("http://www.ab5k.org/page2/page2.html"));
         } catch (Exception ex) {
             main.handleException(ex);
         }
