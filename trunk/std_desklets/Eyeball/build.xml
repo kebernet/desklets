@@ -66,4 +66,7 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+        <copy file="dist/Eyeball.jar" tofile="dist/Eyeball.desklet"/>
+    </target>
 </project>
