@@ -193,7 +193,7 @@ public class Main {
         return loginToServerAction;
     }
     
-    public static void main(String ... args) {
+    public static void main(final String ... args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -260,6 +260,13 @@ public class Main {
                     frame.setVisible(true);
                     
                     main.getLoginToServerAction().loginToServer();
+                    for(String file : args) {
+                        try {
+                            main.getLoadDeskletAction().load(new File(file).toURL());
+                        } catch (Throwable th) {
+                            u.p(th);
+                        }
+                    }
                 } catch (Exception ex) {
                     u.p(ex);
                 }

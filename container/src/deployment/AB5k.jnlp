@@ -38,8 +38,8 @@
   <resources locale="" os="">
 
     <!-- ab5k itself -->
-    <jar download="eager" href="lib/DeskletSpecification.jar" main="false" version=""/>
     <jar download="eager" href="lib/AB5k.jar" main="true" version=""/>
+    <jar download="eager" href="lib/DeskletSpecification.jar" main="false" version=""/>
     <jar download="eager" href="lib/AB5kUtils.jar" version=""/>
     <jar download="eager" href="lib/JoshUtil.jar" version=""/>
 
