@@ -13,13 +13,16 @@
     </shortcut>
 
     <association mime-type="application/x-ab5k" extensions="desklet">
-        <description>AB5k Desklet</description>
-        <icon href="ying-yang-desklet-icon.icns"/>
+        <description>AB5k Desklet</description> 
+        <icon href="ying-yang-desklet-icon.32.png" width="32" height="32"/>
         <icon href="ying-yang-desklet-icon.png"/>
+        <icon href="ying-yang-desklet-icon.icns"/>
     </association>
+
     <icon kind="splash" href="ying-yang-splash.png"/>
-    <icon href="ying-yang.icns"/>
-    <icon href="ying-yang.png"/>
+
+    <icon href="ying-yang.icon.32.png" width="32" height="32"/>
+    <icon href="ying-yang.icns" width="128" height="128"/>
     
   </information>
   

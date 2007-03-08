@@ -152,6 +152,21 @@
         </ftp>
     </target>
     
+    <target name="upload-jnlp-force" depends="copy-dist-jars, init-ftp">
+        <echo message="uploading the jnlp"/>
+        <ftp server="${upload.hostname}" userid="${upload.username}"
+            password="${ab5k.upload.password}"
+            remotedir="${upload.path}"
+            verbose="true"
+            depends="false" timediffauto="true">
+            <fileset dir="${jnlp.dist.dir}">
+                <include name="*.jnlp"/>
+                <include name="*.png"/>
+                <include name="*.icns"/>
+            </fileset>
+        </ftp>
+    </target>
+    
     <target name="package-and-upload" depends="copy-dist-jars, sign-all-jars, init-ftp">
         
         
@@ -174,7 +189,7 @@
             password="${ab5k.upload.password}"
             remotedir="${upload.path}lib"
             verbose="true"
-            depends="true" timediffauto="true">
+            depends="false" timediffauto="true">
             <fileset dir="${jnlp.lib.dir}">
                 <include name="*.jar"/>
             </fileset>
