@@ -112,14 +112,15 @@ public class SecurityPolicy extends Policy {
     
     public boolean implies(ProtectionDomain protectionDomain,
             Permission permission) {
-        LOG.finer(protectionDomain.getCodeSource().getLocation() +
-                " requesting permission " + permission.getClass().getName() + " " +
-                permission.getName());
         
         if(permission instanceof java.awt.AWTPermission ||
-                permission instanceof java.util.PropertyPermission) {
+                permission instanceof java.util.PropertyPermission ||
+                permission instanceof java.lang.RuntimePermission ) {
             return true;
         }
+        System.out.println(protectionDomain.getCodeSource().getLocation() +
+                " requesting permission " + permission.getClass().getName() + " " +
+                permission.getName());
         
         if(permission instanceof ab5k.security.DeskletAdministrationPermission) {
             return (protectionDomain.getClassLoader() == SecurityPolicy.class.getClassLoader());
@@ -151,12 +152,12 @@ public class SecurityPolicy extends Policy {
             ArrayList<String> grants = always.get(protectionDomain.getCodeSource()
             .getLocation()
             .toExternalForm());
-            
+            String permissionValue = permission instanceof java.net.SocketPermission ? "java.net.SocketPermission" : permission.getName();
             if(grants == null) {
                 grants = new ArrayList<String>();
             }
             
-            if(grants.contains(permission.getName())) {
+            if(grants.contains(permissionValue)) {
                 return true;
             }
             
@@ -168,7 +169,7 @@ public class SecurityPolicy extends Policy {
                 denies = new ArrayList<String>();
             }
             
-            if(denies.contains(permission.getName())) {
+            if(denies.contains(permissionValue)) {
                 return false;
             }
             
@@ -193,9 +194,8 @@ public class SecurityPolicy extends Policy {
                 case 2:
                     perms.add(permission);
                     permissions.put(protectionDomain.getCodeSource(), perms);
-                    
-                    if(!grants.contains(permission.getName())) {
-                        grants.add(permission.getName());
+                    if(!grants.contains(permissionValue)) {
+                        grants.add(permissionValue);
                     }
                     
                     always.put(protectionDomain.getCodeSource().getLocation()
