@@ -85,6 +85,7 @@ public class ClassLoader extends URLClassLoader {
             if( name.startsWith("ab5k.desklet.") ){
                 return parent.loadClass(name);
             }
+            throw nfe;
         }
     }
     
