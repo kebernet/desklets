@@ -8,26 +8,28 @@ package ab5k.security;
 import ab5k.Main;
 
 import com.totsp.util.BeanArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
-
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
 
 /**
  *
  * @author cooper
  */
 public class DeskletManager {
-    private static final Preferences prefs = Preferences.userNodeForPackage(DeskletManager.class);
+    private static final Properties prefs = new Properties();
+    private static final File HOME = new File( System.getProperty("user.home") + File.separator + ".ab5k");
+    private static final File STARTUP_PROPS = new File( HOME, "startup.properties");
+    
     static Main main;
     private final static DeskletAdministrationPermission PERMISSION = new DeskletAdministrationPermission("Desklet Manager",
             "all");
@@ -39,6 +41,11 @@ public class DeskletManager {
     /** Creates a new instance of DeskletManager */
     private DeskletManager() {
         super();
+        try{
+            prefs.load( new FileInputStream(STARTUP_PROPS));
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     private static void checkSecurity() {
@@ -64,7 +71,7 @@ public class DeskletManager {
 
     private ArrayList<String> getRunningDeskletIds() {
         ArrayList<String> results = new ArrayList<String>();
-        String runningPref = prefs.get("running", null);
+        String runningPref = prefs.getProperty("running", null);
 
         if(runningPref != null) {
             StringTokenizer tok = new StringTokenizer(runningPref, ",");
@@ -170,8 +177,8 @@ public class DeskletManager {
         }
 
         try {
-            prefs.flush();
-        } catch(BackingStoreException ex) {
+            prefs.store( new FileOutputStream( STARTUP_PROPS ), "Startup Settings" );
+        } catch(IOException ex) {
             ex.printStackTrace();
         }
     }
