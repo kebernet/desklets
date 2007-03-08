@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : desklet.xml
+    Created on : August 4, 2006, 8:29 PM
+    Author     : cooper
+    Description:
+        Purpose of the document follows.
+-->
+
+<desklet version="0.1">
+    <name>ROME Reader</name>
+    <author>Robert Cooper</author>
+    <homepage>http://www.screaming-penguin.com</homepage>
+    <description>An RSS/Atom Feed Reader</description>
+    <class>com.totsp.desklet.rome.RomeDesklet</class>
+    <dependency>
+        <groupId>jtidy</groupId>
+        <artifactId>jtidy</artifactId>
+        <version>8.0-20060801.131059-3</version>
+    </dependency>
+    <dependency>
+        <groupId>rome</groupId>
+        <artifactId>rome</artifactId>
+        <version>0.9</version>
+    </dependency>
+    <dependency>
+        <groupId>jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>FlyingSaucer</groupId>
+        <artifactId>core-renderer</artifactId>
+        <version>R6</version>
+    </dependency>
+    <dependency>
+        <groupId>FlyingSaucer</groupId>
+        <artifactId>cssparser</artifactId>
+        <version>0.9.4</version>
+    </dependency>
+</desklet>
