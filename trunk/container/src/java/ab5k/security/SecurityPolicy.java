@@ -44,10 +44,18 @@ public class SecurityPolicy extends Policy {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final File HOME = new File( System.getProperty("user.home") + File.separator + ".ab5k");
     private static final File SECURITY_PROPS = new File( HOME, "security.properties");
-    
+    private static final ArrayList<String> SAFE_RUNTIME = new ArrayList<String>();
+    static{
+        SAFE_RUNTIME.add( "modifyThread");
+        SAFE_RUNTIME.add( "modifyThreadGroup");
+        SAFE_RUNTIME.add( "stopThread");
+        SAFE_RUNTIME.add( "getClassLoader");
+        SAFE_RUNTIME.add( "createClassLoader");
+    }
     private HashMap<String, ArrayList<String>> always;
     private HashMap<String, ArrayList<String>> nevers;
     private HashMap<CodeSource, Permissions> permissions = new HashMap<CodeSource, Permissions>();
+    
     private Properties prefs = new java.util.Properties();
     /** Creates a new instance of SecurityPolicy */
     public SecurityPolicy() {
@@ -110,12 +118,14 @@ public class SecurityPolicy extends Policy {
         return p;
     }
     
+    
+    
     public boolean implies(ProtectionDomain protectionDomain,
             Permission permission) {
         
         if(permission instanceof java.awt.AWTPermission ||
                 permission instanceof java.util.PropertyPermission ||
-                permission instanceof java.lang.RuntimePermission ) {
+                (permission instanceof java.lang.RuntimePermission && SAFE_RUNTIME.contains( permission.getName() )  ) ) {
             return true;
         }
         System.out.println(protectionDomain.getCodeSource().getLocation() +
@@ -212,8 +222,8 @@ public class SecurityPolicy extends Policy {
                     
                 case 3:
                     
-                    if(!denies.contains(permission.getName())) {
-                        denies.add(permission.getName());
+                    if(!denies.contains(permissionValue)) {
+                        denies.add(permissionValue);
                     }
                     
                     nevers.put(protectionDomain.getCodeSource().getLocation()
