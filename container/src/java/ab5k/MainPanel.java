@@ -181,6 +181,7 @@ public class MainPanel extends javax.swing.JPanel {
 
         logoButton.setBorderPainted(false);
         logoButton.setContentAreaFilled(false);
+        logoButton.setFocusable(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
