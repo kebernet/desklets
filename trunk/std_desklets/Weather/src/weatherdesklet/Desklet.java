@@ -71,7 +71,9 @@ public class Desklet extends AbstractDesklet{
         context.getContainer().setResizable(false);
         context.getContainer().setShaped(true);
         context.getContainer().setVisible(true);
+        
         stationID = context.getPreference("STATION_ID","KATL");
+        u.p("station ID = " + stationID);
     }
 
     public String getStationID() {
