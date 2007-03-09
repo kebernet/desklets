@@ -12,6 +12,21 @@
         <version>0.1</version>
         <type>jar</type>
     </dependency>
+    
+    
+    <repository>http://www.ab5k.org/maven/</repository>
+    <dependency>
+        <groupId>swingx_painterbranch</groupId>
+        <artifactId>swingx_painterbranch</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>JoshUtil</groupId>
+        <artifactId>JoshUtil</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
 </desklet>
 
 
