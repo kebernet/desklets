@@ -5,6 +5,7 @@
     <homepage>http://svn.joshy.org</homepage>
     <description>Counts down the days until date X</description>
     <class>org.joshy.countdown.CountdownMain</class>
+    
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
         <groupId>swingx_painterbranch</groupId>
@@ -16,6 +17,12 @@
         <groupId>joda</groupId>
         <artifactId>joda-time</artifactId>
         <version>1.4</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>JoshUtil</groupId>
+        <artifactId>JoshUtil</artifactId>
+        <version>0.1</version>
         <type>jar</type>
     </dependency>
 </desklet>
