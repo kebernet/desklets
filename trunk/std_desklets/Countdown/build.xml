@@ -66,6 +66,7 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <!--
     <target name="-pre-jar">
         <mkdir dir="build/classes/META-INF/lib"/>
         <copy todir="build/classes/META-INF/lib">
@@ -73,7 +74,7 @@
                 <include name="*.jar"/>
             </fileset>
         </copy>
-    </target>
+    </target>-->
     <target name="-post-jar">
         <copy file="dist/Countdown.jar" tofile="dist/Countdown.desklet"/>
     </target>
