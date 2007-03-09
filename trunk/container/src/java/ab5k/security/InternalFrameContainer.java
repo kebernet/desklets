@@ -16,10 +16,15 @@ import java.awt.Graphics;
 import java.awt.geom.Dimension2D;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import javax.swing.plaf.InternalFrameUI;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
+import org.joshy.util.u;
 
 
 /**
@@ -30,12 +35,17 @@ public class InternalFrameContainer implements DeskletContainer {
     JComponent content;
     JDesktopPane desktop;
     JInternalFrame iframe = new JInternalFrame() {
+        
             protected void paintComponent(Graphics g) {
                 //g.setColor(Color.RED);
                 //g.fillRect(0,0,getWidth(),getHeight());
                 if(!shaped) {
                     super.paintComponent(g);
                 }
+            }
+            public void setUI(InternalFrameUI ui) {
+                u.p("ui = " + ui);
+                super.setUI(ui);
             }
         };
 
@@ -101,13 +111,16 @@ public class InternalFrameContainer implements DeskletContainer {
 
         if(shaped) {
             iframe.setOpaque(false);
-            iframe.setClosable(true);
+            iframe.setClosable(false);
             iframe.setIconifiable(false);
             iframe.setMaximizable(false);
             //panel.setLayout(new BorderLayout());
+            //u.p("installing hacked ui");
+            iframe.setUI(new HackedInternalFrameUI(iframe));
             panel.setOpaque(false);
             //iframe.setContentPane(panel);
             iframe.setBorder(BorderFactory.createEmptyBorder());
+            //iframe.setBorder(BorderFactory.createLineBorder(Color.GREEN));
 
             //panel.setBackground(Color.YELLOW);
         } else {
@@ -130,5 +143,80 @@ public class InternalFrameContainer implements DeskletContainer {
 
     public void setVisible(boolean visible) {
         iframe.setVisible(visible);
+    }
+    
+    class HackedInternalFrameUI extends BasicInternalFrameUI {
+        HackedInternalFrameUI(JInternalFrame iframe) {
+            super(iframe);
+        }
+        
+        protected void installTitlePane() {
+            titlePane = new HackedInternalFrameTitlePane(frame);
+            titlePane = null;
+        }
+        
+        private JComponent createDummy() {
+            JComponent dummy = new JComponent() {
+            };
+            
+            Dimension size = new Dimension(0,0);
+            dummy.setSize(size);
+            dummy.setMinimumSize(size);
+            dummy.setMaximumSize(size);
+            dummy.setPreferredSize(size);
+            return dummy;
+        }
+        protected JComponent createSouthPane(JInternalFrame w) {
+            return createDummy();
+        }
+        protected JComponent createEastPane(JInternalFrame w) {
+            return createDummy();
+        }
+        protected JComponent createWestPane(JInternalFrame w) {
+            return createDummy();//new JButton("west");
+        }
+        
+        protected JComponent createNorthPane(JInternalFrame w) {
+            return createDummy();
+        }
+        
+        //protected void installComponents() {
+            
+        //}
+        
+        public void installUI(JComponent c) {
+            super.installUI(c);
+            //u.p("installing: " + c);
+            c.setOpaque(false);
+        }
+    }
+    
+    class HackedInternalFrameTitlePane extends BasicInternalFrameTitlePane {
+        HackedInternalFrameTitlePane(JInternalFrame iframe) {
+            super(iframe);
+        }
+        protected void installTitlePane() {
+            //titlePane = new HackedInternalFrameTitlePane(frame);
+        }
+        
+        
+        protected void addSubComponents() {
+            
+        }
+        
+        public void paint(Graphics g) {
+            g.setColor(Color.BLUE);
+            g.fillRect(0,0,100,100);
+        }
+        public void paintComponent(Graphics g) {
+            g.setColor(Color.RED);
+            g.fillRect(0,0,10,10);
+        }
+        
+        public void paintTitleBackground(Graphics g) {
+            g.setColor(Color.GREEN);
+            g.fillRect(0,0,10,10);
+        }
+
     }
 }
