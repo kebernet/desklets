@@ -66,4 +66,7 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+        <copy file="dist/ColorChooserDesklet.jar" tofile="dist/ColorChooserDesklet.desklet"/>
+    </target>
 </project>
