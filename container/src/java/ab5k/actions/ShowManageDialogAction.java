@@ -21,6 +21,8 @@ import org.jdesktop.swingx.painter.PinstripePainter;
 
 public class ShowManageDialogAction extends AbstractAction {
     Main main;
+    
+    private MattePainter disablePainter;
     public ShowManageDialogAction(Main main) {
         this.main = main;
     }
@@ -34,73 +36,102 @@ public class ShowManageDialogAction extends AbstractAction {
                 
                 // get the desktop pane metrics
                 Dimension desktopSize = main.getMainPanel().desktop.getSize();
-                Point desktopLocation = main.getMainPanel().desktop.getLocation();
                 
                 // set up an overlay to disable the widgets
-                final JXPanel gpanel = new JXPanel();
-                gpanel.setOpaque(false);
-                MattePainter disablePainter = new MattePainter(new Color(255,255,255,0));
-                //PinstripePainter pinStripe = new PinstripePainter(new Color(255,255,255,0),0,10,5);
-                gpanel.setBackgroundPainter(disablePainter);
-                gpanel.setSize(desktopSize);
-                gpanel.setLocation(desktopLocation);
-                layeredPane.add(gpanel,JLayeredPane.PALETTE_LAYER);
-                gpanel.setVisible(true);
-                
-                final Animator anim = new Animator(600);
-                anim.addTarget(new PropertySetter(disablePainter,"fillPaint",new Color(255,255,255,0),new Color(255,255,255,100)));
-                anim.addTarget(new TimingTargetAdapter() {
-                    public void timingEvent(float f) {
-                        gpanel.repaint();
-                    }
-                });
+                final JXPanel gpanel = getDisablePanel(layeredPane, desktopSize);
                 
                 // create a container for the dialog
-                final JPanel ldialog = new JPanel();
+                final JPanel ldialog = getDialog(layeredPane, desktopSize);
                 
-                // configure the management panels
-                ShowManageDialogActionPanel panel = new ShowManageDialogActionPanel(main,new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        anim.setDirection(Animator.Direction.BACKWARD);
-                        anim.setInitialFraction(1f);
-                        anim.addTarget(new TimingTarget() {
-                            public void begin() {
-                            }
-                            public void end() {
-                                ldialog.setVisible(false);
-                                gpanel.setVisible(false);
-                                layeredPane.remove(gpanel);
-                                layeredPane.remove(ldialog);
-                                main.getFrame().setAlwaysOnTop(true);
-                            }
-                            public void repeat() {
-                            }
-                            public void timingEvent(float f) {
-                            }
-                        });
-                        anim.start();
+                anim.setDirection(Animator.Direction.FORWARD);
+                anim.setInitialFraction(0f);
+                anim.addTarget(new TimingTarget() {
+                    public void begin() {
+                        ldialog.setVisible(true);
+                        gpanel.setVisible(true);
                     }
+                    public void end() {
+                        anim.removeTarget(this);
+                    }
+                    public void repeat() {                }
+                    public void timingEvent(float f) {                }
                 });
-                panel.tabs.add("Manage Desklets", new ManagePanel(main));
-                panel.tabs.add("Preferences", new PreferencesPanel(main));
-                panel.tabs.add("About", new AboutPanel(main));
                 
-                ldialog.setLayout(new BorderLayout());
-                ldialog.add(panel,"Center");
-                ldialog.setSize(700,500);
-                
-                
-                // add and center it
-                layeredPane.add(ldialog,JLayeredPane.MODAL_LAYER);
-                Point upperLeft = new Point((desktopSize.width-ldialog.getWidth())/2,
-                        (desktopSize.height-ldialog.getHeight())/2);
-                Point offScreen = new Point(upperLeft.x, -ldialog.getHeight());
-                ldialog.setLocation(offScreen);
-                
-                //anim.addTarget(new PropertySetter(ldialog,"size",new Dimension(0,500),new Dimension(700,500)));
-                anim.addTarget(new PropertySetter(ldialog,"location",offScreen,upperLeft));
                 anim.start();
             }
         });
+    }
+    
+    
+    private Animator anim;
+    private JPanel ldialog;
+    private JXPanel gpanel;
+    
+    private JXPanel getDisablePanel(JLayeredPane layeredPane, Dimension desktopSize) {
+        Point desktopLocation = main.getMainPanel().desktop.getLocation();
+        gpanel = new JXPanel();
+        gpanel.setOpaque(false);
+        disablePainter = new MattePainter(new Color(255,255,255,0));
+        //PinstripePainter pinStripe = new PinstripePainter(new Color(255,255,255,0),0,10,5);
+        gpanel.setBackgroundPainter(disablePainter);
+        gpanel.setSize(desktopSize);
+        gpanel.setLocation(desktopLocation);
+        layeredPane.add(gpanel,JLayeredPane.PALETTE_LAYER);
+        gpanel.setVisible(true);
+        return gpanel;
+    }
+    
+    private JPanel getDialog(final JLayeredPane layeredPane, Dimension desktopSize) {
+        if(ldialog == null) {
+            ldialog = new JPanel();
+            anim = new Animator(600);
+            anim.addTarget(new PropertySetter(disablePainter,"fillPaint",new Color(255,255,255,0),new Color(255,255,255,100)));
+            anim.addTarget(new TimingTargetAdapter() {
+                public void timingEvent(float f) {
+                    gpanel.repaint();
+                }
+            });
+            
+            
+            // configure the management panels
+            ShowManageDialogActionPanel panel = new ShowManageDialogActionPanel(main,new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    anim.setDirection(Animator.Direction.BACKWARD);
+                    anim.setInitialFraction(1f);
+                    anim.addTarget(new TimingTarget() {
+                        public void begin() {                        }
+                        public void end() {
+                            ldialog.setVisible(false);
+                            gpanel.setVisible(false);
+                            //layeredPane.remove(gpanel);
+                            //layeredPane.remove(ldialog);
+                            main.getFrame().setAlwaysOnTop(true);
+                            anim.removeTarget(this);
+                        }
+                        public void repeat() {                        }
+                        public void timingEvent(float f) {                        }
+                    });
+                    anim.start();
+                }
+            });
+            panel.tabs.add("Manage Desklets", new ManagePanel(main));
+            panel.tabs.add("Preferences", new PreferencesPanel(main));
+            panel.tabs.add("About", new AboutPanel(main));
+            
+            ldialog.setLayout(new BorderLayout());
+            ldialog.add(panel,"Center");
+            ldialog.setSize(700,500);
+            Point upperLeft = new Point((desktopSize.width-ldialog.getWidth())/2,
+                    (desktopSize.height-ldialog.getHeight())/2);
+            Point offScreen = new Point(upperLeft.x, -ldialog.getHeight());
+            ldialog.setLocation(offScreen);
+            //anim.addTarget(new PropertySetter(ldialog,"size",new Dimension(0,500),new Dimension(700,500)));
+            anim.addTarget(new PropertySetter(ldialog,"location",offScreen,upperLeft));
+            
+            
+            // add and center it
+            layeredPane.add(ldialog,JLayeredPane.MODAL_LAYER);
+        }
+        return ldialog;
     }
 }
