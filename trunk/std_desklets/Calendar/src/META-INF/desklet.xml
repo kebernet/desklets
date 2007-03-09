@@ -5,8 +5,16 @@
     <homepage>http://svn.joshy.org</homepage>
     <description>The canonical calendar</description>
     <class>calendar.CalendarDesklet</class>
+    
+    <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
-        <groupId>joda-time</groupId>
+        <groupId>swingx_painterbranch</groupId>
+        <artifactId>swingx_painterbranch</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>joda</groupId>
         <artifactId>joda-time</artifactId>
         <version>1.4</version>
         <type>jar</type>
