@@ -5,5 +5,18 @@
     <homepage>http://svn.joshy.org</homepage>
     <description>Watches your mouse very closely</description>
     <class>eyeball.EyeballDesklet</class>
-    <repository>https://maven-repository.dev.java.net/nonav/repository/</repository>
+    
+    <repository>http://www.ab5k.org/maven/</repository>
+    <dependency>
+        <groupId>swingx_painterbranch</groupId>
+        <artifactId>swingx_painterbranch</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>JoshUtil</groupId>
+        <artifactId>JoshUtil</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
 </desklet>
