@@ -23,8 +23,10 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SwingUtilities;
 import javax.xml.stream.events.StartDocument;
+import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
@@ -143,6 +145,7 @@ public class MainPanel extends javax.swing.JPanel {
         stripButtonLeft = new javax.swing.JButton();
         stripButtonRight = new javax.swing.JButton();
         miniModePanel = new javax.swing.JPanel();
+        loadingSpinner = new org.jdesktop.swingx.JXBusyLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -194,7 +197,7 @@ public class MainPanel extends javax.swing.JPanel {
         quitButton.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
@@ -233,6 +236,13 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 10.0;
         dockPanel.add(miniModePanel, gridBagConstraints);
 
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        dockPanel.add(loadingSpinner, gridBagConstraints);
+
         add(dockPanel, java.awt.BorderLayout.WEST);
 
     }// </editor-fold>//GEN-END:initComponents
@@ -249,12 +259,17 @@ public class MainPanel extends javax.swing.JPanel {
         return miniModePanel;
     }
     
+    public JXBusyLabel getSpinner() {
+        return loadingSpinner;
+    }
+    
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton collapseButton;
     public javax.swing.JDesktopPane desktop;
     public javax.swing.JPanel dockPanel;
+    private org.jdesktop.swingx.JXBusyLabel loadingSpinner;
     public javax.swing.JButton logoButton;
     private javax.swing.JButton manageButton;
     private javax.swing.JPanel miniModePanel;
