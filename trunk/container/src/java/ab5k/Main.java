@@ -226,7 +226,8 @@ public class Main {
         System.setSecurityManager( new SecurityManager() );
         
         // force the creation of the registry
-        Registry.getInstance();
+        Registry reg = Registry.getInstance();
+        reg.setMain(main);
         
         u.p("args");
         u.p(args);

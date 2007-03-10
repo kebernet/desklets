@@ -6,6 +6,7 @@
  */
 package ab5k.security;
 
+import ab5k.Main;
 import com.totsp.util.BeanArrayList;
 import com.totsp.util.SimpleUUIDGen;
 import com.totsp.util.StreamUtility;
@@ -46,6 +47,8 @@ import java.util.logging.Logger;
 public class Registry {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final Properties TYPE_TO_DIRECTORY = new Properties();
+
+    private Main main;
 
     static {
         TYPE_TO_DIRECTORY.put("jar", "jars/");
@@ -165,7 +168,8 @@ public class Registry {
                         !downloaded && (i < config.getRepositories().length);
                         i++) {
                     URL repo = config.getRepositories()[i];
-
+                    main.getMainPanel().getSpinner().setText("loading " + dep.getArtifactId());
+                    main.getMainPanel().getSpinner().startAnimation();
                     try {
                         URL source = new URL(repo,
                                 dep.getGroupId() + "/" +
@@ -180,6 +184,8 @@ public class Registry {
                             "Unable to get " + dep.getArtifactId() + "-" +
                             dep.getVersion() + " from " + repo, e);
                     }
+                    main.getMainPanel().getSpinner().stopAnimation();
+                    main.getMainPanel().getSpinner().setText("");
                 }
             }
 
@@ -409,5 +415,10 @@ public class Registry {
         jar.delete();
         this.deskletConfigs.remove(config);
         recursiveDelete(config.getHomeDir());
+    }
+
+    
+    public void setMain(Main main) {
+        this.main = main;
     }
 }
