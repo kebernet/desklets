@@ -28,7 +28,7 @@ import org.joshy.weather.WeatherFactory;
  * @author  joshy
  */
 public class WeatherWatcher extends JXPanel {
-    WeatherFactory fact = WeatherFactory.newInstance();
+    private WeatherFactory fact = null;
     private Weather weather;
     private Map<Integer,Icon> icons;
     private Desklet desklet;
@@ -167,7 +167,7 @@ public class WeatherWatcher extends JXPanel {
         dia.setVisible(true);
         u.p("selected station = " + dia.selectedStation);
         try {
-            setWeather(fact.getWeather(dia.selectedStation));
+            setWeather(getFact().getWeather(dia.selectedStation));
             setSelectedStation(dia.selectedStation);
         } catch (Exception ex) {
             u.p(ex);
@@ -177,6 +177,13 @@ public class WeatherWatcher extends JXPanel {
     
     private void setSelectedStation(String selectedStation) {
         desklet.setStationID(selectedStation);
+    }
+
+    public WeatherFactory getFact() {
+        if(fact == null) {
+            fact = WeatherFactory.newInstance();
+        }
+        return fact;
     }
     
     
