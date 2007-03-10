@@ -40,6 +40,7 @@ public class EyeballDesklet extends AbstractDesklet {
         context.getContainer().setResizable(false);
         context.getContainer().setShaped(true);
         panel = new JXPanel();
+        panel.setOpaque(false);
         panel.setPreferredSize(new Dimension(300,300));
         panel.setBackgroundPainter(new CompoundPainter(
                 new CompoundPainter(true, new EyeballPainter()),
