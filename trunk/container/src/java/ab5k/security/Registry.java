@@ -302,12 +302,29 @@ public class Registry {
         Element root = doc.getRootElement();
         String name = root.getChildTextTrim("name");
         config.setName(name);
-        config.setVersion(root.getAttributeValue("version"));
-
-        if((config.getName() == null) || (config.getVersion() == null)) {
+        config.setVersion(root.getChildTextTrim("version"));
+        config.setSpecificationVersion( root.getAttributeValue("version"));
+        String source = root.getChildTextTrim("source");
+        if( source != null ){
+            try{
+                config.setSource( new URL( source ) );
+            } catch(MalformedURLException e){
+                LOG.log( Level.WARNING, "Exception building source URL for "+name, e);
+            }
+        }
+        String sourceDef = root.getChildTextTrim("source-def");
+        if( sourceDef != null ){
+            try{
+                config.setSourceDef( new URL( sourceDef ) );
+            } catch(MalformedURLException e){
+                LOG.log( Level.WARNING, "Exception building sourceDef URL for "+name, e);
+            }
+        } 
+        
+        if((config.getName() == null) || (config.getSpecificationVersion() == null)) {
             throw new RuntimeException(
-                "A name and version are required for desklet " +
-                file.getName());
+                "A name and specification version are required for desklet " +
+                file.getName()+" "+config.getName()+" "+config.getSpecificationVersion());
         }
 
         String className = root.getChildTextTrim("class");

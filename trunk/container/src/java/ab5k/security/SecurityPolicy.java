@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import java.io.FilePermission;
-import java.io.FileWriter;
 
 import java.security.CodeSource;
 import java.security.Permission;
@@ -25,6 +24,7 @@ import java.security.ProtectionDomain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -52,9 +52,9 @@ public class SecurityPolicy extends Policy {
         SAFE_RUNTIME.add( "getClassLoader");
         SAFE_RUNTIME.add( "createClassLoader");
     }
-    private HashMap<String, ArrayList<String>> always;
-    private HashMap<String, ArrayList<String>> nevers;
-    private HashMap<CodeSource, Permissions> permissions = new HashMap<CodeSource, Permissions>();
+    private Hashtable<String, ArrayList<String>> always;
+    private Hashtable<String, ArrayList<String>> nevers;
+    private Hashtable<CodeSource, Permissions> permissions = new Hashtable<CodeSource, Permissions>();
     
     private Properties prefs = new java.util.Properties();
     /** Creates a new instance of SecurityPolicy */
@@ -69,10 +69,10 @@ public class SecurityPolicy extends Policy {
         nevers = this.deserializeRemembered("never");
     }
     
-    HashMap<String, ArrayList<String>> deserializeRemembered(String mode) {
+    Hashtable<String, ArrayList<String>> deserializeRemembered(String mode) {
         StringTokenizer urls = new StringTokenizer(prefs.getProperty(mode + "-urls", ""),
                 "\n");
-        HashMap<String, ArrayList<String>> perms = new HashMap<String, ArrayList<String>>();
+        Hashtable<String, ArrayList<String>> perms = new Hashtable<String, ArrayList<String>>();
         
         while(urls.hasMoreTokens()) {
             try {
@@ -163,6 +163,8 @@ public class SecurityPolicy extends Policy {
             .getLocation()
             .toExternalForm());
             String permissionValue = permission instanceof java.net.SocketPermission ? "java.net.SocketPermission" : permission.getName();
+            permissionValue = permission instanceof java.io.FilePermission ? "java.io.FilePermission" : permission.getName();
+            
             if(grants == null) {
                 grants = new ArrayList<String>();
             }
@@ -250,7 +252,7 @@ public class SecurityPolicy extends Policy {
         ; //
     }
     
-    void storeRemembered(HashMap<String, ArrayList<String>> perms, String mode) {
+    void storeRemembered(Hashtable<String, ArrayList<String>> perms, String mode) {
         Iterator<Entry<String, ArrayList<String>>> uit = perms.entrySet()
         .iterator();
         StringBuffer urls = new StringBuffer();
