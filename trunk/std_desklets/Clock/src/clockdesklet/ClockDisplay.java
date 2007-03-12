@@ -89,6 +89,7 @@ public class ClockDisplay extends JXPanel {
         currentTime.setFont(new java.awt.Font("Lucida Grande", 0, 60));
 
         jButton1.setText("setup");
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setOpaque(false);
 
         amLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13));
