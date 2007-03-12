@@ -17,11 +17,11 @@ import org.joshy.util.u;
  * @author jm158417
  */
 public class BackgroundManager {
-    private Main main;
+    private Core main;
     private BeanArrayList backgrounds;
     
     /** Creates a new instance of BackgroundManager */
-    public BackgroundManager(Main main) {
+    public BackgroundManager(Core main) {
         this.main = main;
         setBackgrounds(new BeanArrayList("background", this));
     }

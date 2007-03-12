@@ -20,7 +20,7 @@ public class AboutPanel extends javax.swing.JPanel {
     public AboutPanel() {
         initComponents();
     }
-    public AboutPanel(Main main) {
+    public AboutPanel(Core main) {
         this.main = main;
         initComponents();
         try {
@@ -117,6 +117,6 @@ public class AboutPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     // End of variables declaration//GEN-END:variables
     
-    private Main main;
+    private Core main;
     
 }

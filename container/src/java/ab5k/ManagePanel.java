@@ -45,7 +45,7 @@ import org.jdesktop.swingx.painter.effects.ShadowPathEffect;
  * @author  joshy
  */
 public class ManagePanel extends javax.swing.JPanel {
-    Main main;
+    Core main;
     DeskletManager manager = DeskletManager.getInstance();
     Registry registry = Registry.getInstance();
     
@@ -54,7 +54,7 @@ public class ManagePanel extends javax.swing.JPanel {
         initComponents();
     }
     
-    public ManagePanel(Main nmain) {
+    public ManagePanel(Core nmain) {
         this();
         this.main = nmain;
         

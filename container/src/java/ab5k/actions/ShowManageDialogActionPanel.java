@@ -6,7 +6,7 @@
 
 package ab5k.actions;
 
-import ab5k.Main;
+import ab5k.Core;
 import java.awt.Container;
 import java.awt.event.ActionListener;
 
@@ -15,14 +15,14 @@ import java.awt.event.ActionListener;
  * @author  joshy
  */
 public class ShowManageDialogActionPanel extends javax.swing.JPanel {
-    Main main;
+    Core main;
     
     /** Creates new form ShowManageDialogActionPanel */
     public ShowManageDialogActionPanel() {
         initComponents();
     }
     
-    public ShowManageDialogActionPanel(Main main, ActionListener actionListener) {
+    public ShowManageDialogActionPanel(Core main, ActionListener actionListener) {
         this();
         this.main = main;
         closeButton.addActionListener(actionListener);

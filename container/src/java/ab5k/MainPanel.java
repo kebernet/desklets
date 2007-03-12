@@ -42,7 +42,7 @@ import org.joshy.util.u;
 public class MainPanel extends javax.swing.JPanel {
     public enum DockingSide { Left, Right };
     private DockingSide side = DockingSide.Right;
-    public Main main;
+    public Core main;
     
     
     /** Creates new form MainPanel */
@@ -50,7 +50,7 @@ public class MainPanel extends javax.swing.JPanel {
         this(null);
     }
     
-    public MainPanel(Main main) {
+    public MainPanel(Core main) {
         setMain(main);
         initComponents();
         
@@ -88,7 +88,7 @@ public class MainPanel extends javax.swing.JPanel {
         desktop.add(panel);
     }
     
-    public void setMain(Main main) {
+    public void setMain(Core main) {
         this.main = main;
     }
     

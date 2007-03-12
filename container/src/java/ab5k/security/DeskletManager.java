@@ -5,7 +5,7 @@
  */
 package ab5k.security;
 
-import ab5k.Main;
+import ab5k.Core;
 
 import com.totsp.util.BeanArrayList;
 import java.io.File;
@@ -30,7 +30,7 @@ public class DeskletManager {
     private static final File HOME = new File( System.getProperty("user.home") + File.separator + ".ab5k");
     private static final File STARTUP_PROPS = new File( HOME, "startup.properties");
     
-    static Main main;
+    static Core main;
     private final static DeskletAdministrationPermission PERMISSION = new DeskletAdministrationPermission("Desklet Manager",
             "all");
     private final static DeskletManager INSTANCE = new DeskletManager();
@@ -236,7 +236,7 @@ public class DeskletManager {
         }
     }
 
-    public void startUp(Main main) throws LifeCycleException {
+    public void startUp(Core main) throws LifeCycleException {
         if(this.main != null) {
             throw new LifeCycleException("Startup has already been run!", null);
         }

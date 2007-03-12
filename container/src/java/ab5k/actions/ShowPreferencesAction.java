@@ -20,11 +20,11 @@ import javax.swing.SwingUtilities;
  * @author joshy
  */
 public class ShowPreferencesAction extends AbstractAction {
-    Main main;
+    Core main;
     JDialog prefsDialog;
     
     /** Creates a new instance of ShowPreferencesAction */
-    public ShowPreferencesAction(Main main) {
+    public ShowPreferencesAction(Core main) {
         this.main = main;
     }
     

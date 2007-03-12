@@ -9,7 +9,7 @@
 
 package ab5k.actions;
 
-import ab5k.Main;
+import ab5k.Core;
 import ab5k.MainPanel;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
@@ -29,10 +29,10 @@ import org.joshy.util.u;
  * @author joshy
  */
 public class CollapseWindowAction extends AbstractAction {
-    Main main;
+    Core main;
     
     /** Creates a new instance of CollapseWindowAction */
-    public CollapseWindowAction(Main main) {
+    public CollapseWindowAction(Core main) {
         this.main = main;
     }
     

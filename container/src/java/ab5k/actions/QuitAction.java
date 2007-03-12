@@ -10,8 +10,8 @@ import org.joshy.util.u;
 
 public class QuitAction extends AbstractAction {
 
-    private Main main;
-    public QuitAction(Main main) {
+    private Core main;
+    public QuitAction(Core main) {
         this.main = main;
     }
     public void actionPerformed(ActionEvent e) {
