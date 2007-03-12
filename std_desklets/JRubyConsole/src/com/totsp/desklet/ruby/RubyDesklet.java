@@ -26,7 +26,7 @@ public class RubyDesklet implements Desklet{
     }
     
     public void init(DeskletContext context) throws Exception {
-        context = context;
+        this.context = context;
         DeskletContainer container = context.getContainer();
         final IRBConsole console = new IRBConsole();
         container.setShaped( false );
