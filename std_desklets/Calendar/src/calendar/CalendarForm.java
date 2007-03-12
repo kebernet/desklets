@@ -162,7 +162,7 @@ public class CalendarForm extends javax.swing.JPanel {
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void updateDate() {
+    public void updateDate() {
         setDate(new DateTime(new Date()));
     }
 
