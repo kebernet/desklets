@@ -1,0 +1,58 @@
+#summary A quick introduction to building your first desklet
+
+
+= A quick tutorial to build a simple desklet. =
+
+= Getting a project set up =
+
+  * Make sure java 6 is installed.
+  * Run AB5k, make sure it works. The first time you install it you should see six desklets pre-installed.
+  * Make sure you have subversion installed
+  * Check out the code from subversion.  See the google code project. [link]
+
+  * Create a new java application project in NetBeans. (NetBeans is not required, but it makes these instructions easier. You can replicate the placement of your classes and the xml in any IDE, or by hand).
+
+  * In the project properties add the 'spec' project to your classpath.  This project contains the desklet specification jars which you will compile against.
+
+= Creating your desklet =
+
+Create a new class like _MyAppDesklet_.
+
+Make MyAppDesklet  subclass _ab5k.AbstractDesklet_ and implement the abstract methods
+
+Make a main method like this:
+{{{
+	public static void main(String ... args) {
+	        DeskletTester.start(myapp.MyAppDesklet.class);
+	}
+}}}
+
+This main method will run your desklet in a test environment. This lets you test your desklet without running it in the full AB5k container
+
+In your MyAppDesklet class go to the init() method and type something like this:
+
+{{{
+        context.getContainer().setContent(new JButton("Greetings earthling!");
+        context.getContainer().setVisible(true);
+}}}
+
+Compile your code and run the main method in MyAppDesklet.  The DeskletTester will start your desklet in a test environment and you should see a window appear with your desklet in it. 
+
+= Packaging your desklet =
+
+Create a _META-INF_ directory in your src directory (*will NB let you do this?*).  This directory must end up in your finished jar, so if you are not using NetBeans then you may need to modify your build environment to ensure that the _META-INF_ directory and it's contents are copied to the compiled jar.
+
+Create a _desklet.xml_ file in the _META-INF_ directory. The contents of the desklets should be something like this:
+
+{{{
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>My App</name>
+    <author>Meee</author>
+    <homepage>http://mydomain.com/ab5k/</homepage>
+    <description>My Cool App</description>
+    <class>myapp.MyAppDesklet</class>
+</desklet>
+}}}
+
+Build a jar of your class files, including the _META-INF_ directory and the desklet.xml.   Rename your _.jar_ file as a _.desklet_ file. Now you are done!  You can run AB5k and add your desklet using the 'add' button in the manage dialog.
