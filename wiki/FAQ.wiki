@@ -12,4 +12,4 @@ Yes. Even though Java 6 is not final on Mac, AB5k will run using Apple's latest 
 
 == What does AB5k mean ==
 
-It's a really, really bad joke. We are supposed to be picking a better name, but have yet to find one. Ask Josh at JavaOne some time.  
+It's a really, really bad joke. We are supposed to be picking a better name, but have yet to find one. Ask Josh at !JavaOne some time.  
