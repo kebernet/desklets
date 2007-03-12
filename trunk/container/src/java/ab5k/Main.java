@@ -1,7 +1,7 @@
 /*
  * Main.java
  *
- * Created on May 30, 2006, 4:46 PM
+ * Created on March 11, 2007, 12:48 PM
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -9,298 +9,179 @@
 
 package ab5k;
 
-import ab5k.actions.Closer;
-import ab5k.actions.CollapseWindowAction;
-import ab5k.actions.LoadDeskletAction;
-import ab5k.actions.LoginToServerAction;
 import ab5k.actions.MacSupport;
-import ab5k.actions.QuitAction;
-import ab5k.actions.ShowManageDialogAction;
-import ab5k.actions.ShowPreferencesAction;
 import ab5k.actions.ShowSplashscreen;
 import ab5k.actions.SingleLaunchSupport;
-import ab5k.backgrounds.GradientBackground;
-import ab5k.backgrounds.RadarSweep;
-import ab5k.backgrounds.TronWorld;
-import ab5k.prefs.PrefsBean;
-import ab5k.security.ContainerFactory;
-import ab5k.security.DeskletManager;
-import ab5k.security.LifeCycleException;
 import ab5k.security.Registry;
 import ab5k.security.SecurityPolicy;
-import ab5k.util.PlafUtil;
-import java.awt.Desktop;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
 import java.security.Policy;
-import java.util.HashMap;
-import java.util.Map;
-import javax.swing.Action;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.jdesktop.swingx.StackLayout;
 import org.joshy.util.u;
 
 /**
  *
- * @author joshy
+ * @author joshua@marinacci.org
  */
-public class Main {
-    //private static final boolean trayEnabled = false;
-    //private static final boolean doFadeStartup = false;
-    public Map iframes = new HashMap();
-    private DeskletManager deskletManager;
-    private ContainerFactory containerFactory;
-    private BackgroundManager backgroundManager;
-    public PreferencesPanel prefs;
+public abstract class Main {
+    private Main() { }
     
-    private MainPanel mainPanel;
-    
-    private JFrame frame;
+    // indicates if this is the first time AB5k has been run
+    // currently based on the presence of the ~/.ab5k dir
     private static boolean firstRun = false;
-    
     public static File HOME_DIR = new File(System.getProperty("user.home") + File.separator + ".ab5k");
     
-    PrefsBean prefsBean;
-    
-    /** Creates a new instance of Main */
-    public Main() {
-        this.collapseWindowAction = new CollapseWindowAction(this);
+    /** This is the startup main method for all of AB5k.
+     * It ensures that everything is intializes in the correct
+     * order.
+     */
+    public static void main(final String ... args) {
+        
+        // do all of the pre-startup tasks
+        setupLookAndFeel();
+        setupFirstRunFlag();
+        
+        // create the core
+        final Core core = new Core();
+        setupMacRelaunch(core, args);
+        
+        //todo: turn off dynamic layout. why do we do this???
+        Toolkit.getDefaultToolkit().setDynamicLayout(false);
+        setupSecurityManager();
+        setupRegistry(core);
+        
+        u.p("main(args)");
+        u.p(args);
+        
+        // do the real startup on the EDT
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                doStartup(args, core);
+            }
+        });
+        
     }
-    
-    
-    public void init() {
-        u.p("first run = " + firstRun);
-        
-        setBackgroundManager(new BackgroundManager(this));
-        setupBackgrounds();
+    // do the rest of startup on the EDT
+    private static void doStartup(final String args[], final Core main) {
         try {
-            MacSupport.setupMacSupport(this);
-        } catch (Throwable thr) {
-            u.p("setting up mac support failed");
-            thr.printStackTrace();
-        }
-        containerFactory = ContainerFactory.getInstance();
-        containerFactory.init( getDesktop(), mainPanel.getDockPanel() );
-        deskletManager = DeskletManager.getInstance();
-        
-        try{
-            deskletManager.startUp( this );
-        } catch(LifeCycleException e){
-            e.printStackTrace();
-        }
-        if(PlafUtil.isMacOSX()) {
-            quitAction.putValue(Action.NAME,"Quit");
-            preferencesAction.putValue(Action.NAME,"Preferences");
-        } else {
-            quitAction.putValue(Action.NAME,"Exit");
-            preferencesAction.putValue(Action.NAME,"Options");
-        }
-        
-        
-        prefsBean = new PrefsBean(this);
-        prefsBean.loadFromPrefs();
-        u.p("done loading prefs");
-        mainPanel.setDockingSide(MainPanel.DockingSide.valueOf(
-                prefsBean.getString(PrefsBean.DOCKINGSIDE,
-                MainPanel.DockingSide.Right.toString())));
-        getCloser().setMicrodocking(prefsBean.getBoolean(PrefsBean.MICRODOCKING,false));
-        getLoginToServerAction().setShouldLogin(prefsBean.getBoolean(PrefsBean.TRACKINGENABLED,true));
-        u.p("done with setup");
-        
-        if(firstRun) {
-            new Thread(new Runnable() {
-                public void run() {
-                    u.p("this is the first run so we must auto-install the standard desklets");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/WeatherDesklet.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/ROMEDesket.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/ColorChooserDesklet.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/Eyeball.desklet");
-                }
-            }).start();
-        }
-    }
-    
-    private void preinstall(String url) {
-        try {
-            u.p("preinstalling: " + url);
-            getLoadDeskletAction().load(new URL(url));
+            new ShowSplashscreen().show();
+            setupMainFrame(main);
+            doServerLogin(main);
+            startCommandlineDesklets(main, args);
         } catch (Exception ex) {
             u.p(ex);
         }
     }
     
-    private void setupBackgrounds() {
-        getBackgroundManager().addBackground(new GradientBackground());
-        getBackgroundManager().addBackground(new RadarSweep());
-        //getBackgroundManager().addBackground(new NasaBackground());
-        getBackgroundManager().addBackground(new TronWorld());
-        getBackgroundManager().setDesktopBackground(
-                (DesktopBackground)getBackgroundManager().getBackgrounds().get(0));
-    }
-    
-    public void handleException(Exception ex) {
-        u.p(ex);
-    }
-    
-    public DeskletManager getDeskletManager() {
-        return deskletManager;
-    }
-    
-    public JDesktopPane getDesktop() {
-        return getMainPanel().desktop;
-    }
-    
-    public BackgroundManager getBackgroundManager() {
-        return backgroundManager;
-    }
-    
-    public void setBackgroundManager(BackgroundManager backgroundManager) {
-        this.backgroundManager = backgroundManager;
-    }
-    
-    
-    public Action quitAction = new QuitAction(this);
-    public Action getQuitAction() {
-        return quitAction;
-    }
-    
-    private CollapseWindowAction collapseWindowAction;
-    public CollapseWindowAction getCollapseWindowAction() {
-        return collapseWindowAction;
-    }
-    
-    public Action getShowManageDialogAction() {
-        return new ShowManageDialogAction(this);
-    }
-    
-    public Action preferencesAction = new ShowPreferencesAction(this);
-    public Action getPreferencesAction() {
-        return preferencesAction;
-    }
-    
-    private LoginToServerAction loginToServerAction = new LoginToServerAction();
-    public LoginToServerAction getLoginToServerAction() {
-        return loginToServerAction;
-    }
-    
-    public static void main(final String ... args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    // install and start any desklets specified on the commandline.
+    // this is used when the user double clicks on a desklet file.
+    private static void startCommandlineDesklets(final Core main, final String args[]) {
+        for(String file : args) {
+            try {
+                main.getLoadDeskletAction().load(new File(file).toURL());
+            } catch (Throwable th) {
+                u.p(th);
+            }
         }
+    }
+    
+    // log into the server. We don't care if this fails for any reason
+    // do on another thread so we don't block
+    private static void doServerLogin(final Core main) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    main.getLoginToServerAction().loginToServer();
+                } catch (Throwable thr) {
+                    u.p(thr);
+                }
+            }
+        }).start();
+    }
+
+    
+    // create the main frame, the main panel, and attach them all to Core
+    private static void setupMainFrame(final Core core) throws HeadlessException, SecurityException {
+        // create the main frame.
+        final JFrame frame = new JFrame("AB5k");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosed(WindowEvent e) {
+                core.getQuitAction().actionPerformed(new ActionEvent(this,-1,"quit"));
+            }
+        });
+        frame.setUndecorated(true);
+        frame.setAlwaysOnTop(true);
+        core.frame = frame;
         
-        // check the existence of the .ab5k dir first
-        firstRun = true;
-        if(HOME_DIR.exists()) {
-            firstRun = false;
-        }
+        MainPanel panel = new MainPanel(core);
+        core.mainPanel = panel;
+        core.init();
         
+        frame.setLayout(new StackLayout());
+        frame.add(core.getMainPanel());
+        frame.pack();
         
-        final Main main = new Main();
+        frame.setBounds(core.getCollapseWindowAction().getStartupPosition());
+        core.getCloser().setWindowClosed(true);
+        frame.setVisible(true);
+    }
+    
+    // force the creation of the registry and attach to core
+    private static void setupRegistry(final Core main) {
+        Registry reg = Registry.getInstance();
+        reg.setMain(main);
+    }
+    
+    // install the security manager
+    private static void setupSecurityManager() {
+        Policy.setPolicy( new SecurityPolicy() );
+        System.setSecurityManager( new SecurityManager() );
+    }
+    
+    private static void setupMacRelaunch(final Core main, final String args[]) {
+        // do relaunching if this is a second instance, include commandline args
         if(SingleLaunchSupport.setupSingleLaunchSupport(main,args)){
             u.p("already running. sent the args and skipping out early");
-            
             try {
                 MacSupport.setupMacSupport(main);
             } catch (NoClassDefFoundError ex) {
+                // if not on a mac then no class def may be thrown
                 u.p("mac support not found. must not be mac. just bailing");
                 System.exit(0);
             } catch (Throwable thr) {
                 thr.printStackTrace();
             }
         }
-        
-        Toolkit.getDefaultToolkit().setDynamicLayout(false);
-        Policy.setPolicy( new SecurityPolicy() );
-        System.setSecurityManager( new SecurityManager() );
-        
-        // force the creation of the registry
-        Registry reg = Registry.getInstance();
-        reg.setMain(main);
-        
-        u.p("args");
-        u.p(args);
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new ShowSplashscreen().show();
-                    final JFrame frame = new JFrame("AB5k");
-                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    frame.addWindowListener(new WindowAdapter() {
-                        public void windowClosed(WindowEvent e) {
-                            main.getQuitAction().actionPerformed(new ActionEvent(this,-1,"quit"));
-                        }
-                    });
-                    frame.setUndecorated(true);
-                    frame.setAlwaysOnTop(true);
-                    
-                    MainPanel panel = new MainPanel(main);
-                    main.mainPanel = panel;
-                    main.frame = frame;
-                    main.init();
-                    
-                    frame.setLayout(new StackLayout());
-                    frame.add(main.getMainPanel());
-                    frame.pack();
-                    
-                    
-                    
-                    frame.setBounds(main.getCollapseWindowAction().getStartupPosition());
-                    main.getCloser().setWindowClosed(true);
-                    frame.setVisible(true);
-                    
-                    main.getLoginToServerAction().loginToServer();
-                    for(String file : args) {
-                        try {
-                            main.getLoadDeskletAction().load(new File(file).toURL());
-                        } catch (Throwable th) {
-                            u.p(th);
-                        }
-                    }
-                } catch (Exception ex) {
-                    u.p(ex);
-                }
-            }
-        });
-        
     }
     
-    public MainPanel getMainPanel() {
-        return mainPanel;
+    private static void setupFirstRunFlag() {
+        // check the existence of the .ab5k dir first
+        firstRun = true;
+        if(HOME_DIR.exists()) {
+            firstRun = false;
+        }
+        u.p("is first run = " + Main.isFirstRun());
     }
     
-    public JFrame getFrame() {
-        return frame;
-    }
-    
-    public void showURL(URI uri) {
-        getCollapseWindowAction().doCollapse();
+    private static void setupLookAndFeel() {
+        // set up the look and feel
         try {
-            Desktop.getDesktop().browse(uri);
-        } catch (IOException ex) {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
     
-    private LoadDeskletAction loadDeskletAction = new LoadDeskletAction(this);
-    public LoadDeskletAction getLoadDeskletAction() {
-        return loadDeskletAction;
-    }
-    
-    
-    private Closer closer = new Closer(this);
-    public Closer getCloser() {
-        return closer;
+    public static boolean isFirstRun() {
+        return firstRun;
     }
 }

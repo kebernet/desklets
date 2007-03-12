@@ -26,12 +26,12 @@ import org.joshy.util.u;
  * @author  joshy
  */
 public class PreferencesPanel extends javax.swing.JPanel {
-    private Main main;
+    private Core main;
     private boolean isPanelLoaded = false;
 
     
     /** Creates new form PreferencesPanel */
-    public PreferencesPanel(Main main) {
+    public PreferencesPanel(Core main) {
         initComponents();
         this.main = main;
         backgroundList.setModel(new BeanArrayListModel(main.getBackgroundManager().getBackgrounds()));
@@ -185,12 +185,12 @@ public class PreferencesPanel extends javax.swing.JPanel {
 
     private void reportUsageCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportUsageCheckboxActionPerformed
         main.getLoginToServerAction().setShouldLogin(reportUsageCheckbox.isSelected());
-        main.prefsBean.setProperty(PrefsBean.TRACKINGENABLED, reportUsageCheckbox.isSelected());
+        main.getPrefsBean().setProperty(PrefsBean.TRACKINGENABLED, reportUsageCheckbox.isSelected());
     }//GEN-LAST:event_reportUsageCheckboxActionPerformed
     
     private void useMicroDockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useMicroDockActionPerformed
         main.getCloser().setMicrodocking(useMicroDock.isSelected());
-        main.prefsBean.setProperty(PrefsBean.MICRODOCKING, useMicroDock.isSelected());
+        main.getPrefsBean().setProperty(PrefsBean.MICRODOCKING, useMicroDock.isSelected());
     }//GEN-LAST:event_useMicroDockActionPerformed
     
     private void dockingSideComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_dockingSideComboItemStateChanged
@@ -200,7 +200,7 @@ public class PreferencesPanel extends javax.swing.JPanel {
         } else {
             main.getMainPanel().setDockingSide(MainPanel.DockingSide.Left);
         }
-        main.prefsBean.setProperty(PrefsBean.DOCKINGSIDE,
+        main.getPrefsBean().setProperty(PrefsBean.DOCKINGSIDE,
                 main.getMainPanel().getDockingSide().toString());
     }//GEN-LAST:event_dockingSideComboItemStateChanged
     
@@ -216,9 +216,9 @@ public class PreferencesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_backgroundListValueChanged
 
     private void loadFromPrefs() {
-        useMicroDock.setSelected(main.prefsBean.getBoolean(PrefsBean.MICRODOCKING,false));
-        dockingSideCombo.setSelectedItem(main.prefsBean.getString(PrefsBean.DOCKINGSIDE,"Right"));
-        reportUsageCheckbox.setSelected(main.prefsBean.getBoolean(PrefsBean.TRACKINGENABLED,true));
+        useMicroDock.setSelected(main.getPrefsBean().getBoolean(PrefsBean.MICRODOCKING,false));
+        dockingSideCombo.setSelectedItem(main.getPrefsBean().getString(PrefsBean.DOCKINGSIDE,"Right"));
+        reportUsageCheckbox.setSelected(main.getPrefsBean().getBoolean(PrefsBean.TRACKINGENABLED,true));
     }
     
     

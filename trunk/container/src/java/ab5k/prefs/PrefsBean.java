@@ -30,8 +30,9 @@ public class PrefsBean {
 
     
     /** Creates a new instance of PrefsBean */
-    public PrefsBean(Main main) {
+    public PrefsBean(Core main) {
     }
+    
     public void loadFromPrefs() {
         u.p("loading from prefs");
         File propsFile = new File(Main.HOME_DIR,"preferences.properties");
@@ -43,8 +44,6 @@ public class PrefsBean {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        
-        
     }
     
     private void saveToPrefs() {

@@ -5,7 +5,7 @@
  */
 package ab5k.security;
 
-import ab5k.Main;
+import ab5k.Core;
 
 import ab5k.desklet.Desklet;
 import java.io.IOException;
@@ -23,10 +23,10 @@ public class DeskletRunner extends Thread {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private DefaultContext context;
     private Desklet desklet;
-    private Main main;
+    private Core main;
     
     /** Creates a new instance of DeskletRunner */
-    public DeskletRunner(Main main, DefaultContext context)
+    public DeskletRunner(Core main, DefaultContext context)
     throws LifeCycleException {
         super();
         this.context = context;

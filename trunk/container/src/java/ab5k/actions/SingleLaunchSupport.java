@@ -9,7 +9,7 @@
 
 package ab5k.actions;
 
-import ab5k.Main;
+import ab5k.Core;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,9 +28,9 @@ import org.joshy.util.u;
  */
 public class SingleLaunchSupport {
     private static boolean useJWS = false;
-    private static Main main;
+    private static Core main;
     
-    public static boolean setupSingleLaunchSupport(Main main, String ... args) {
+    public static boolean setupSingleLaunchSupport(Core main, String ... args) {
         SingleLaunchSupport.main = main;
         if(useJWS) {
             setupJWS(args);

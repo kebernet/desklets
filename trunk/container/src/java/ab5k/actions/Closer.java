@@ -9,7 +9,7 @@
 
 package ab5k.actions;
 
-import ab5k.Main;
+import ab5k.Core;
 import ab5k.MainPanel;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -26,13 +26,13 @@ import org.joshy.util.u;
  */
 public class Closer {
     private boolean windowClosed = false;
-    private Main main;
+    private Core main;
     private boolean microdocking = false;
     private boolean microCollapsed = false;
     
     
     /** Creates a new instance of CloseState */
-    public Closer(Main main) {
+    public Closer(Core main) {
         this.main = main;
         new Thread(new MicroCloser()).start();
     }

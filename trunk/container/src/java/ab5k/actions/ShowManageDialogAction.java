@@ -20,10 +20,10 @@ import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.PinstripePainter;
 
 public class ShowManageDialogAction extends AbstractAction {
-    Main main;
+    Core main;
     
     private MattePainter disablePainter;
-    public ShowManageDialogAction(Main main) {
+    public ShowManageDialogAction(Core main) {
         this.main = main;
     }
     

@@ -6,7 +6,7 @@
  */
 package ab5k.security;
 
-import ab5k.Main;
+import ab5k.Core;
 import com.totsp.util.BeanArrayList;
 import com.totsp.util.SimpleUUIDGen;
 import com.totsp.util.StreamUtility;
@@ -48,7 +48,7 @@ public class Registry {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final Properties TYPE_TO_DIRECTORY = new Properties();
 
-    private Main main;
+    private Core main;
 
     static {
         TYPE_TO_DIRECTORY.put("jar", "jars/");
@@ -418,7 +418,7 @@ public class Registry {
     }
 
     
-    public void setMain(Main main) {
+    public void setMain(Core main) {
         this.main = main;
     }
 }

@@ -9,7 +9,7 @@
 
 package ab5k.actions;
 
-import ab5k.Main;
+import ab5k.Core;
 import ab5k.security.LifeCycleException;
 import com.apple.eawt.Application;
 import com.apple.eawt.ApplicationEvent;
@@ -36,7 +36,7 @@ public class MacSupport {
         }
     }
     
-    public static void setupMacSupport(final Main main) {
+    public static void setupMacSupport(final Core main) {
         try {
             u.p("installing mac support");
             Application.getApplication().addApplicationListener(new ApplicationListener() {

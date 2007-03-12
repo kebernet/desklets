@@ -9,7 +9,7 @@
 
 package ab5k.actions;
 
-import ab5k.Main;
+import ab5k.Core;
 import ab5k.security.DeskletConfig;
 import ab5k.security.DeskletManager;
 import ab5k.security.LifeCycleException;
@@ -24,9 +24,9 @@ import org.jdom.JDOMException;
  * @author joshy
  */
 public class LoadDeskletAction {
-    Main main;
+    Core main;
     /** Creates a new instance of LoadDeskletAction */
-    public LoadDeskletAction(Main main) {
+    public LoadDeskletAction(Core main) {
         this.main = main;
     }
     
