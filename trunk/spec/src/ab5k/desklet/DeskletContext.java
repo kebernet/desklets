@@ -10,6 +10,7 @@
 package ab5k.desklet;
 
 import java.awt.Container;
+import java.io.File;
 import java.net.URI;
 
 /**
@@ -41,4 +42,6 @@ public interface DeskletContext {
     public void showURL(URI uri);
     
     public void setShutdownWhenIdle(boolean shutdownWhenIdle);
+    
+    public File getWorkingDirectory();
 }
