@@ -4,7 +4,7 @@
 
 == How do I build my own desklets? ==
 
-Please see (and improve) our getting started guide.
+Please see (and improve) our BuildYourFirstDesklet guide.
 
 == Why does AB5k require Java 6? ==
 
