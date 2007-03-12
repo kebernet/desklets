@@ -13,6 +13,6 @@
     <author>Robert Cooper</author>
     <version>1.0</version>
     <homepage>http://www.screaming-penguin.com</homepage>
-    <description>A Ruby runtime console</description>
+    <description>A JavaScript runtime console</description>
     <class>com.totsp.desklet.rhino.RhinoDesklet</class>
 </desklet>
