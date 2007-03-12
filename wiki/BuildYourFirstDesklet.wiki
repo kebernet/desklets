@@ -9,9 +9,7 @@
   * Run AB5k, make sure it works. The first time you install it you should see six desklets pre-installed.
   * Make sure you have subversion installed
   * Check out the code from subversion.  See the google code project. [link]
-
   * Create a new java application project in NetBeans. (NetBeans is not required, but it makes these instructions easier. You can replicate the placement of your classes and the xml in any IDE, or by hand).
-
   * In the project properties add the 'spec' project to your classpath.  This project contains the desklet specification jars which you will compile against.
 
 = Creating your desklet =
