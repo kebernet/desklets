@@ -8,6 +8,7 @@ package ab5k.security;
 import ab5k.Core;
 
 import com.totsp.util.BeanArrayList;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,15 +22,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+
 /**
  *
  * @author cooper
  */
 public class DeskletManager {
     private static final Properties prefs = new Properties();
-    private static final File HOME = new File( System.getProperty("user.home") + File.separator + ".ab5k");
-    private static final File STARTUP_PROPS = new File( HOME, "startup.properties");
-    
+    private static final File HOME = new File(System.getProperty("user.home") +
+            File.separator + ".ab5k");
+    private static final File STARTUP_PROPS = new File(HOME,
+            "startup.properties");
     static Core main;
     private final static DeskletAdministrationPermission PERMISSION = new DeskletAdministrationPermission("Desklet Manager",
             "all");
@@ -41,11 +44,15 @@ public class DeskletManager {
     /** Creates a new instance of DeskletManager */
     private DeskletManager() {
         super();
-        try{
-            prefs.load( new FileInputStream(STARTUP_PROPS));
-        } catch(Exception e){
+
+        try {
+            prefs.load(new FileInputStream(STARTUP_PROPS));
+        } catch(Exception e) {
             e.printStackTrace();
         }
+        DeskletUpdater updater = new DeskletUpdater( this, prefs );
+        Thread t = new Thread(updater);
+        t.start();
     }
 
     private static void checkSecurity() {
@@ -177,7 +184,7 @@ public class DeskletManager {
         }
 
         try {
-            prefs.store( new FileOutputStream( STARTUP_PROPS ), "Startup Settings" );
+            prefs.store(new FileOutputStream(STARTUP_PROPS), "Startup Settings");
         } catch(IOException ex) {
             ex.printStackTrace();
         }

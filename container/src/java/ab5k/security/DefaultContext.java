@@ -154,4 +154,8 @@ public class DefaultContext implements DeskletContext {
     public void showURL(URI uri) {
         this.browserHandler.showURL(uri);
     }
+
+    public File getWorkingDirectory() {
+        return config.getHomeDir();
+    }
 }

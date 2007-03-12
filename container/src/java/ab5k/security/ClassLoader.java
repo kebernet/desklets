@@ -82,7 +82,7 @@ public class ClassLoader extends URLClassLoader {
             return super.findClass(name);
         } catch(ClassNotFoundException nfe) {
             LOG.log(Level.FINEST, "Class not found in secured loader.", nfe);
-            if( name.startsWith("ab5k.desklet.") ){
+            if( name.startsWith("ab5k.desklet") ){
                 return parent.loadClass(name);
             }
             throw nfe;
