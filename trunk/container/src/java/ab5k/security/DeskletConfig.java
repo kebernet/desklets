@@ -32,6 +32,10 @@ public class DeskletConfig {
     private URL homePage;
     private Dependency[] dependencies;
     private URL[] repositories;
+    private URL source;
+    private URL sourceDef;
+    private String specificationVersion;
+    
 
     /** Creates a new instance of DeskletConfig */
     public DeskletConfig() {
@@ -160,5 +164,29 @@ public class DeskletConfig {
 
     public String toString() {
         return obj.toString();
+    }
+
+    public URL getSource() {
+        return source;
+    }
+
+    public void setSource(URL source) {
+        this.source = source;
+    }
+
+    public URL getSourceDef() {
+        return sourceDef;
+    }
+
+    public void setSourceDef(URL sourceDef) {
+        this.sourceDef = sourceDef;
+    }
+
+    public String getSpecificationVersion() {
+        return specificationVersion;
+    }
+
+    public void setSpecificationVersion(String specificationVersion) {
+        this.specificationVersion = specificationVersion;
     }
 }

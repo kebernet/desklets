@@ -23,7 +23,7 @@ import java.security.Policy;
 import java.security.ProtectionDomain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -128,9 +128,9 @@ public class SecurityPolicy extends Policy {
                 (permission instanceof java.lang.RuntimePermission && SAFE_RUNTIME.contains( permission.getName() )  ) ) {
             return true;
         }
-        System.out.println(protectionDomain.getCodeSource().getLocation() +
+        /*System.out.println(protectionDomain.getCodeSource().getLocation() +
                 " requesting permission " + permission.getClass().getName() + " " +
-                permission.getName());
+                permission.getName());*/
         
         if(permission instanceof ab5k.security.DeskletAdministrationPermission) {
             return (protectionDomain.getClassLoader() == SecurityPolicy.class.getClassLoader());
@@ -253,8 +253,7 @@ public class SecurityPolicy extends Policy {
     }
     
     void storeRemembered(Hashtable<String, ArrayList<String>> perms, String mode) {
-        Iterator<Entry<String, ArrayList<String>>> uit = perms.entrySet()
-        .iterator();
+        Iterator<Entry<String, ArrayList<String>>> uit = new HashSet(perms.entrySet()).iterator();
         StringBuffer urls = new StringBuffer();
         
         for(int i = 0; uit.hasNext(); i++) {

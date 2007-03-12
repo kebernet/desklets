@@ -52,7 +52,7 @@ public class ContainerFactory {
                 Double.toString(location.getX()));
             context.setPreference(ContainerFactory.LOCATION_Y,
                 Double.toString(location.getY()));
-
+            
             Animator an = PropertySetter.createAnimator(500, ifc.iframe,
                     "location", ifc.iframe.getLocation(),
                     new Point(-desktop.getWidth(), desktop.getHeight()));
