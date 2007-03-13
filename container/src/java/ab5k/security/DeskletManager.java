@@ -6,6 +6,7 @@
 package ab5k.security;
 
 import ab5k.Core;
+import ab5k.prefs.ConfigurationImportExport;
 
 import com.totsp.util.BeanArrayList;
 
@@ -37,6 +38,9 @@ public class DeskletManager {
     private final static DeskletAdministrationPermission PERMISSION = new DeskletAdministrationPermission("Desklet Manager",
             "all");
     private final static DeskletManager INSTANCE = new DeskletManager();
+    static{
+        ConfigurationImportExport.registerExport( "startup", STARTUP_PROPS );
+    }
     private final ArrayList<String> suspendedUUIDs = new ArrayList<String>();
     private final BeanArrayList<DeskletRunner> runners = new BeanArrayList<DeskletRunner>("runners",
             this);
@@ -50,7 +54,8 @@ public class DeskletManager {
         } catch(Exception e) {
             e.printStackTrace();
         }
-        DeskletUpdater updater = new DeskletUpdater( this, prefs );
+
+        DeskletUpdater updater = new DeskletUpdater(this, prefs);
         Thread t = new Thread(updater);
         t.start();
     }
@@ -92,6 +97,17 @@ public class DeskletManager {
         return results;
     }
 
+    public void flushPreferences(){
+        ArrayList<DeskletRunner> runners = new ArrayList<DeskletRunner>(this.runners);
+        for( DeskletRunner runner : runners ){
+            try{
+                runner.getContext().flushPreferences();
+            } catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+    
     public void pause() {
         ArrayList<DeskletRunner> runners = new ArrayList<DeskletRunner>(this.runners);
         ThreadPoolExecutor exec = new ThreadPoolExecutor(10, 20, 100,
@@ -159,6 +175,11 @@ public class DeskletManager {
         }
 
         prefs.put("running", pref.toString());
+        try {
+            prefs.store(new FileOutputStream(STARTUP_PROPS), "Startup Settings");
+        } catch(IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void shutdown() {
@@ -181,12 +202,6 @@ public class DeskletManager {
         } catch(InterruptedException ie) {
             ie.printStackTrace();
             ;
-        }
-
-        try {
-            prefs.store(new FileOutputStream(STARTUP_PROPS), "Startup Settings");
-        } catch(IOException ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -241,6 +256,18 @@ public class DeskletManager {
             throw new LifeCycleException("Unable to start desklet " +
                 config.getName(), e);
         }
+    }
+    
+    public void restart() throws LifeCycleException {
+        this.shutdown();
+        Core main = this.main;
+        this.main = null;
+        try {
+            prefs.load(new FileInputStream(STARTUP_PROPS));
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        this.startUp( main );
     }
 
     public void startUp(Core main) throws LifeCycleException {

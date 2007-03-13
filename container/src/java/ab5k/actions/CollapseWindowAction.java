@@ -11,7 +11,6 @@ package ab5k.actions;
 
 import ab5k.Core;
 import ab5k.MainPanel;
-import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
@@ -21,6 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.joshy.util.u;
 
@@ -127,7 +127,6 @@ public class CollapseWindowAction extends AbstractAction {
         if(current.getHeight() != closed.getHeight()) {
             anim.addTarget(new PropertySetter(this.main.getFrame(),"size",current.getSize(),closed.getSize()));
         }
-        
         main.getCloser().setWindowClosed(true);
         if(main.getMainPanel().getDockingSide() == MainPanel.DockingSide.Right) {
             this.putValue(Action.NAME, "<<");

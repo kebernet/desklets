@@ -57,7 +57,7 @@ public class DeskletRunner extends Thread {
     public void destroyDesklet() {
         
         try {
-            ContainerFactory.getInstance().cleanup(context);
+            ContainerFactory.getInstance().cleanup(getContext());
             desklet.destroy();
         } catch(Exception e) {
             LOG.log(Level.WARNING,
@@ -65,20 +65,20 @@ public class DeskletRunner extends Thread {
                     " threw an exception from .destroy() ", e);
         }
         try {
-            context.flushPreferences();
+            getContext().flushPreferences();
         } catch(IOException ex) {
             LOG.log(Level.WARNING,
-                "Exception saving prefs for " + context.getConfig().getName(),
+                "Exception saving prefs for " + getContext().getConfig().getName(),
                 ex);
         }
     }
     
     public DeskletConfig getConfig() {
-        return context.getConfig();
+        return getContext().getConfig();
     }
     
     public boolean isShutdownWhenIdle() {
-        return context.isShutdownWhenIdle();
+        return getContext().isShutdownWhenIdle();
     }
     
     public void run() {
@@ -99,7 +99,7 @@ public class DeskletRunner extends Thread {
             
             long begin = System.currentTimeMillis();
             
-            while(!context.isStopped()) {
+            while(!getContext().isStopped()) {
                 try {
                     Thread.sleep(1000);
                     
@@ -121,7 +121,11 @@ public class DeskletRunner extends Thread {
     }
     
     public String toString() {
-        return context.getConfig().getName() + "(" +
-                context.getConfig().getUUID() + ")";
+        return getContext().getConfig().getName() + "(" +
+                getContext().getConfig().getUUID() + ")";
+    }
+
+    public DefaultContext getContext() {
+        return context;
     }
 }

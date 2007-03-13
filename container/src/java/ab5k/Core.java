@@ -17,8 +17,6 @@ import ab5k.actions.MacSupport;
 import ab5k.actions.QuitAction;
 import ab5k.actions.ShowManageDialogAction;
 import ab5k.actions.ShowPreferencesAction;
-import ab5k.actions.ShowSplashscreen;
-import ab5k.actions.SingleLaunchSupport;
 import ab5k.backgrounds.GradientBackground;
 import ab5k.backgrounds.RadarSweep;
 import ab5k.backgrounds.TronWorld;
@@ -26,26 +24,15 @@ import ab5k.prefs.PrefsBean;
 import ab5k.security.ContainerFactory;
 import ab5k.security.DeskletManager;
 import ab5k.security.LifeCycleException;
-import ab5k.security.Registry;
-import ab5k.security.SecurityPolicy;
 import ab5k.util.PlafUtil;
 import java.awt.Desktop;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.security.Policy;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.Action;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.UIManager;
-import org.jdesktop.swingx.StackLayout;
+import javax.swing.JOptionPane;
 import org.joshy.util.u;
 
 /**
@@ -90,23 +77,31 @@ public class Core {
         setupPrefs();
         preinstallStandardDesklets();
     }
-
+    
     private void preinstallStandardDesklets() {
         if(Main.isFirstRun()) {
-            new Thread(new Runnable() {
-                public void run() {
-                    u.p("this is the first run so we must auto-install the standard desklets");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/WeatherDesklet.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/ROMEDesket.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/ColorChooserDesklet.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet");
-                    preinstall("http://www.ab5k.org/downloads/daily/pre-install/Eyeball.desklet");
-                }
-            }).start();
+            String[] options = { "Yes", "No" };
+            int value = JOptionPane.showOptionDialog(this.mainPanel, "This seems to be your first run of AB5k. Would you like to install some default desklets from the web?",
+                    "First Run", JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            switch(value){
+                case 0:
+                    
+                    new Thread(new Runnable() {
+                        public void run() {
+                            u.p("this is the first run so we must auto-install the standard desklets");
+                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/WeatherDesklet.desklet");
+                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/ROMEDesket.desklet");
+                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/ColorChooserDesklet.desklet");
+                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet");
+                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet");
+                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/Eyeball.desklet");
+                        }
+                    }).start();
+            }
         }
     }
-
+    
     private void setupPrefs() {
         
         prefsBean = new PrefsBean(this);
@@ -119,7 +114,7 @@ public class Core {
         getLoginToServerAction().setShouldLogin(getPrefsBean().getBoolean(PrefsBean.TRACKINGENABLED,true));
         u.p("done with setup");
     }
-
+    
     // todo:  do we still need to do this?
     private void setupMoreMacSupport() {
         
@@ -131,7 +126,7 @@ public class Core {
             preferencesAction.putValue(Action.NAME,"Options");
         }
     }
-
+    
     private void setupMacSupport() {
         
         try {
@@ -227,7 +222,7 @@ public class Core {
     public Closer getCloser() {
         return closer;
     }
-
+    
     public PrefsBean getPrefsBean() {
         return prefsBean;
     }

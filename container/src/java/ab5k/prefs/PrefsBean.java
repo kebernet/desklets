@@ -23,9 +23,14 @@ import org.joshy.util.u;
  * @author joshy
  */
 public class PrefsBean {
+    private static final File PREFS_FILE = new File(Main.HOME_DIR,"preferences.properties");
+        
     public static final String MICRODOCKING = "Main.Closer.Microdocking";
     public static final String DOCKINGSIDE = "Main.MainPanel.DockingSide";
     public static String TRACKINGENABLED = "Main.LoginToServerAction.TrackingEnabled";
+    static{
+        ConfigurationImportExport.registerExport("global", PREFS_FILE);
+    }
     private Properties props = null;
 
     
@@ -35,10 +40,9 @@ public class PrefsBean {
     
     public void loadFromPrefs() {
         u.p("loading from prefs");
-        File propsFile = new File(Main.HOME_DIR,"preferences.properties");
         props = new Properties();
         try {
-            props.load(new FileInputStream(propsFile));
+            props.load(new FileInputStream(PREFS_FILE));
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
@@ -48,11 +52,10 @@ public class PrefsBean {
     
     private void saveToPrefs() {
         u.p("saving to prefs");
-        File propsFile = new File(Main.HOME_DIR,"preferences.properties");
         //u.p("writing to: " + propsFile);
         //u.dumpStack();
         try {
-            props.store(new FileOutputStream(propsFile),
+            props.store(new FileOutputStream(PREFS_FILE),
                     "stores settings from the  Preferences dialog");
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
