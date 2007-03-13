@@ -6,12 +6,12 @@
 
 package ab5k;
 
+import ab5k.prefs.ConfigurationImportExport;
 import ab5k.security.DeskletConfig;
 import ab5k.security.DeskletManager;
 import ab5k.security.DeskletRunner;
 import ab5k.security.Registry;
 import ab5k.util.BeanArrayListModel;
-import ab5k.util.BusyDialog;
 import ab5k.utils.BusyPainter;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,12 +22,11 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Window;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.net.URI;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
@@ -36,7 +35,6 @@ import org.jdesktop.swingx.JXErrorDialog;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.painter.RectanglePainter;
 import org.jdesktop.swingx.painter.TextPainter;
 import org.jdesktop.swingx.painter.effects.ShadowPathEffect;
 
@@ -126,6 +124,8 @@ public class ManagePanel extends javax.swing.JPanel {
         desklets = new javax.swing.JList();
         stopButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        exportButton = new javax.swing.JButton();
+        importButton = new javax.swing.JButton();
 
         jButton5.setText("Download More!");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -175,9 +175,9 @@ public class ManagePanel extends javax.swing.JPanel {
                 .add(startButton)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(uninstallButton)
-                .addContainerGap(95, Short.MAX_VALUE))
-            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-            .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
+                .addContainerGap(104, Short.MAX_VALUE))
+            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+            .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
         );
 
         jPanel2Layout.linkSize(new java.awt.Component[] {startButton, uninstallButton}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
@@ -217,9 +217,9 @@ public class ManagePanel extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel1Layout.createSequentialGroup()
                 .add(stopButton)
-                .addContainerGap(225, Short.MAX_VALUE))
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-            .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addContainerGap(216, Short.MAX_VALUE))
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+            .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -232,6 +232,20 @@ public class ManagePanel extends javax.swing.JPanel {
         );
         jSplitPane1.setLeftComponent(jPanel1);
 
+        exportButton.setText("Export");
+        exportButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                exportButtonMouseClicked(evt);
+            }
+        });
+
+        importButton.setText("Import");
+        importButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                importButtonMouseClicked(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -242,7 +256,11 @@ public class ManagePanel extends javax.swing.JPanel {
                     .add(layout.createSequentialGroup()
                         .add(jButton5)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(addButton))
+                        .add(addButton)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 211, Short.MAX_VALUE)
+                        .add(importButton)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(exportButton))
                     .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -252,12 +270,66 @@ public class ManagePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jButton5)
-                    .add(addButton))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(jButton5)
+                        .add(addButton))
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(exportButton)
+                        .add(importButton)))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void importButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_importButtonMouseClicked
+        FileDialog d = getFileDialog( this );
+        d.setFilenameFilter( new FilenameFilter(){
+            public boolean accept(File file, String string) {
+                return string.endsWith(".ab5k");
+            }
+            
+        });
+        d.setVisible( true );
+        if( d.getFile() == null ){
+            return;
+        }
+        File importFile = new File( d.getDirectory() + File.separator + d.getFile());
+        ConfigurationImportExport cie = new ConfigurationImportExport();
+        try{
+            cie.importFromURL( importFile.toURI().toURL());
+        } catch(Exception e){
+            JXErrorDialog.showDialog(ManagePanel.this,
+                            "Problem Importing Configuration",
+                            "There was a problem importing your AB5k configuration",
+                            e);
+        }
+    }//GEN-LAST:event_importButtonMouseClicked
+    
+    private void exportButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exportButtonMouseClicked
+        FileDialog d = getFileDialog( this );
+        d.setMode( d.SAVE );
+        d.setFilenameFilter( new FilenameFilter(){
+            public boolean accept(File file, String string) {
+                return string.endsWith(".ab5k");
+            }
+            
+        });
+        d.setVisible( true );
+        if( d.getFile() == null ){
+            return;
+        }
+        File export = new File( d.getDirectory() + File.separator + d.getFile());
+        ConfigurationImportExport cie = new ConfigurationImportExport();
+        try{
+            cie.exportToFile( export );
+        } catch(Exception e){
+            JXErrorDialog.showDialog(ManagePanel.this,
+                            "Problem Exporting Configuration",
+                            "There was a problem exporting your AB5k configuration",
+                            e);
+        }
+        
+    }//GEN-LAST:event_exportButtonMouseClicked
     
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // add a new desklet from a file on disk
@@ -426,13 +498,15 @@ public class ManagePanel extends javax.swing.JPanel {
                 }
                 busyPanel.stop();
             }
-        }).start();        
+        }).start();
     }//GEN-LAST:event_uninstallButtonActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JList desklets;
+    private javax.swing.JButton exportButton;
+    private javax.swing.JButton importButton;
     private javax.swing.JList installed;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
