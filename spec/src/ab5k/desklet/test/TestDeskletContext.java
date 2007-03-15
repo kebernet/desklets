@@ -4,6 +4,7 @@ import ab5k.desklet.DeskletContainer;
 import ab5k.desklet.DeskletContext;
 import java.awt.Container;
 import java.awt.geom.Dimension2D;
+import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,14 +56,19 @@ class TestDeskletContext implements DeskletContext {
     
     public void showURL(URI uri) {
     }
-
-   
+    
+    
     public DeskletContainer getDockingContainer() {
         return dockingFrame;
     }
-
+    
     public void setShutdownWhenIdle(boolean shutdownWhenIdle) {
     }
+    
+    public File getWorkingDirectory() {
+        // TODO
+        return null;
+    }    
     
     private static class TestContainer implements DeskletContainer {
         
@@ -75,22 +81,22 @@ class TestDeskletContext implements DeskletContext {
         public void setContent(JComponent component) {
             frame.add( component );
         }
-
+        
         public void setSize(Dimension2D size) {
         }
-
+        
         public void setVisible(boolean visible) {
         }
-
+        
         public void setShaped(boolean shaped) {
         }
-
+        
         public void setResizable(boolean resizable) {
         }
-
+        
         public void setBackgroundDraggable(boolean backgroundDraggable) {
         }
-
+        
         public Dimension2D getSize() {
             return frame.size();
         }
