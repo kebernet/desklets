@@ -135,6 +135,7 @@ public class WeatherDialog extends javax.swing.JDialog {
             Map stationMap = fact.getStations(regions.getSelectedItem()+"");
             stations.setModel(new MapComboBoxModel(stationMap));
             stations.repaint();
+            pack();
         } catch (Exception ex) {
             u.p(ex);
         }

@@ -44,6 +44,7 @@ public class Desklet extends AbstractDesklet{
                         display.setWeather(wth);
                         u.p("got weather: " + wth);
                         dockLabel.setText(wth.getTempF()+" " + wth.getWeather());
+                        dockLabel.setIcon(display.icons16.get(wth.getType()));
                         Thread.currentThread().sleep(30 * 60 * 1000); //sleep for 30 min
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -67,7 +68,7 @@ public class Desklet extends AbstractDesklet{
         context.getDockingContainer().setContent(dockLabel);
         display = new WeatherWatcher(this);
         context.getContainer().setContent(display);
-        context.getContainer().setBackgroundDraggable(false);
+        context.getContainer().setBackgroundDraggable(true);
         context.getContainer().setResizable(false);
         context.getContainer().setShaped(true);
         context.getContainer().setVisible(true);
