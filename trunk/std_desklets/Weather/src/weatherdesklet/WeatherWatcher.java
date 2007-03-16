@@ -30,23 +30,33 @@ import org.joshy.weather.WeatherFactory;
 public class WeatherWatcher extends JXPanel {
     private WeatherFactory fact = null;
     private Weather weather;
-    private Map<Integer,Icon> icons;
+    public Map<Integer,Icon> icons16;
+    private Map<Integer,Icon> icons32;
     private Desklet desklet;
     
     
     /** Creates new form WeatherWatcher */
     public WeatherWatcher(Desklet desklet) {
         this.desklet = desklet;
-        icons = new HashMap<Integer,Icon>();
+        icons16 = new HashMap<Integer,Icon>();
+        icons32 = new HashMap<Integer,Icon>();
         initComponents();
         
-        icons.put(Weather.CLEAR,new ImageIcon(getClass().getResource("images/weather-clear.png")));
-        icons.put(Weather.CLOUDY,new ImageIcon(getClass().getResource("images/weather-overcast.png")));
-        icons.put(Weather.LIGHTNING,new ImageIcon(getClass().getResource("images/weather-storm.png")));
-        icons.put(Weather.RAIN,new ImageIcon(getClass().getResource("images/weather-showers.png")));
-        icons.put(Weather.SNOW,new ImageIcon(getClass().getResource("images/weather-snow.png")));
-        icons.put(Weather.SUNNY,new ImageIcon(getClass().getResource("images/weather-clear.png")));
-        icons.put(Weather.UNKNOWN,new ImageIcon(getClass().getResource("images/weather-severe-alert.png")));
+        icons16.put(Weather.CLEAR,new ImageIcon(getClass().getResource("images/weather-clear.16.png")));
+        icons16.put(Weather.CLOUDY,new ImageIcon(getClass().getResource("images/weather-overcast.16.png")));
+        icons16.put(Weather.LIGHTNING,new ImageIcon(getClass().getResource("images/weather-storm.16.png")));
+        icons16.put(Weather.RAIN,new ImageIcon(getClass().getResource("images/weather-showers.16.png")));
+        icons16.put(Weather.SNOW,new ImageIcon(getClass().getResource("images/weather-snow.16.png")));
+        icons16.put(Weather.SUNNY,new ImageIcon(getClass().getResource("images/weather-clear.16.png")));
+        icons16.put(Weather.UNKNOWN,new ImageIcon(getClass().getResource("images/weather-severe-alert.16.png")));
+        
+        icons32.put(Weather.CLEAR,new ImageIcon(getClass().getResource("images/weather-clear.32.png")));
+        icons32.put(Weather.CLOUDY,new ImageIcon(getClass().getResource("images/weather-overcast.32.png")));
+        icons32.put(Weather.LIGHTNING,new ImageIcon(getClass().getResource("images/weather-storm.32.png")));
+        icons32.put(Weather.RAIN,new ImageIcon(getClass().getResource("images/weather-showers.32.png")));
+        icons32.put(Weather.SNOW,new ImageIcon(getClass().getResource("images/weather-snow.32.png")));
+        icons32.put(Weather.SUNNY,new ImageIcon(getClass().getResource("images/weather-clear.32.png")));
+        icons32.put(Weather.UNKNOWN,new ImageIcon(getClass().getResource("images/weather-severe-alert.32.png")));
         this.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         RectanglePainter rp = new RectanglePainter(0,0,0,0, 25,25, true, Color.GREEN, 1.0f, Color.GREEN.darker());
         rp.setBorderWidth(5f);
@@ -82,9 +92,9 @@ public class WeatherWatcher extends JXPanel {
         temp.setText(getWeather().getTempF()+"");
         type.setText(getWeather().getWeather());
         weatherIcon.setText("");
-        weatherIcon.setIcon(icons.get(getWeather().getType()));
+        weatherIcon.setIcon(icons32.get(getWeather().getType()));
         desklet.dockLabel.setText(weather.getTempF()+" " + weather.getWeather());
-        u.p("set dock weather to: " + desklet.dockLabel.getText());
+        desklet.dockLabel.setIcon(icons16.get(weather.getType()));
     }
     
     
@@ -161,7 +171,7 @@ public class WeatherWatcher extends JXPanel {
     }// </editor-fold>//GEN-END:initComponents
     
     private void setupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setupButtonActionPerformed
-
+        
         if(getWeather() != null) { getWeather().getStationID(); }
         WeatherDialog dia = new WeatherDialog((JFrame)SwingUtilities.windowForComponent(this),true);
         dia.setVisible(true);
@@ -178,7 +188,7 @@ public class WeatherWatcher extends JXPanel {
     private void setSelectedStation(String selectedStation) {
         desklet.setStationID(selectedStation);
     }
-
+    
     public WeatherFactory getFact() {
         if(fact == null) {
             fact = WeatherFactory.newInstance();
