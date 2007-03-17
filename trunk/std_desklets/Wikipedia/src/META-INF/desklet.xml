@@ -10,20 +10,12 @@
     <repository>http://www.ab5k.org/maven/</repository>
     
     <!-- JoshUtil stuff -->
-    <dependency>
-        <groupId>JoshUtil</groupId>
-        <artifactId>JoshUtil</artifactId>
-        <version>0.1</version>
-        <type>jar</type>
-    </dependency>
+    <dependency><groupId>JoshUtil</groupId>
+        <artifactId>JoshUtil</artifactId><version>0.1</version><type>jar</type></dependency>
     
     <!-- swingx stuff -->
-    <dependency>
-        <groupId>swingx</groupId>
-        <artifactId>swingx</artifactId>
-        <version>0.1</version>
-        <type>jar</type>
-    </dependency>
+    <dependency><groupId>swingx</groupId>
+        <artifactId>swingx</artifactId><version>0.1</version><type>jar</type></dependency>
 
     
     
