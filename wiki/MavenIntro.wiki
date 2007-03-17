@@ -8,7 +8,7 @@ Maven is a build system for java applications. We don't actually use maven for b
 
 To use maven in your desklet you just need to include the maven tags in your desklet.xml file.  For example, the Clock desklet needs joda time. We have joda time already set up in the ab5k maven repository, so it use it you can just put this in your desklet.xml
 
-{{{{{
+{{{
 
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
@@ -17,7 +17,7 @@ To use maven in your desklet you just need to include the maven tags in your des
         <version>1.4</version>
         <type>jar</type>
     </dependency>
-}}}}}
+}}}
 
 = Details =
 
