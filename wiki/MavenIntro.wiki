@@ -19,9 +19,19 @@ To use maven in your desklet you just need to include the maven tags in your des
     </dependency>
 }}}
 
-= Details =
+= Setting up your own repository =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+To set up a maven repository you just need to put your jars on a webserver somewhere with a very specific url. It should fit this pattern:
+
+_base repository url_ / _groupid_ /jars/ _artifactid_ - _version_ .jar.
+
+And that's it. As an example, the joda-time jar above is downloaded from:
+
+http://www.ab5k.org/maven/joda/jars/joda-time-1.4.jar
+
+You can put up your own jars and then refer to them from your desklet.xml. The jar will be downloaded once and then cached, so don't update that jar on your webserver. If you need to update it then use a different version number and change your desklet.xml to point to the new version.
+
+
+= The standard Jars in AB5k's repository =
+
+In ab5k we have jars for: swingx, swingx-ws, joda, JoshUtil, and support jars like swingx-layout, http commons *, and more.  You can browse our maven repository [[http://www.ab5k.org/maven/ | here]]
