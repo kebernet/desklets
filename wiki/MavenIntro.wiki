@@ -1,0 +1,27 @@
+#summary A quick explanation of how AB5k uses Maven
+
+= Introduction =
+
+Maven is a build system for java applications. We don't actually use maven for building ab5k (at least not yet) but we do use Maven's repository system.  Basically your desklet can request a certain version of a certain jar and Maven will make sure it gets into the classpath of your app. It may be downloaded from the web or come out of a cache. You don't have to care. Maven will just make it happen.
+
+= Using Maven in your desklet =
+
+To use maven in your desklet you just need to include the maven tags in your desklet.xml file.  For example, the Clock desklet needs joda time. We have joda time already set up in the ab5k maven repository, so it use it you can just put this in your desklet.xml
+
+{{{{{
+
+    <repository>http://www.ab5k.org/maven/</repository>
+    <dependency>
+        <groupId>joda</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>1.4</version>
+        <type>jar</type>
+    </dependency>
+}}}}}
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
