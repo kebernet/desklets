@@ -46,7 +46,7 @@ public class ClockDisplay extends JXPanel {
         clip.setStyle(RectanglePainter.Style.BOTH);
         clip.setBorderPaint(Color.BLACK);
         clip.setFillPaint(bp);
-        clip.setSnapPaint(true);
+        clip.setPaintStretched(true);
         
         int ins = 10;
         RectanglePainter border = new RectanglePainter(ins,ins,ins,ins, 10,10, true, Color.BLACK, 3f, Color.RED);
