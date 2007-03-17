@@ -24,6 +24,7 @@ import java.awt.Window;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URI;
+import java.util.logging.Level;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -31,8 +32,9 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.swingx.JXErrorDialog;
+import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.TextPainter;
@@ -280,7 +282,7 @@ public class ManagePanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void importButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_importButtonMouseClicked
         FileDialog d = getFileDialog( this );
         d.setFilenameFilter( new FilenameFilter(){
@@ -298,10 +300,15 @@ public class ManagePanel extends javax.swing.JPanel {
         try{
             cie.importFromURL( importFile.toURI().toURL());
         } catch(Exception e){
-            JXErrorDialog.showDialog(ManagePanel.this,
-                            "Problem Importing Configuration",
-                            "There was a problem importing your AB5k configuration",
-                            e);
+            ErrorInfo info = new ErrorInfo(
+                    "Problem Importing Configuration",
+                    "Problem Importing Configuration",
+                    "There was a problem importing your AB5k configuration",
+                    "unknowncateogry",
+                    e,
+                    Level.WARNING,
+                    null);
+            JXErrorPane.showDialog(this,info);
         }
     }//GEN-LAST:event_importButtonMouseClicked
     
@@ -323,10 +330,15 @@ public class ManagePanel extends javax.swing.JPanel {
         try{
             cie.exportToFile( export );
         } catch(Exception e){
-            JXErrorDialog.showDialog(ManagePanel.this,
-                            "Problem Exporting Configuration",
-                            "There was a problem exporting your AB5k configuration",
-                            e);
+            ErrorInfo info = new ErrorInfo(
+                    "Problem Exporting Configuration",
+                    "Problem Exporting Configuration",
+                    "There was a problem exporting your AB5k configuration",
+                    null,
+                    e,
+                    Level.WARNING,
+                    null);
+            JXErrorPane.showDialog(this,info);
         }
         
     }//GEN-LAST:event_exportButtonMouseClicked
@@ -355,10 +367,12 @@ public class ManagePanel extends javax.swing.JPanel {
                     System.out.println("ending the maddness");
                     e.printStackTrace();
                     busyPanel.stop();
-                    JXErrorDialog.showDialog(ManagePanel.this,
+                    JXErrorPane.showDialog(ManagePanel.this,
+                            new ErrorInfo(
+                            "Problem loading desklet",
                             "Problem loading desklet",
                             "There was a problem loading this desklet",
-                            e);
+                            null,e, Level.SEVERE,null));
                 }
             }
         }).start();
@@ -385,7 +399,7 @@ public class ManagePanel extends javax.swing.JPanel {
             busyPainter.setPoints(20);
             busyPainter.setTrailLength(18);
             textPainter = new TextPainter("Loading...", new Font(Font.SANS_SERIF,Font.BOLD,60),Color.BLUE);
-            textPainter.setPathEffects(new ShadowPathEffect());
+            textPainter.setAreaEffects(new ShadowPathEffect());
             setBackgroundPainter(new CompoundPainter(
                     new MattePainter(new Color(255,255,255,150)),
                     busyPainter, textPainter));
@@ -452,10 +466,12 @@ public class ManagePanel extends javax.swing.JPanel {
                         manager.startDesklet( config.getUUID() );
                     } catch(Exception e){
                         e.printStackTrace();
-                        JXErrorDialog.showDialog(ManagePanel.this,
+                        JXErrorPane.showDialog(ManagePanel.this,
+                                new ErrorInfo(
                                 "Problem starting desklet",
-                                "There was a problem starting desklet: " + config.getName(),
-                                e);
+                                "Problem starting desklet",
+                                "There was a problem starting this desklet: " + config.getName(),
+                                null,e, Level.SEVERE,null));
                     }
                 }
                 busyPanel.stop();
@@ -490,10 +506,12 @@ public class ManagePanel extends javax.swing.JPanel {
                         registry.uninstallDesklet( config );
                     } catch(Exception e){
                         e.printStackTrace();
-                        JXErrorDialog.showDialog(ManagePanel.this,
+                        JXErrorPane.showDialog(ManagePanel.this,
+                                new ErrorInfo(
                                 "Problem uninstalling desklet",
-                                "There was a problem uninstalling desklet: " + config.getName(),
-                                e);
+                                "Problem uninstalling desklet",
+                                "There was a problem uninstalling this desklet: " + config.getName(),
+                                null,e, Level.SEVERE,null));
                     }
                 }
                 busyPanel.stop();

@@ -61,7 +61,7 @@ public class DockSkinner {
         
         GlowPathEffect glow = new GlowPathEffect();
         glow.setBrushColor(new Color(215, 116, 0));
-        rp.setPathEffects(glow);
+        rp.setAreaEffects(glow);
         
         final Painter hiPainter = new CompoundPainter(rp);
         

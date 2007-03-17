@@ -45,16 +45,14 @@
 
     <!-- early loads -->
     <jar download="eager" href="lib/swing-layout.jar" version=""/>
-    <jar download="eager" href="lib/swingx_painterbranch.jar" version=""/>
     
     <!-- common libs -->
-    <!-- no longer needed <jar download="eager" href="lib/weatherlib.jar" main="false" version=""/> -->
     <jar download="eager" href="lib/rome-0.8.jar" main="false" version=""/>
     <jar download="eager" href="lib/jdom-1.0.jar" main="false" version=""/>
     <jar download="eager" href="lib/TimingFramework.jar" version=""/>
     <jar download="eager" href="lib/joda-time-1.4.jar" version=""/>
 
-    <!-- swingx-ws -->
+    <!-- swingx -->
     <jar download="eager" href="lib/swing-worker.jar" version=""/>
     <jar download="eager" href="lib/swingx.jar" version=""/>
     <jar download="eager" href="lib/MultipleGradientPaint.jar" version=""/>

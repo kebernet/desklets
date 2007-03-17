@@ -72,7 +72,7 @@ public class ShowSplashscreen {
             text.setVerticalAlignment(TextPainter.VerticalAlignment.TOP);
             text.setFillPaint(Color.BLACK);
             text.setBorderPaint(Color.BLACK);
-            text.setPathEffects(new NeonBorderEffect());
+            text.setAreaEffects(new NeonBorderEffect());
             text.setStyle(TextPainter.Style.OUTLINE);
             
             
