@@ -18,7 +18,6 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.RectanglePainter;
-import org.jdesktop.swingx.painter.URLPainter;
 import org.joshy.util.u;
 import org.joshy.weather.Weather;
 import org.joshy.weather.WeatherFactory;
