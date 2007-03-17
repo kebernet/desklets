@@ -8,20 +8,14 @@ package wikipediadesklet;
 
 import ab5k.desklet.DeskletContainer;
 import ab5k.desklet.DeskletContext;
-import ab5k.utils.BusyLabel;
-import ab5k.utils.CapsulePainter;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.geom.RoundRectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.xpath.XPathExpressionException;
@@ -30,8 +24,11 @@ import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.http.Method;
 import org.jdesktop.http.async.XmlHttpRequest;
+import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.AbstractPainter;
+import org.jdesktop.swingx.painter.BusyPainter;
+import org.jdesktop.swingx.painter.CapsulePainter;
+import org.jdesktop.swingx.painter.PainterIcon;
 import org.jdesktop.xpath.XPathUtils;
 import org.joshy.util.u;
 import org.w3c.dom.Document;
@@ -66,8 +63,10 @@ public class MainForm extends javax.swing.JPanel {
         }
         
         
-        ((BusyLabel)spinnerLabel).setBaseColor(new Color(214,198,156));
-        ((BusyLabel)spinnerLabel).setHighlightColor(new Color(68,51,0));
+        JXBusyLabel busy = (JXBusyLabel) spinnerLabel;
+        BusyPainter painter = (BusyPainter) ((PainterIcon)busy.getIcon()).getPainter();
+        painter.setBaseColor(new Color(214,198,156));
+        painter.setHighlightColor(new Color(68,51,0));
         spinnerLabel.setText("");
         
         CapsulePainter top = new CapsulePainter(CapsulePainter.Portion.Top);
@@ -100,7 +99,7 @@ public class MainForm extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         searchField = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        spinnerLabel = new BusyLabel();
+        spinnerLabel = new JXBusyLabel();
         bottomPanel = new JXPanel();
         readMoreButton = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -249,16 +248,16 @@ public class MainForm extends javax.swing.JPanel {
     private void doSearch() {
         final String queryString = getQuery();
         String queryurl = "http://en.wikipedia.org/wiki/Special:Export/"+getQuery();
-        p("loading: " + queryurl);
+        u.p("loading: " + queryurl);
         try {
             
-            ((BusyLabel)spinnerLabel).startAnimation();
+            ((JXBusyLabel)spinnerLabel).setBusy(true);
             final XmlHttpRequest request = new XmlHttpRequest();
             request.open(Method.GET,queryurl,true);
             request.setOnReadyStateChange(new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent evt) {
                     if(request.getReadyState() == XmlHttpRequest.ReadyState.LOADED) {
-                        ((BusyLabel)spinnerLabel).stopAnimation();
+                        ((JXBusyLabel)spinnerLabel).setBusy(false);
                         Document doc = request.getResponseXML();
                         //System.out.println("xml = " + XPathUtils.toXML(doc));
                         try {
@@ -267,7 +266,7 @@ public class MainForm extends javax.swing.JPanel {
                             
                             String baseURL = this.getClass().getResource("").toString();
                             u.p("using a base url of: " + baseURL);
-                            ((XHTMLPanel)htmlPanel).setDocumentFromString(html,baseURL,new XhtmlNamespaceHandler());
+                            ((XHTMLPanel)htmlPanel).setDocumentFromString(html, baseURL, new XhtmlNamespaceHandler());
                             ((XHTMLPanel)htmlPanel).getSharedContext().getTextRenderer().setSmoothingLevel(0);
                             //textArea.setCaretPosition(0);
                         } catch (XPathExpressionException ex) {
@@ -303,9 +302,6 @@ public class MainForm extends javax.swing.JPanel {
     private javax.swing.JPanel textPanel;
     // End of variables declaration//GEN-END:variables
     
-    private static void p(String s) {
-        System.out.println(s);
-    }
     
     private static String[] regexmatch(final String s, String pattern) {
         Pattern pat = Pattern.compile(pattern);

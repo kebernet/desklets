@@ -6,48 +6,48 @@
     <description>Searches Wikipedia and displays a summary</description>
     <class>wikipediadesklet.MainDesklet</class>
     
+    
+    <repository>http://www.ab5k.org/maven/</repository>
+    
+    <!-- JoshUtil stuff -->
     <dependency>
-        <groupId>swingx-ws</groupId>
-        <artifactId>swingx-ws</artifactId>
-        <version>HEAD</version>
+        <groupId>JoshUtil</groupId>
+        <artifactId>JoshUtil</artifactId>
+        <version>0.1</version>
         <type>jar</type>
     </dependency>
     
+    <!-- swingx stuff -->
     <dependency>
-        <groupId>commons-codec</groupId>
-        <artifactId>commons-codec</artifactId>
-        <version>1.3</version>
+        <groupId>swingx</groupId>
+        <artifactId>swingx</artifactId>
+        <version>0.1</version>
         <type>jar</type>
     </dependency>
+
     
-    <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>3.0.1</version>
-        <type>jar</type>
-    </dependency>
     
-    <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>1.1</version>
-        <type>jar</type>
-    </dependency>
+    <!-- swingx-ws stuff -->
+    <dependency><groupId>swingx-ws</groupId>
+        <artifactId>swingx-ws</artifactId><version>0.1</version><type>jar</type></dependency>
     
-    <dependency>
-        <groupId>jdom</groupId>
-        <artifactId>jdom</artifactId>
-        <version>1.0</version>
-        <type>jar</type>
-    </dependency>
+    <dependency><groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId><version>1.3</version><type>jar</type></dependency>
     
-    <dependency>
-        <groupId>jtidy</groupId>
-        <artifactId>jtidy</artifactId>
-        <version>r7</version>
-        <type>jar</type>
-    </dependency>
+    <dependency><groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId><version>3.0.1</version><type>jar</type></dependency>
     
+    <dependency><groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId><version>1.1</version><type>jar</type></dependency>
+    
+    <dependency><groupId>swingx-ws</groupId>
+        <artifactId>jdom</artifactId><version>1.0</version><type>jar</type></dependency>
+    
+    <dependency><groupId>swingx-ws</groupId>
+        <artifactId>jtidy</artifactId><version>r7</version><type>jar</type></dependency>
+    
+    
+    <!-- flying saucer stuff -->
     <dependency>
         <groupId>FlyingSaucer</groupId>
         <artifactId>core-renderer</artifactId>
@@ -61,5 +61,4 @@
         <version>0.9.4</version>
         <type>jar</type>
     </dependency>
-    
 </desklet>
