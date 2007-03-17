@@ -39,4 +39,10 @@
         <artifactId>cssparser</artifactId>
         <version>0.9.4</version>
     </dependency>
+    
+    <repository>http://www.ab5k.org/maven/</repository>
+    <dependency><groupId>swingx</groupId>
+        <artifactId>swingx</artifactId><version>0.1</version><type>jar</type></dependency>
+    <dependency><groupId>swingx-ws</groupId>
+        <artifactId>jdom</artifactId><version>1.0</version><type>jar</type></dependency>
 </desklet>
