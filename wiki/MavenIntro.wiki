@@ -34,4 +34,4 @@ You can put up your own jars and then refer to them from your desklet.xml. The j
 
 = The standard Jars in AB5k's repository =
 
-In ab5k we have jars for: swingx, swingx-ws, joda, JoshUtil, and support jars like swingx-layout, http commons *, and more.  You can browse our maven repository [http://www.ab5k.org/maven/ | here]
+In ab5k we have jars for: swingx, swingx-ws, joda, JoshUtil, and support jars like swingx-layout, http commons *, and more.  You can browse our maven repository [http://www.ab5k.org/maven/  here]
