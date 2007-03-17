@@ -140,7 +140,7 @@
             <Property name="text" type="java.lang.String" value="XXXX"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new BusyLabel();"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JXBusyLabel();"/>
           </AuxValues>
         </Component>
       </SubComponents>
