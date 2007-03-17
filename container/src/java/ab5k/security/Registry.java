@@ -268,12 +268,18 @@ public class Registry {
         
         // actually download the desklets
         core.getMainPanel().getSpinner().setBusy(true);
-        String[] parts = url.getFile().split("/");
-        if(parts.length > 0) {
-            String deskletName = parts[parts.length-1];
-            core.getMainPanel().getSpinner().setText(deskletName);
+        try {
+            String[] parts = url.getFile().split("/");
+            if(parts.length > 0) {
+                String deskletName = parts[parts.length-1];
+                core.getMainPanel().getSpinner().setText(deskletName);
+            }
+            StreamUtility.copyStream(url.openStream(), new FileOutputStream(file));
+        } catch (IOException ex) {
+            core.getMainPanel().getSpinner().setText("error");
+            core.getMainPanel().getSpinner().setBusy(false);
+            throw ex;
         }
-        StreamUtility.copyStream(url.openStream(), new FileOutputStream(file));
         core.getMainPanel().getSpinner().setText("");
         core.getMainPanel().getSpinner().setBusy(false);
         
