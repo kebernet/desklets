@@ -37,6 +37,7 @@ public class WorldMapDesklet extends AbstractDesklet {
         form = new WorldMapForm();
         context.getContainer().setContent(form);
         context.getContainer().setVisible(true);
+        context.getContainer().setResizable(true);
      }
 
     public void start() throws Exception {

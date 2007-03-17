@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.JOptionPane;
 import org.jdesktop.swingx.JXMapViewer;
 import org.jdesktop.swingx.mapviewer.DefaultWaypointRenderer;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
@@ -95,7 +96,7 @@ public class WorldMapForm extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        query.setText("jTextField1");
+        query.setText("street, city, state");
 
         jLabel1.setText("Address:");
 
@@ -154,6 +155,10 @@ public class WorldMapForm extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
+            if(query.getText().split(",").length < 3) {
+                JOptionPane.showMessageDialog(this,"You must use the format: street, city, state");
+                return;
+            }
             GeoPosition gp = GeoUtil.getPositionForAddress(query.getText().split(","));
             Set<Waypoint> wps = new HashSet<Waypoint>();
             wps.add(new Waypoint(gp));

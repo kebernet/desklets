@@ -5,21 +5,29 @@
     <homepage>http://svn.joshy.org</homepage>
     <description>Lets you find addresses on the world map</description>
     <class>worldmap.WorldMapDesklet</class>
-    <dependency>
-        <groupId>swingx-ws</groupId>
-        <artifactId>swingx-ws</artifactId>
-        <version>NEW_TILE_PROVIDER</version>
-        <type>jar</type>
-    </dependency>
+    
     
     
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
-        <groupId>swingx_painterbranch</groupId>
-        <artifactId>swingx_painterbranch</artifactId>
+        <groupId>swingx</groupId>
+        <artifactId>swingx</artifactId>
         <version>0.1</version>
         <type>jar</type>
     </dependency>
+    <dependency>
+        <groupId>swingx-ws</groupId>
+        <artifactId>swingx-ws</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>swingx</groupId>
+        <artifactId>swing-layout</artifactId>
+        <version>1.0.1</version>
+        <type>jar</type>
+    </dependency>
+    
     <dependency>
         <groupId>JoshUtil</groupId>
         <artifactId>JoshUtil</artifactId>
