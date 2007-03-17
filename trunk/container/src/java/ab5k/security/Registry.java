@@ -169,7 +169,7 @@ public class Registry {
                 i++) {
                     URL repo = config.getRepositories()[i];
                     main.getMainPanel().getSpinner().setText("loading " + dep.getArtifactId());
-                    main.getMainPanel().getSpinner().startAnimation();
+                    main.getMainPanel().getSpinner().setBusy(true);
                     try {
                         URL source = new URL(repo,
                                 dep.getGroupId() + "/" +
@@ -184,7 +184,7 @@ public class Registry {
                                 "Unable to get " + dep.getArtifactId() + "-" +
                                 dep.getVersion() + " from " + repo, e);
                     }
-                    main.getMainPanel().getSpinner().stopAnimation();
+                    main.getMainPanel().getSpinner().setBusy(false);
                     main.getMainPanel().getSpinner().setText("");
                 }
             }
