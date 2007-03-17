@@ -8,8 +8,8 @@
     
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
-        <groupId>swingx_painterbranch</groupId>
-        <artifactId>swingx_painterbranch</artifactId>
+        <groupId>swingx</groupId>
+        <artifactId>swingx</artifactId>
         <version>0.1</version>
         <type>jar</type>
     </dependency>
