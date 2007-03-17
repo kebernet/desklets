@@ -48,7 +48,7 @@ public class Registry {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final Properties TYPE_TO_DIRECTORY = new Properties();
     
-    private Core main;
+    private Core core;
     
     static {
         TYPE_TO_DIRECTORY.put("jar", "jars/");
@@ -168,8 +168,8 @@ public class Registry {
                 !downloaded && (i < config.getRepositories().length);
                 i++) {
                     URL repo = config.getRepositories()[i];
-                    main.getMainPanel().getSpinner().setText("loading " + dep.getArtifactId());
-                    main.getMainPanel().getSpinner().setBusy(true);
+                    core.getMainPanel().getSpinner().setText("loading " + dep.getArtifactId());
+                    core.getMainPanel().getSpinner().setBusy(true);
                     try {
                         URL source = new URL(repo,
                                 dep.getGroupId() + "/" +
@@ -184,8 +184,8 @@ public class Registry {
                                 "Unable to get " + dep.getArtifactId() + "-" +
                                 dep.getVersion() + " from " + repo, e);
                     }
-                    main.getMainPanel().getSpinner().setBusy(false);
-                    main.getMainPanel().getSpinner().setText("");
+                    core.getMainPanel().getSpinner().setBusy(false);
+                    core.getMainPanel().getSpinner().setText("");
                 }
             }
             
@@ -266,7 +266,16 @@ public class Registry {
         
         File file = new File(HOME, uuid + ".jar");
         
+        // actually download the desklets
+        core.getMainPanel().getSpinner().setBusy(true);
+        String[] parts = url.getFile().split("/");
+        if(parts.length > 0) {
+            String deskletName = parts[parts.length-1];
+            core.getMainPanel().getSpinner().setText(deskletName);
+        }
         StreamUtility.copyStream(url.openStream(), new FileOutputStream(file));
+        core.getMainPanel().getSpinner().setText("");
+        core.getMainPanel().getSpinner().setBusy(false);
         
         JarFile jar = new JarFile(file);
         File destination = new File(HOME, uuid);
@@ -441,6 +450,6 @@ public class Registry {
     
     
     public void setMain(Core main) {
-        this.main = main;
+        this.core = main;
     }
 }
