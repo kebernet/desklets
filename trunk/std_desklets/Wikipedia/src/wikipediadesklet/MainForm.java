@@ -11,6 +11,13 @@ import ab5k.desklet.DeskletContext;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -18,6 +25,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import javax.xml.xpath.XPathExpressionException;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
@@ -79,6 +89,15 @@ public class MainForm extends javax.swing.JPanel {
         ((JXPanel)searchPanel).setBackgroundPainter(top);
         ((JXPanel)bottomPanel).setBackgroundPainter(bottom);
         
+        
+        MouseAdapter mo = new ResizeAdapter();
+        resizeButton.addMouseListener(mo);
+        resizeButton.addMouseMotionListener(mo);
+        
+        resizeButton.setIcon(new ImageIcon(getClass().getResource("resize.png")));
+        resizeButton.setBorder(BorderFactory.createEmptyBorder());
+        resizeButton.setText("");
+        
     }
     
     
@@ -102,7 +121,7 @@ public class MainForm extends javax.swing.JPanel {
         spinnerLabel = new JXBusyLabel();
         bottomPanel = new JXPanel();
         readMoreButton = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        resizeButton = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -183,7 +202,8 @@ public class MainForm extends javax.swing.JPanel {
         gridBagConstraints.weightx = 10.0;
         add(searchPanel, gridBagConstraints);
 
-        bottomPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 10, 1, 10));
+        bottomPanel.setLayout(new java.awt.GridBagLayout());
+
         bottomPanel.setMinimumSize(new java.awt.Dimension(100, 40));
         bottomPanel.setPreferredSize(new java.awt.Dimension(400, 40));
         readMoreButton.setText("Read More");
@@ -194,25 +214,23 @@ public class MainForm extends javax.swing.JPanel {
             }
         });
 
-        jButton2.setText("///");
-        jButton2.setOpaque(false);
-        jButton2.setPreferredSize(new java.awt.Dimension(30, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 6, 0);
+        bottomPanel.add(readMoreButton, gridBagConstraints);
 
-        javax.swing.GroupLayout bottomPanelLayout = new javax.swing.GroupLayout(bottomPanel);
-        bottomPanel.setLayout(bottomPanelLayout);
-        bottomPanelLayout.setHorizontalGroup(
-            bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(bottomPanelLayout.createSequentialGroup()
-                .addComponent(readMoreButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 237, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        bottomPanelLayout.setVerticalGroup(
-            bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(readMoreButton)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        resizeButton.setText("///");
+        resizeButton.setOpaque(false);
+        resizeButton.setPreferredSize(new java.awt.Dimension(30, 30));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHEAST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 2, 2);
+        bottomPanel.add(resizeButton, gridBagConstraints);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -292,10 +310,10 @@ public class MainForm extends javax.swing.JPanel {
     private javax.swing.JPanel bottomPanel;
     private javax.swing.JPanel htmlPanel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton readMoreButton;
+    private javax.swing.JButton resizeButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JPanel searchPanel;
     private javax.swing.JLabel spinnerLabel;
@@ -469,5 +487,43 @@ public class MainForm extends javax.swing.JPanel {
         u.p("adding: " + string);
         o.append(string);
     }
+
+    private class ResizeAdapter extends MouseAdapter {
+
+        private Point start;
+
+        private Dimension2D startSize;
+
+        private Point2D diff;
+
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
+        }
+
+        public void mousePressed(MouseEvent e) {
+            start = e.getPoint();
+            Point pt2 = SwingUtilities.convertPoint(resizeButton, e.getPoint(), MainForm.this);
+            startSize = context.getContainer().getSize();
+            diff = new Point2D.Double(startSize.getWidth() - pt2.getX(), startSize.getHeight() - pt2.getY());
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        public void mouseDragged(MouseEvent e) {
+            Point pt = e.getPoint();
+            pt = SwingUtilities.convertPoint(resizeButton, pt, MainForm.this);
+            context.getContainer().setSize(new Dimension(pt.x + (int) diff.getX(), pt.y + (int) diff.getY()));
+        }
+
+        public void mouseMoved(MouseEvent e) {
+        }
+    }
+
     
 }
