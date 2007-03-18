@@ -14,6 +14,11 @@
     <homepage>http://www.screaming-penguin.com</homepage>
     <description>An RSS/Atom Feed Reader</description>
     <class>com.totsp.desklet.rome.RomeDesklet</class>
+    
+    
+    
+    <source>http://www.ab5k.org/downloads/daily/pre-install/ROMEDesket.desklet</source>
+    
     <dependency>
         <groupId>jtidy</groupId>
         <artifactId>jtidy</artifactId>
