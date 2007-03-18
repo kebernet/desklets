@@ -7,6 +7,9 @@
     <class>wikipediadesklet.MainDesklet</class>
     
     
+    <source>http://www.ab5k.org/downloads/daily/extras/WikipediaDesklet.desklet</source>
+    
+    
     <repository>http://www.ab5k.org/maven/</repository>
     
     <!-- JoshUtil stuff -->
