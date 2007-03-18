@@ -6,6 +6,9 @@
     <description>The canonical calendar</description>
     <class>calendar.CalendarDesklet</class>
     
+    
+    <source>http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet</source>
+
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
         <groupId>swingx</groupId>
