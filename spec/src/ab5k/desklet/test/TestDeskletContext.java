@@ -3,6 +3,7 @@ package ab5k.desklet.test;
 import ab5k.desklet.DeskletContainer;
 import ab5k.desklet.DeskletContext;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.io.File;
 import java.net.URI;
@@ -83,6 +84,7 @@ class TestDeskletContext implements DeskletContext {
         }
         
         public void setSize(Dimension2D size) {
+            frame.setSize(new Dimension((int)size.getWidth(),(int)size.getHeight()));
         }
         
         public void setVisible(boolean visible) {
@@ -92,6 +94,7 @@ class TestDeskletContext implements DeskletContext {
         }
         
         public void setResizable(boolean resizable) {
+            frame.setResizable(false);
         }
         
         public void setBackgroundDraggable(boolean backgroundDraggable) {
