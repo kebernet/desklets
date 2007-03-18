@@ -13,6 +13,7 @@
         <type>jar</type>
     </dependency>
     
+    <source>http://www.ab5k.org/downloads/daily/pre-install/WeatherDesklet.desklet</source>
     
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
