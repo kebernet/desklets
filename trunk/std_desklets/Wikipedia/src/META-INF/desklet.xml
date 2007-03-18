@@ -41,6 +41,9 @@
     <dependency><groupId>swingx-ws</groupId>
         <artifactId>jtidy</artifactId><version>r7</version><type>jar</type></dependency>
     
+    <dependency><groupId>swingx-ws</groupId>
+        <artifactId>swing-worker</artifactId><version>1.0</version><type>jar</type></dependency>
+    
     
     <!-- flying saucer stuff -->
     <dependency>
