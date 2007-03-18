@@ -31,7 +31,7 @@ public class MainDesklet extends AbstractDesklet {
         context.getContainer().setContent( form );
         context.getContainer().setShaped(true);
         context.getContainer().setBackgroundDraggable(true);
-        context.getContainer().setResizable(true);
+        context.getContainer().setResizable(false);
         context.getContainer().setVisible(true);
     }
 
