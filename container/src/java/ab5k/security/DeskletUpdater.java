@@ -15,9 +15,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
 
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
-
 import org.jdom.Document;
 import org.jdom.JDOMException;
 
@@ -151,16 +148,11 @@ public class DeskletUpdater implements Runnable {
                 try {
                     client.executeMethod(method);
                 } catch(IOException ioe) {
-                    JXErrorPane.showDialog(win,
-                            new ErrorInfo(
-                            "Error downloading",
+                    manager.main.handleError("Error Downloading",
                             "There was an error attempting to download the new " +
                             config.getName() +
                             " desklet version. Update has been aborted.",
-                            "There was an error attempting to download the new " +
-                            config.getName() +
-                            " desklet version. Update has been aborted.",
-                            null,ioe, Level.SEVERE,null));
+                            ioe);
                     return;
                 }
                 
@@ -171,16 +163,9 @@ public class DeskletUpdater implements Runnable {
                     FileOutputStream fos = new FileOutputStream(temp);
                     StreamUtility.copyStream(method.getResponseBodyAsStream(), fos);
                 } catch(IOException ioe) {
-                    JXErrorPane.showDialog(win,
-                            new ErrorInfo(
-                            "Error downloading",
-                            "There was an error downloading the new " +
-                            config.getName() +
-                            " desklet version. Update has been aborted.",
-                            "There was an error downloading the new " +
-                            config.getName() +
-                            " desklet version. Update has been aborted.",
-                            null,ioe, Level.SEVERE,null));                    
+                    manager.main.handleError("Error Downloading",
+                            "There was an error downloading the new " + config.getName() + " desklet version. Update has been aborted.",
+                            ioe);
                     return;
                 }
                 
@@ -189,24 +174,24 @@ public class DeskletUpdater implements Runnable {
                 try {
                     newConfig = registry.installDesklet(temp.toURI().toURL());
                 } catch(MalformedURLException mue) {
-                    JXErrorPane.showDialog(win, new ErrorInfo("ERROR!",
+                    manager.main.handleError("ERROR!",
                             "This should not have happened",
-                            null,null,mue,Level.SEVERE,null));
+                            mue);
                     return;
                 } catch(Exception e) {
-                    JXErrorPane.showDialog(win, new ErrorInfo("ERROR!",
+                    manager.main.handleError("ERROR!",
                             "There was an error installing the desklet" +
                             config.getName() + ". Update has been aported",
-                            null,null,e,Level.SEVERE,null));
+                            e);
                     return;
                 }
                 try{
                     manager.startDesklet( newConfig.getUUID() );
                 } catch(LifeCycleException lce ){
-                    JXErrorPane.showDialog(win, new ErrorInfo("ERROR!",
+                    manager.main.handleError("ERROR!",
                             "There was an error starting the upgraded desklet" +
                             config.getName() + ". Update has been aported",
-                            null,null,lce,Level.SEVERE,null));
+                            lce);
                     try{
                         manager.startDesklet( config.getUUID() );
                     } catch(LifeCycleException e){

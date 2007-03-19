@@ -32,9 +32,7 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.error.ErrorInfo;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.TextPainter;
@@ -300,15 +298,9 @@ public class ManagePanel extends javax.swing.JPanel {
         try{
             cie.importFromURL( importFile.toURI().toURL());
         } catch(Exception e){
-            ErrorInfo info = new ErrorInfo(
-                    "Problem Importing Configuration",
-                    "Problem Importing Configuration",
+            main.handleError("Problem Importing Configuration",
                     "There was a problem importing your AB5k configuration",
-                    "unknowncateogry",
-                    e,
-                    Level.WARNING,
-                    null);
-            JXErrorPane.showDialog(this,info);
+                    e);
         }
     }//GEN-LAST:event_importButtonMouseClicked
     
@@ -330,15 +322,9 @@ public class ManagePanel extends javax.swing.JPanel {
         try{
             cie.exportToFile( export );
         } catch(Exception e){
-            ErrorInfo info = new ErrorInfo(
-                    "Problem Exporting Configuration",
-                    "Problem Exporting Configuration",
+            main.handleError("Problem Exporting Configuration",
                     "There was a problem exporting your AB5k configuration",
-                    null,
-                    e,
-                    Level.WARNING,
-                    null);
-            JXErrorPane.showDialog(this,info);
+                    e);
         }
         
     }//GEN-LAST:event_exportButtonMouseClicked
@@ -367,12 +353,9 @@ public class ManagePanel extends javax.swing.JPanel {
                     System.out.println("ending the maddness");
                     e.printStackTrace();
                     busyPanel.stop();
-                    JXErrorPane.showDialog(ManagePanel.this,
-                            new ErrorInfo(
-                            "Problem loading desklet",
-                            "Problem loading desklet",
+                    main.handleError("Problem loading desklet",
                             "There was a problem loading this desklet",
-                            null,e, Level.SEVERE,null));
+                            e);
                 }
             }
         }).start();
@@ -466,12 +449,9 @@ public class ManagePanel extends javax.swing.JPanel {
                         manager.startDesklet( config.getUUID() );
                     } catch(Exception e){
                         e.printStackTrace();
-                        JXErrorPane.showDialog(ManagePanel.this,
-                                new ErrorInfo(
-                                "Problem starting desklet",
-                                "Problem starting desklet",
-                                "There was a problem starting this desklet: " + config.getName(),
-                                null,e, Level.SEVERE,null));
+                        main.handleError("Problem starting desklet",
+                            "There was a problem starting this desklet: " + config.getName(),
+                            e);
                     }
                 }
                 busyPanel.stop();
@@ -505,13 +485,10 @@ public class ManagePanel extends javax.swing.JPanel {
                     try{
                         registry.uninstallDesklet( config );
                     } catch(Exception e){
-                        e.printStackTrace();
-                        JXErrorPane.showDialog(ManagePanel.this,
-                                new ErrorInfo(
-                                "Problem uninstalling desklet",
+                        main.handleError(
                                 "Problem uninstalling desklet",
                                 "There was a problem uninstalling this desklet: " + config.getName(),
-                                null,e, Level.SEVERE,null));
+                                e);
                     }
                 }
                 busyPanel.stop();
