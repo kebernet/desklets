@@ -29,10 +29,14 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.logging.Level;
 import javax.swing.Action;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 import org.joshy.util.u;
 
 /**
@@ -157,6 +161,17 @@ public class Core {
     
     public void handleException(Exception ex) {
         u.p(ex);
+    }
+    
+    public void handleError(final String title, final String message, final Throwable thr) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                ErrorInfo info = new ErrorInfo(title, message, null, "???", thr, Level.ALL, null);
+                JXErrorPane.showDialog(getFrame(),info);
+            }
+        });
+        u.p("prob: " + title + " " + message);
+        u.p(thr);
     }
     
     /* ======== get accessors ================ */
