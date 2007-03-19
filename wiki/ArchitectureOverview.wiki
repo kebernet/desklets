@@ -44,9 +44,12 @@ http://groups.google.com/group/desklets-contributors/browse_thread/thread/509fc5
 =6. Containter Architecture=
 In terms of Architecture, there are several main classes in the ab5k.security package that controll the desklet lifecycle stuff:
 
-a. Registry. This is the maintainer of the desklet installation/uninstallation and dependency ananlysis/repository. 
-b. DeskletManager. This is the root runtime controller for all of the desklets. It maintains a set of runners that controll the lifecycle for individual desklets.
-c. DeskletRunner. This is the execution environment for a single desklet. It builds the appropriate ClassLoader and threading for the desklet, and sets up the DeskletContext (DefaultContext) that gets inited to the desklet. 
-d. SecurityPolicy. This is the prompting system security policy. It stores user granted permissions based on the code base URL of the requesting library. That is, the classes under the [Working Directory] for the desklet. 
+  *a. Registry. This is the maintainer of the desklet installation/uninstallation and dependency ananlysis/repository. 
+
+  *b. DeskletManager. This is the root runtime controller for all of the desklets. It maintains a set of runners that controll the lifecycle for individual desklets.
+
+  *c. DeskletRunner. This is the execution environment for a single desklet. It builds the appropriate ClassLoader and threading for the desklet, and sets up the DeskletContext (DefaultContext) that gets inited to the desklet. 
+
+  *d. SecurityPolicy. This is the prompting system security policy. It stores user granted permissions based on the code base URL of the requesting library. That is, the classes under the [Working Directory] for the desklet. 
 
 There are a few other classes in there, but they are mostly util and data classes.
