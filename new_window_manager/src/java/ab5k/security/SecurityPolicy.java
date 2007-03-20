@@ -191,7 +191,7 @@ public class SecurityPolicy extends Policy {
             sb.append(". \n Would you like to grant this permission?");
             
             String[] options = { "Yes", "No", "Always", "Never" };
-            Window win = SwingUtilities.windowForComponent(DeskletManager.main.getDesktop());
+            Window win = DeskletManager.main.getFrame();
             int value = JOptionPane.showOptionDialog(win, sb.toString(),
                     "Grant Permission", JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);

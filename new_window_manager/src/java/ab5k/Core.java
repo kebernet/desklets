@@ -25,6 +25,8 @@ import ab5k.security.ContainerFactory;
 import ab5k.security.DeskletManager;
 import ab5k.security.LifeCycleException;
 import ab5k.util.PlafUtil;
+import ab5k.wm.DesktopPaneWM;
+import ab5k.wm.WindowManager;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -41,7 +43,6 @@ import org.joshy.util.u;
  */
 public class Core {
     
-    //unused? delete? public Map iframes = new HashMap();
     private DeskletManager deskletManager;
     private ContainerFactory containerFactory;
     private BackgroundManager backgroundManager;
@@ -52,6 +53,8 @@ public class Core {
     public JFrame frame;
     
     private PrefsBean prefsBean;
+
+    private WindowManager windowManager;
     
     /** Creates a new instance of Main */
     public Core() {
@@ -60,12 +63,13 @@ public class Core {
     
     
     void init() {
+        setupWindowManager();
         setBackgroundManager(new BackgroundManager(this));
         setupBackgrounds();
         setupMacSupport();
         
         containerFactory = ContainerFactory.getInstance();
-        containerFactory.init( getDesktop(), mainPanel.getDockPanel() );
+        containerFactory.init( getWindowManager(), mainPanel.getDockPanel() );
         deskletManager = DeskletManager.getInstance();
         
         try{
@@ -164,10 +168,11 @@ public class Core {
     public DeskletManager getDeskletManager() {
         return deskletManager;
     }
-    
+
+/*    
     public JDesktopPane getDesktop() {
         return getMainPanel().desktop;
-    }
+    }*/
     
     public BackgroundManager getBackgroundManager() {
         return backgroundManager;
@@ -235,4 +240,13 @@ public class Core {
             ex.printStackTrace();
         }
     }
+
+    private void setupWindowManager() {
+        windowManager = new DesktopPaneWM(this.mainPanel.desktop);
+    }
+
+    public WindowManager getWindowManager() {
+        return windowManager;
+    }
+
 }

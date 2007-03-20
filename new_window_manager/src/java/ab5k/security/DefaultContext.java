@@ -84,7 +84,7 @@ public class DefaultContext implements DeskletContext {
         }
     }
 
-    DeskletConfig getConfig() {
+    public DeskletConfig getConfig() {
         return this.config;
     }
 

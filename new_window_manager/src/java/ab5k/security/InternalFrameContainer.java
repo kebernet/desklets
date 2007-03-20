@@ -34,7 +34,7 @@ import org.joshy.util.u;
 public class InternalFrameContainer implements DeskletContainer {
     JComponent content;
     JDesktopPane desktop;
-    JInternalFrame iframe = new JInternalFrame() {
+    public JInternalFrame iframe = new JInternalFrame() {
         
             protected void paintComponent(Graphics g) {
                 //g.setColor(Color.RED);
@@ -49,7 +49,7 @@ public class InternalFrameContainer implements DeskletContainer {
             }
         };
 
-    JPanel panel = new JPanel() {
+    public JPanel panel = new JPanel() {
             protected void paintComponent(Graphics g) {
                 //g.setColor(Color.GREEN);
                 //g.fillRect(0,0,getWidth(),getHeight());

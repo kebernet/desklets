@@ -131,7 +131,7 @@ public class DeskletUpdater implements Runnable {
         sb.append("\" is out of date. Would you like to update now?");
         
         String[] options = { "Yes", "No", "Never" };
-        Window win = SwingUtilities.windowForComponent(DeskletManager.main.getDesktop());
+        Window win = DeskletManager.main.getFrame();
         int value = JOptionPane.showOptionDialog(win, sb.toString(),
                 "Update", JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
