@@ -10,19 +10,27 @@
 package ab5k.wm;
 
 import ab5k.DesktopBackground;
+import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JComponent;
 
 /**
- *
+ * An implementation of WindowManager that uses buffered images instead of
+ * internal frames a desktop pane to show the desklets on screen.
  * @author joshy
  */
 public class BufferedWM extends WindowManager {
+    Map<DefaultContext, BufferedImage> imageMap;
     
     /** Creates a new instance of BufferedWM */
     public BufferedWM() {
+        imageMap = new HashMap<DefaultContext,BufferedImage>();
     }
 
     public DeskletContainer createInternalContainer(DefaultContext context) {
@@ -50,6 +58,16 @@ public class BufferedWM extends WindowManager {
 
     public Point getLocation(DeskletContainer deskletContainer) {
         return null;
+    }
+
+    public Object getTopLevel() {
+        return null;
+    }
+
+    public void setDockComponent(JComponent dock) {
+    }
+
+    public void setDockingSide(MainPanel.DockingSide side) {
     }
     
 }

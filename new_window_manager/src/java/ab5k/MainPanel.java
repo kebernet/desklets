@@ -77,18 +77,6 @@ public class MainPanel extends javax.swing.JPanel {
         DockSkinner.skinDock(this);
     }
     
-    
-    public void showGlasspane() {
-        // first test of a glasspane
-        JXPanel panel = new JXPanel();
-        panel.setOpaque(false);
-        panel.setBackgroundPainter(new PinstripePainter(Color.RED,45));
-        Dimension size = new Dimension(500,500);
-        panel.setSize(size);
-        panel.setLocation(200,200);
-        desktop.add(panel);
-    }
-    
     public void setMain(Core main) {
         this.main = main;
     }
@@ -115,16 +103,7 @@ public class MainPanel extends javax.swing.JPanel {
     
     public void setDockingSide(DockingSide side) {
         this.side = side;
-        this.remove(dockPanel);
-        if(side == DockingSide.Left) {
-            this.add(dockPanel,"East");
-        }
-        if(side == DockingSide.Right) {
-            this.add(dockPanel,"West");
-        }
-        this.validate();
-        dockPanel.validate();
-        u.p("dock side set to : " + side);
+        main.getWindowManager().setDockingSide(side);
     }
     
     
@@ -138,7 +117,6 @@ public class MainPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         collapseButton = new javax.swing.JButton();
-        desktop = new CustomDesktopPane();
         dockPanel = new JXPanel();
         manageButton = new javax.swing.JButton();
         logoButton = new JXButton();
@@ -158,8 +136,6 @@ public class MainPanel extends javax.swing.JPanel {
         });
 
         setLayout(new java.awt.BorderLayout());
-
-        add(desktop, java.awt.BorderLayout.CENTER);
 
         dockPanel.setLayout(new java.awt.GridBagLayout());
 
@@ -261,7 +237,6 @@ public class MainPanel extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton collapseButton;
-    public javax.swing.JDesktopPane desktop;
     public javax.swing.JPanel dockPanel;
     private org.jdesktop.swingx.JXBusyLabel loadingSpinner;
     public javax.swing.JButton logoButton;

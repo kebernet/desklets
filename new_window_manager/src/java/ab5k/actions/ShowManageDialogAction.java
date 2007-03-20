@@ -35,7 +35,8 @@ public class ShowManageDialogAction extends AbstractAction {
                 final JLayeredPane layeredPane = main.getFrame().getLayeredPane();
                 
                 // get the desktop pane metrics
-                Dimension desktopSize = main.getMainPanel().desktop.getSize();
+                //Dimension desktopSize = main.getMainPanel().desktop.getSize();
+                Dimension desktopSize = main.getWindowManager().getContainerSize();
                 
                 // set up an overlay to disable the widgets
                 final JXPanel gpanel = getDisablePanel(layeredPane, desktopSize);
@@ -68,7 +69,7 @@ public class ShowManageDialogAction extends AbstractAction {
     private JXPanel gpanel;
     
     private JXPanel getDisablePanel(JLayeredPane layeredPane, Dimension desktopSize) {
-        Point desktopLocation = main.getMainPanel().desktop.getLocation();
+        Point desktopLocation = new Point(0,0);//main.getMainPanel().desktop.getLocation();
         gpanel = new JXPanel();
         gpanel.setOpaque(false);
         disablePainter = new MattePainter(new Color(255,255,255,0));

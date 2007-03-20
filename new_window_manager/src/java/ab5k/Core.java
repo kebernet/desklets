@@ -50,7 +50,7 @@ public class Core {
     
     public MainPanel mainPanel;
     
-    public JFrame frame;
+    //public JFrame frame;
     
     private PrefsBean prefsBean;
 
@@ -213,7 +213,8 @@ public class Core {
     }
     
     public JFrame getFrame() {
-        return frame;
+        if(getWindowManager() == null) return null;
+        return (JFrame) getWindowManager().getTopLevel();
     }
     
     
@@ -242,7 +243,7 @@ public class Core {
     }
 
     private void setupWindowManager() {
-        windowManager = new DesktopPaneWM(this.mainPanel.desktop);
+        windowManager = new DesktopPaneWM();
     }
 
     public WindowManager getWindowManager() {

@@ -1,15 +1,24 @@
 package ab5k.wm;
 
 import ab5k.DesktopBackground;
+import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 
+/** 
+ * The currently registered WindowManager is in charge of managing the desklets
+ * on screen components, creating the top level window for all of ab5k, handling
+ * special effects and transitions. [more??]
+ */
 public abstract class WindowManager {
+    
+    abstract public Object getTopLevel();
     
     abstract public DeskletContainer createInternalContainer(DefaultContext context);
     /*
@@ -73,5 +82,9 @@ public abstract class WindowManager {
     public abstract void setLocation(DeskletContainer ifc, Point point);
 
     public abstract Point getLocation(DeskletContainer deskletContainer);
+
+    public abstract void setDockComponent(JComponent dock);
+    
+    public abstract void setDockingSide(MainPanel.DockingSide side);
     
 }

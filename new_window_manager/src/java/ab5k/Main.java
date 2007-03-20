@@ -108,26 +108,22 @@ public abstract class Main {
     }
 
     
-    // create the main frame, the main panel, and attach them all to Core
+    // the main panel, attach it to Core, then do the last config of the frame
     private static void setupMainFrame(final Core core) throws HeadlessException, SecurityException {
-        // create the main frame.
-        final JFrame frame = new JFrame("AB5k");
+        MainPanel panel = new MainPanel(core);
+        core.mainPanel = panel;
+        core.init();
+        core.getWindowManager().setDockComponent(panel);
+        
+        JFrame frame = core.getFrame();
+        frame.setUndecorated(true);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 core.getQuitAction().actionPerformed(new ActionEvent(this,-1,"quit"));
             }
         });
-        frame.setUndecorated(true);
         frame.setAlwaysOnTop(true);
-        core.frame = frame;
-        
-        MainPanel panel = new MainPanel(core);
-        core.mainPanel = panel;
-        core.init();
-        
-        frame.setLayout(new StackLayout());
-        frame.add(core.getMainPanel());
         frame.pack();
         
         frame.setBounds(core.getCollapseWindowAction().getStartupPosition());
