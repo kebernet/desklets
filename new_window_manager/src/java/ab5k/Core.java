@@ -25,6 +25,7 @@ import ab5k.security.ContainerFactory;
 import ab5k.security.DeskletManager;
 import ab5k.security.LifeCycleException;
 import ab5k.util.PlafUtil;
+import ab5k.wm.BufferedWM;
 import ab5k.wm.DesktopPaneWM;
 import ab5k.wm.WindowManager;
 import java.awt.Desktop;
@@ -243,7 +244,8 @@ public class Core {
     }
 
     private void setupWindowManager() {
-        windowManager = new DesktopPaneWM();
+        windowManager = new BufferedWM();
+        //windowManager = new DesktopPaneWM();
     }
 
     public WindowManager getWindowManager() {

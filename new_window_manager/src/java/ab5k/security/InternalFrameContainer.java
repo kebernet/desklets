@@ -8,6 +8,7 @@ package ab5k.security;
 import ab5k.desklet.DeskletContainer;
 
 import ab5k.util.MoveMouseListener;
+import ab5k.wm.WindowManager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,50 +37,51 @@ public class InternalFrameContainer implements DeskletContainer {
     JDesktopPane desktop;
     public JInternalFrame iframe = new JInternalFrame() {
         
-            protected void paintComponent(Graphics g) {
-                //g.setColor(Color.RED);
-                //g.fillRect(0,0,getWidth(),getHeight());
-                if(!shaped) {
-                    super.paintComponent(g);
-                }
+        protected void paintComponent(Graphics g) {
+            //g.setColor(Color.RED);
+            //g.fillRect(0,0,getWidth(),getHeight());
+            if(!shaped) {
+                super.paintComponent(g);
             }
-            public void setUI(InternalFrameUI ui) {
-                u.p("ui = " + ui);
-                super.setUI(ui);
-            }
-        };
-
+        }
+        public void setUI(InternalFrameUI ui) {
+            u.p("ui = " + ui);
+            super.setUI(ui);
+        }
+    };
+    
     public JPanel panel = new JPanel() {
-            protected void paintComponent(Graphics g) {
-                //g.setColor(Color.GREEN);
-                //g.fillRect(0,0,getWidth(),getHeight());
-                if(!shaped) {
-                    super.paintComponent(g);
-                }
+        protected void paintComponent(Graphics g) {
+            //g.setColor(Color.GREEN);
+            //g.fillRect(0,0,getWidth(),getHeight());
+            if(!shaped) {
+                super.paintComponent(g);
             }
-        };
-
-    MoveMouseListener mml = new MoveMouseListener(panel);
+        }
+    };
+    
+    MoveMouseListener mml;
     boolean draggable = false;
     boolean shaped = false;
-
+    
     /**
      * Creates a new instance of InternalFrameContainer
      */
-    public InternalFrameContainer(String title) {
+    public InternalFrameContainer(String title, WindowManager wm) {
         iframe.setTitle(title);
         iframe.setContentPane(panel);
+        mml = new MoveMouseListener(this,wm);
     }
-
+    
     public Dimension2D getSize() {
         return iframe.getSize();
     }
-
+    
     public void setBackgroundDraggable(boolean backgroundDraggable) {
         if(backgroundDraggable == this.draggable) {
             return;
         }
-
+        
         if(backgroundDraggable) {
             panel.addMouseListener(mml);
             panel.addMouseMotionListener(mml);
@@ -88,27 +90,27 @@ public class InternalFrameContainer implements DeskletContainer {
             panel.removeMouseMotionListener(mml);
         }
     }
-
+    
     public void setContent(JComponent component) {
         if(this.content != null) {
             iframe.remove(this.content);
         }
-
+        
         this.content = component;
         iframe.setLayout(new BorderLayout());
         iframe.add(this.content, "Center");
         iframe.pack();
     }
-
+    
     public void setResizable(boolean resizable) {
         iframe.setResizable(resizable);
     }
-
+    
     public void setShaped(boolean shaped) {
         if(this.shaped == shaped) {
             return;
         }
-
+        
         if(shaped) {
             iframe.setOpaque(false);
             iframe.setClosable(false);
@@ -121,7 +123,7 @@ public class InternalFrameContainer implements DeskletContainer {
             //iframe.setContentPane(panel);
             iframe.setBorder(BorderFactory.createEmptyBorder());
             //iframe.setBorder(BorderFactory.createLineBorder(Color.GREEN));
-
+            
             //panel.setBackground(Color.YELLOW);
         } else {
             iframe.setOpaque(true);
@@ -130,17 +132,17 @@ public class InternalFrameContainer implements DeskletContainer {
             iframe.setIconifiable(false);
             iframe.setMaximizable(false);
         }
-
+        
         this.shaped = true;
-
+        
         //iframe.pack();
     }
-
+    
     public void setSize(Dimension2D size) {
         iframe.setSize(new Dimension((int) size.getWidth(),
                 (int) size.getHeight()));
     }
-
+    
     public void setVisible(boolean visible) {
         iframe.setVisible(visible);
     }
@@ -181,7 +183,7 @@ public class InternalFrameContainer implements DeskletContainer {
         }
         
         //protected void installComponents() {
-            
+        
         //}
         
         public void installUI(JComponent c) {
@@ -217,6 +219,6 @@ public class InternalFrameContainer implements DeskletContainer {
             g.setColor(Color.GREEN);
             g.fillRect(0,0,10,10);
         }
-
+        
     }
 }

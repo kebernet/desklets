@@ -246,7 +246,7 @@ public class DeskletManager {
 
         try {
             DeskletRunner runner = new DeskletRunner(main,
-                    new DefaultContext(config));
+                    new DefaultContext(main,config));
             runners.add(runner);
             runner.start();
 

@@ -53,7 +53,7 @@ public class DesktopPaneWM extends WindowManager {
     
     public DeskletContainer createInternalContainer(DefaultContext context) {
         InternalFrameContainer ifc = new InternalFrameContainer(context.getConfig()
-                .getName());
+                .getName(),this);
         iframes.put(ifc.panel, ifc.iframe);
         return ifc;
     }

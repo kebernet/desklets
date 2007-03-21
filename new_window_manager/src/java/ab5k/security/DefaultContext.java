@@ -8,10 +8,12 @@
  */
 package ab5k.security;
 
+import ab5k.Core;
 import ab5k.desklet.DeskletContainer;
 import ab5k.desklet.DeskletContext;
 
 import java.awt.Container;
+import java.awt.Point;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,8 +44,11 @@ public class DefaultContext implements DeskletContext {
     private boolean shutdownWhenIdle = true;
     private boolean stopped = false;
 
+    private Core core;
+
     /** Creates a new instance of DefaultContext */
-    public DefaultContext(DeskletConfig config) {
+    public DefaultContext(Core core, DeskletConfig config) {
+        this.core = core;
         this.config = config;
 
         try {
@@ -73,9 +78,10 @@ public class DefaultContext implements DeskletContext {
 
     void flushPreferences() throws IOException {
         FileOutputStream fos = new FileOutputStream(props);
-        InternalFrameContainer ifc = (InternalFrameContainer) this.container;
-        prefs.setProperty(ContainerFactory.LOCATION_X, Integer.toString( (int) ifc.iframe.getLocation().getX() ) );
-        prefs.setProperty(ContainerFactory.LOCATION_Y, Integer.toString( (int) ifc.iframe.getLocation().getY()) );
+        //InternalFrameContainer ifc = (InternalFrameContainer) this.container;
+        Point pt = core.getWindowManager().getLocation(container);
+        prefs.setProperty(ContainerFactory.LOCATION_X, Integer.toString( (int) pt.getX() ) );
+        prefs.setProperty(ContainerFactory.LOCATION_Y, Integer.toString( (int) pt.getY()) );
         try {
             prefs.store(fos, null);
             fos.flush();

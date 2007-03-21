@@ -116,7 +116,7 @@ public abstract class Main {
         core.getWindowManager().setDockComponent(panel);
         
         JFrame frame = core.getFrame();
-        frame.setUndecorated(true);
+        //frame.setUndecorated(true);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
