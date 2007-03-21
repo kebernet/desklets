@@ -58,7 +58,7 @@ public class ContainerFactory {
             
             // destroy the container
             wm.animateDestruction(context.getContainer());
-            wm.destroyContainer(context.getContainer());
+            //wm.destroyContainer(context.getContainer());
         }
     }
 

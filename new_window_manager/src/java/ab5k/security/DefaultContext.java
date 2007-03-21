@@ -25,6 +25,7 @@ import java.net.URI;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.joshy.util.u;
 
 
 /**
@@ -79,7 +80,9 @@ public class DefaultContext implements DeskletContext {
     void flushPreferences() throws IOException {
         FileOutputStream fos = new FileOutputStream(props);
         //InternalFrameContainer ifc = (InternalFrameContainer) this.container;
+        u.p("container = " + container);
         Point pt = core.getWindowManager().getLocation(container);
+        u.p("pt = " + pt);
         prefs.setProperty(ContainerFactory.LOCATION_X, Integer.toString( (int) pt.getX() ) );
         prefs.setProperty(ContainerFactory.LOCATION_Y, Integer.toString( (int) pt.getY()) );
         try {
