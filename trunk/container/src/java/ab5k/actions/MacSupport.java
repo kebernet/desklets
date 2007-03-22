@@ -39,6 +39,8 @@ public class MacSupport {
     public static void setupMacSupport(final Core main) {
         try {
             u.p("installing mac support");
+            Application app = Application.getApplication();
+            if (app != null) {
             Application.getApplication().addApplicationListener(new ApplicationListener() {
                 public void handleAbout(ApplicationEvent applicationEvent) {
                     u.p("Apple API: about called:" + applicationEvent);
@@ -84,6 +86,9 @@ public class MacSupport {
                 }
             });
             u.p("mac support installed");
+            } {
+                u.p("not on a mac");
+            }
         }catch (Throwable thr) {
             u.p("installing mac support failed");
             u.p(thr.getMessage());
