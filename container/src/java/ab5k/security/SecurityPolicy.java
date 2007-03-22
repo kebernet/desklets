@@ -42,8 +42,7 @@ import javax.swing.SwingUtilities;
  */
 public class SecurityPolicy extends Policy {
     private static final Logger LOG = Logger.getLogger("AB5K");
-    private static final File HOME = new File( System.getProperty("user.home") + File.separator + ".ab5k");
-    private static final File SECURITY_PROPS = new File( HOME, "security.properties");
+    private static final File SECURITY_PROPS = new File( Registry.HOME, "security.properties");
     private static final ArrayList<String> SAFE_RUNTIME = new ArrayList<String>();
     static{
         SAFE_RUNTIME.add( "modifyThread");

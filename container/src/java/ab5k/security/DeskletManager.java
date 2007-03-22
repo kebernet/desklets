@@ -30,9 +30,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DeskletManager {
     private static final Properties prefs = new Properties();
-    private static final File HOME = new File(System.getProperty("user.home") +
-            File.separator + ".ab5k");
-    private static final File STARTUP_PROPS = new File(HOME,
+    private static final File STARTUP_PROPS = new File(Registry.HOME,
             "startup.properties");
     static Core main;
     private final static DeskletAdministrationPermission PERMISSION = new DeskletAdministrationPermission("Desklet Manager",

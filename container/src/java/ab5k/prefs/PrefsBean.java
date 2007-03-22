@@ -10,6 +10,8 @@
 package ab5k.prefs;
 
 import ab5k.*;
+import ab5k.security.Registry;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,7 +25,7 @@ import org.joshy.util.u;
  * @author joshy
  */
 public class PrefsBean {
-    private static final File PREFS_FILE = new File(Main.HOME_DIR,"preferences.properties");
+    private static final File PREFS_FILE = new File(Registry.HOME,"preferences.properties");
         
     public static final String MICRODOCKING = "Main.Closer.Microdocking";
     public static final String DOCKINGSIDE = "Main.MainPanel.DockingSide";
