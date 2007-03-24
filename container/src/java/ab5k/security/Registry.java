@@ -335,8 +335,10 @@ public class Registry {
             if(entry.isDirectory()) {
                 new File(destination, entry.getName()).mkdirs();
             } else {
+                File entryFile = new File(destination, entry.getName());
+                entryFile.getParentFile().mkdirs();
                 StreamUtility.copyStream(jar.getInputStream(entry),
-                        new FileOutputStream(new File(destination, entry.getName())));
+                        new FileOutputStream(entryFile));
             }
         }
         
