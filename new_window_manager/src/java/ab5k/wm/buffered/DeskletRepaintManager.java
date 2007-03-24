@@ -1,6 +1,7 @@
-package ab5k.wm;
+package ab5k.wm.buffered;
 
-import ab5k.wm.DeskletToplevel;
+import ab5k.desklet.DeskletContainer;
+import ab5k.wm.buffered.DeskletToplevel;
 import java.awt.Component;
 import javax.swing.JComponent;
 import javax.swing.RepaintManager;
@@ -12,7 +13,7 @@ class DeskletRepaintManager extends RepaintManager {
     DeskletRepaintManager(BufferedWM wm) {
         this.wm = wm;
     }
-
+    
     public void addDirtyRegion(JComponent comp, int x, int y, int w, int h) {
         //u.p("adding as dirty: " + comp.getClass().getName() + " " + x + "," + y + " " + w + "x" + h);
         
@@ -36,9 +37,12 @@ class DeskletRepaintManager extends RepaintManager {
     private BufferedDeskletContainer findDesklet(Component invalidComponent) {
         // if at the top most comp
         if(invalidComponent instanceof DeskletToplevel) {
-            for(BufferedDeskletContainer bdc : wm.desklets) {
-                if(bdc.comp == invalidComponent) {
-                    return bdc;
+            for(DeskletContainer dc : wm.desklets) {
+                if(dc instanceof BufferedDeskletContainer) {
+                    BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+                    if(bdc.comp == invalidComponent) {
+                        return bdc;
+                    }
                 }
             }
             return null;

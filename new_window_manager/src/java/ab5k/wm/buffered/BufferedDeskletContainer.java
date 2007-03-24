@@ -1,4 +1,4 @@
-package ab5k.wm;
+package ab5k.wm.buffered;
 
 import ab5k.desklet.DeskletContainer;
 import ab5k.util.MoveMouseListener;
@@ -63,6 +63,7 @@ public class BufferedDeskletContainer implements DeskletContainer {
     }
     
     public void setContent(JComponent content) {
+        u.p("content set to : " + content);
         if(this.content != null) {
             comp.remove(this.content);
         }
@@ -134,6 +135,11 @@ public class BufferedDeskletContainer implements DeskletContainer {
 
     boolean isDirty() {
         return this.dirty;
+    }
+
+    JComponent getContent() {
+        u.p("content still: " + this.content);
+        return this.content;
     }
 
 

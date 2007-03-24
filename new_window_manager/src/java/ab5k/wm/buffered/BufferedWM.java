@@ -7,8 +7,9 @@
  * and open the template in the editor.
  */
 
-package ab5k.wm;
+package ab5k.wm.buffered;
 
+import ab5k.Core;
 import ab5k.DesktopBackground;
 import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
@@ -18,7 +19,7 @@ import ab5k.security.DeskletManager;
 import ab5k.security.DeskletRunner;
 import ab5k.security.LifeCycleException;
 import ab5k.security.Registry;
-import ab5k.wm.DeskletRenderPanel;
+import ab5k.wm.WindowManager;
 import com.totsp.util.BeanArrayList;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -32,7 +33,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -60,19 +64,23 @@ public class BufferedWM extends WindowManager {
     static final boolean DEBUG_BORDERS = false;
     static final boolean DEBUG_REPAINT_AREA = false;
     
-    List<BufferedDeskletContainer> desklets;
+    List<DeskletContainer> desklets;
     JFrame frame;
     JPanel panel;
     
     private JComponent dock;
     Container hidden;
+    private DeskletContainer selectedDesklet = null;
+
+    Core core;
     
     /** Creates a new instance of BufferedWM */
-    public BufferedWM() {
+    public BufferedWM(final Core core) {
+        this.core = core;
         hidden = new JDialog();
         //hidden.setVisible(true);
         RepaintManager.setCurrentManager(new DeskletRepaintManager(this));
-        desklets = new ArrayList<BufferedDeskletContainer>();
+        desklets = new ArrayList<DeskletContainer>();
         
         panel = new DeskletRenderPanel(this);
         frame = new JFrame("AB5k");
@@ -81,6 +89,36 @@ public class BufferedWM extends WindowManager {
         MouseRedispatcher mouse = new MouseRedispatcher(this);
         panel.addMouseListener(mouse);
         panel.addMouseMotionListener(mouse);
+        MouseAdapter ma = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+            }
+            public void mouseEntered(MouseEvent e) {
+            }
+            public void mouseMoved(MouseEvent e) {
+            }
+            public void mousePressed(MouseEvent e) {
+                wasDragging = false;
+            }
+            boolean wasDragging = false;
+            public void mouseDragged(MouseEvent e) {
+                wasDragging = true;
+                if(e.getPoint().getX() < -20) {
+                    u.p("outside!");
+                    u.p("must close");
+                    core.getCollapseWindowAction().doCollapse();
+                }
+            }
+            public void mouseReleased(MouseEvent e) {
+                if(e.getPoint().getX() < 0 && wasDragging) {
+                    u.p("dropped outside!");
+                    convertInternalToExternalContainer(selectedDesklet);
+                }
+            }
+            public void mouseExited(MouseEvent e) {
+            }
+        };
+        panel.addMouseListener(ma);
+        panel.addMouseMotionListener(ma);
         
         
         JButton btn = new JButton("stop");
@@ -133,12 +171,16 @@ public class BufferedWM extends WindowManager {
     
     private BufferedDeskletContainer findContainer(Point pt) {
         for(int i=desklets.size()-1; i>=0; i--) {
-            BufferedDeskletContainer bdc = desklets.get(i);
-            Point loc = bdc.getLocation();
-            Dimension2D size = bdc.getSize();
-            Rectangle rect = new Rectangle(loc.x, loc.y, (int)size.getWidth(), (int)size.getHeight());
-            if(rect.contains(pt)) {
-                return bdc;
+            DeskletContainer dc = desklets.get(i);
+            if(dc instanceof BufferedDeskletContainer) {
+                BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+                
+                Point loc = bdc.getLocation();
+                Dimension2D size = bdc.getSize();
+                Rectangle rect = new Rectangle(loc.x, loc.y, (int)size.getWidth(), (int)size.getHeight());
+                if(rect.contains(pt)) {
+                    return bdc;
+                }
             }
         }
         return null;
@@ -149,6 +191,7 @@ public class BufferedWM extends WindowManager {
         if(bdc != null) {
             desklets.remove(bdc);
             desklets.add(bdc);
+            selectedDesklet = bdc;
             panel.repaint();
         }
     }
@@ -158,28 +201,31 @@ public class BufferedWM extends WindowManager {
             BufferedDeskletContainer bdc = findContainer(e.getPoint());
             if(bdc != null) {
                 Point pt = bdc.getLocation();
-                e.translatePoint(-pt.x,-pt.y);
+                Point ept = e.getPoint();
+                ept.translate(-pt.x,-pt.y);
+                //e.translatePoint(-pt.x,-pt.y);
                 JComponent comp = bdc.comp;
                 comp.setSize(new Dimension((int)bdc.getSize().getWidth(),
                         (int)bdc.getSize().getHeight()));
                 comp.setLocation(0,0);
-                redispatchToLowest(comp,e);
+                redispatchToLowest(comp,e,ept);
             }
         }
     }
     
-    private void redispatchToLowest(JComponent comp, MouseEvent e) {
+    private void redispatchToLowest(JComponent comp, MouseEvent e, Point ept) {
         //u.p("comp = " + comp.getClass());
         //u.p("e = " + e);
         
         // translate into the top component space
-        e.translatePoint(comp.getX(),comp.getY());
+        //e.translatePoint(comp.getX(),comp.getY());
+        ept.translate(comp.getX(), comp.getY());
         //u.p("e = " + e);
         //u.p("point = " + e.getPoint());
         
         // find the deepest child to send this event to
-        Component child = SwingUtilities.getDeepestComponentAt(comp,e.getPoint().x,e.getPoint().y);
-        Point pt2 = SwingUtilities.convertPoint(comp,e.getPoint(),child);
+        Component child = SwingUtilities.getDeepestComponentAt(comp,ept.x,ept.y);
+        Point pt2 = SwingUtilities.convertPoint(comp,ept,child);
         //u.p("pt2 = " + pt2);
         //u.p("final child = " + child);
         
@@ -239,6 +285,39 @@ public class BufferedWM extends WindowManager {
         return cont;
     }
     
+    public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
+        if(dc == null) return null;
+        desklets.remove(dc);
+        JFrameDeskletContainer cont = new JFrameDeskletContainer(this);
+        BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+        cont.setContent(bdc.getContent());
+        //JFrameDeskletContainter cont = new JFrameDeskletContainer(this);
+        //cont.setLocation(new Point(300,300));
+        desklets.add(cont);
+        cont.frame.pack();
+        cont.setVisible(true);
+        return cont;
+    }
+    
+    public DeskletContainer convertExternalToInternalContainer(DeskletContainer dc) {
+        if(dc == null) return null;
+        desklets.remove(dc);
+        JFrameDeskletContainer jdc = (JFrameDeskletContainer) dc;
+        jdc.frame.getContentPane().remove(jdc.getContent());
+        
+        BufferedDeskletContainer cont = new BufferedDeskletContainer(this);
+        cont.setContent(jdc.getContent());
+        desklets.add(cont);
+        hidden.add(cont.comp);
+        cont.setLocation(new Point(100,100));
+        panel.repaint();
+        
+        jdc.setVisible(false);
+        jdc.frame.dispose();
+        core.getCollapseWindowAction().doExpand();
+        return cont;
+    }
+
     public void animateCreation(DeskletContainer dc) {
         //panel.add(((BufferedDeskletContainer)dc).comp);
         desklets.add((BufferedDeskletContainer) dc);

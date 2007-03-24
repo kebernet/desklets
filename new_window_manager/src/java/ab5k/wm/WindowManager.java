@@ -7,6 +7,7 @@ import ab5k.security.DefaultContext;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
@@ -22,8 +23,8 @@ public abstract class WindowManager {
     
     abstract public DeskletContainer createInternalContainer(DefaultContext context);
     /*
-    abstract public DeskletContainer createExternalContainer();
-     */
+    abstract public DeskletContainer createExternalContainer(DefaultContext context);
+    */
     
     abstract public void animateCreation(DeskletContainer dc);
     
@@ -31,7 +32,8 @@ public abstract class WindowManager {
     abstract public void animateDestruction(DeskletContainer dc);
     
     abstract public void destroyContainer(DeskletContainer dc);
-    /*
+    
+    
     public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
         return null;
     }
@@ -40,6 +42,7 @@ public abstract class WindowManager {
         return null;
     }
     
+    /*
     public boolean isBufferingSupported() {
         return false;
     }
@@ -86,5 +89,6 @@ public abstract class WindowManager {
     public abstract void setDockComponent(JComponent dock);
     
     public abstract void setDockingSide(MainPanel.DockingSide side);
+
     
 }

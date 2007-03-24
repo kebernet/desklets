@@ -1,4 +1,4 @@
-package ab5k.wm;
+package ab5k.wm.buffered;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
