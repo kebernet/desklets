@@ -30,28 +30,11 @@ public class BufferedDeskletContainer implements DeskletContainer {
     private float alpha = 1f;
     private double rotation = 0;
     private double scale = 1.0;
+
+    private boolean dirty = true;
     
     BufferedDeskletContainer(BufferedWM wm) {
-        comp = new JPanel() {
-            protected void paintComponent(Graphics g) {
-                g.setColor(Color.GREEN);
-                g.fillRect(0,0,getWidth(),getHeight());
-                super.paintComponent(g);
-            }
-        };
-        comp.addMouseListener(new MouseListener() {
-            public void mouseClicked(MouseEvent e) {
-            }
-            public void mouseEntered(MouseEvent e) {
-            }
-            public void mouseExited(MouseEvent e) {
-            }
-            public void mousePressed(MouseEvent e) {
-                u.p("comp mouse pressed");
-            }
-            public void mouseReleased(MouseEvent e) {
-            }
-        });
+        comp = new DeskletToplevel();
         comp.setBorder(BorderFactory.createLineBorder(Color.RED));
         comp.setLayout(new BorderLayout());
         mml = new MoveMouseListener(this, wm);
@@ -70,6 +53,7 @@ public class BufferedDeskletContainer implements DeskletContainer {
             return;
         }
         if(backgroundDraggable) {
+            u.p("added drag listener");
             comp.addMouseListener(mml);
             comp.addMouseMotionListener(mml);
         } else {
@@ -143,4 +127,14 @@ public class BufferedDeskletContainer implements DeskletContainer {
     public void setScale(double scale) {
         this.scale = scale;
     }
+
+    void setDirty(boolean b) {
+        this.dirty = b;
+    }
+
+    boolean isDirty() {
+        return this.dirty;
+    }
+
+
 }

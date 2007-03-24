@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
