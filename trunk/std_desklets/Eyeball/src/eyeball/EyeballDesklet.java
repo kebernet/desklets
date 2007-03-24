@@ -18,6 +18,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.JXPanel;
@@ -40,6 +42,20 @@ public class EyeballDesklet extends AbstractDesklet {
         context.getContainer().setResizable(false);
         context.getContainer().setShaped(true);
         panel = new JXPanel();
+        /*panel.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent e) {
+            }
+            public void mouseEntered(MouseEvent e) {
+            }
+            public void mouseExited(MouseEvent e) {
+            }
+            public void mousePressed(MouseEvent e) {
+                System.out.println("pressed: " + e);
+            }
+            public void mouseReleased(MouseEvent e) {
+                System.out.println("released: " + e);
+            }
+        });*/
         panel.setOpaque(false);
         panel.setPreferredSize(new Dimension(300,300));
         panel.setBackgroundPainter(new CompoundPainter(
