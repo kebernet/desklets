@@ -43,7 +43,7 @@ class DeskletRenderPanel extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());
         Graphics2D g2 = (Graphics2D) g;
         
-        g.setColor(Color.RED);
+        g.setColor(Color.YELLOW);
         if(isAnimating()) {
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         } else {
@@ -63,7 +63,7 @@ class DeskletRenderPanel extends JPanel {
                             0,0,  size.width, size.height,
                             true);
                     if (this.bufferedWM.DEBUG_BORDERS) {
-                        gx.setColor(Color.RED);
+                        gx.setColor(Color.GREEN);
                         gx.drawLine(0,0,size.width,size.height);
                         gx.drawLine(size.width,0,0,size.height);
                     }
@@ -91,7 +91,7 @@ class DeskletRenderPanel extends JPanel {
                 
                 if (this.bufferedWM.DEBUG_BORDERS) {
                     if (wasDirty) {
-                        g3.setColor(Color.RED);
+                        g3.setColor(Color.CYAN);
                     }  else {
                         g3.setColor(Color.BLACK);
                     }
@@ -122,12 +122,12 @@ class DeskletRenderPanel extends JPanel {
                 g4.dispose();*/
             }
         }
-        
+        /*
         if (this.bufferedWM.DEBUG_REPAINT_AREA) {
             u.p("clip = " + g2.getClip());
             g2.setColor(Color.GREEN);
             g2.draw(g2.getClip());
-        }
+        }*/
         
     }
     

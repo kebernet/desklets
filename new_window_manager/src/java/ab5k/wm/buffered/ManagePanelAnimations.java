@@ -157,7 +157,7 @@ public class ManagePanelAnimations {
                 }
                 
                 int x = firstColumnX;
-                int y = i*105;
+                int y = i*105 + 50;
                 
                 // wrap to new columns
                 while(y > wm.panel.getHeight()-105) {

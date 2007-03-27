@@ -368,12 +368,13 @@ public class BufferedWM extends WindowManager {
         anim.addTarget(new PropertySetter(dc,"alpha",bdc.getAlpha(),0f));
         //anim.addTarget(new PropertySetter(dc,"rotation",0f,(float)Math.PI*2f*5f));
         anim.addTarget(new PropertySetter(dc,"scale",bdc.getScale(),0.3));
-        anim.addTarget(new TimingTarget() {
+        anim.addTarget(new AnimRepainter(panel));
+        /*josh: dead code? new TimingTarget() {
             public void begin() {            }
             public void end() {            }
             public void repeat() {            }
             public void timingEvent(float f) {                panel.repaint();            }
-        });
+        });*/
         anim.addTarget(new TimingTarget() {
             public void begin() {
             }
