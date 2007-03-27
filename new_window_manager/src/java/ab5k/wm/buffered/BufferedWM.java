@@ -47,6 +47,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
@@ -66,12 +67,12 @@ public class BufferedWM extends WindowManager {
     
     List<DeskletContainer> desklets;
     JFrame frame;
-    JPanel panel;
+    DeskletRenderPanel panel;
     
     private JComponent dock;
     Container hidden;
     private DeskletContainer selectedDesklet = null;
-
+    
     Core core;
     
     /** Creates a new instance of BufferedWM */
@@ -89,6 +90,8 @@ public class BufferedWM extends WindowManager {
         MouseRedispatcher mouse = new MouseRedispatcher(this);
         panel.addMouseListener(mouse);
         panel.addMouseMotionListener(mouse);
+        
+        // deal with converting internal to external desklets
         MouseAdapter ma = new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
             }
@@ -120,7 +123,7 @@ public class BufferedWM extends WindowManager {
         panel.addMouseListener(ma);
         panel.addMouseMotionListener(ma);
         
-        
+        JPanel buttonPanel = new JPanel();
         JButton btn = new JButton("stop");
         btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -131,7 +134,7 @@ public class BufferedWM extends WindowManager {
                 }
             }
         });
-        panel.add(btn);
+        buttonPanel.add(btn);
         
         JButton startButton = new JButton("Start");
         startButton.addActionListener(new ActionListener() {
@@ -144,10 +147,35 @@ public class BufferedWM extends WindowManager {
                 }
             }
         });
-        panel.add(startButton);
+        buttonPanel.add(startButton);
+        final ManagePanelAnimations mpa = new ManagePanelAnimations(this);
+        
+        final JToggleButton manageButton = new JToggleButton("Manage");
+        manageButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(manageButton.isSelected()) {
+                    mpa.showManagePanel();
+                    mpa.moveDeskletsToColumns();
+                } else {
+                    mpa.hideManagePanel();
+                    mpa.moveDeskletsToOriginalPositions();
+                }
+            }
+        });
+        buttonPanel.add(manageButton);
+        
+        panel.add(buttonPanel);
+        buttonPanel.setLocation(500/*panel.getWidth()-buttonPanel.getWidth()*/,0);
     }
     
-    private void stop(final DeskletRunner d) {
+    void stop(DeskletContainer dc) {
+        if(dc instanceof BufferedDeskletContainer) {
+            DeskletManager manager = DeskletManager.getInstance();
+            manager.shutdownDesklet(
+                    ((BufferedDeskletContainer)dc).context.getConfig().getUUID());
+        }
+    }
+    void stop(final DeskletRunner d) {
         new Thread(new Runnable() {
             public void run() {
                 DeskletManager manager = DeskletManager.getInstance();
@@ -156,7 +184,7 @@ public class BufferedWM extends WindowManager {
         }).start();
     }
     
-    private void start(final DeskletConfig d) {
+    void start(final DeskletConfig d) {
         new Thread(new Runnable() {
             public void run() {
                 DeskletManager manager = DeskletManager.getInstance();
@@ -280,7 +308,7 @@ public class BufferedWM extends WindowManager {
     
     /* ====== the desklet container lifecycle ===== */
     public DeskletContainer createInternalContainer(DefaultContext context) {
-        BufferedDeskletContainer cont = new BufferedDeskletContainer(this);
+        BufferedDeskletContainer cont = new BufferedDeskletContainer(this,context);
         cont.setLocation(new Point(0,0));
         return cont;
     }
@@ -305,7 +333,7 @@ public class BufferedWM extends WindowManager {
         JFrameDeskletContainer jdc = (JFrameDeskletContainer) dc;
         jdc.frame.getContentPane().remove(jdc.getContent());
         
-        BufferedDeskletContainer cont = new BufferedDeskletContainer(this);
+        BufferedDeskletContainer cont = new BufferedDeskletContainer(this,null);
         cont.setContent(jdc.getContent());
         desklets.add(cont);
         hidden.add(cont.comp);
@@ -317,7 +345,7 @@ public class BufferedWM extends WindowManager {
         core.getCollapseWindowAction().doExpand();
         return cont;
     }
-
+    
     public void animateCreation(DeskletContainer dc) {
         //panel.add(((BufferedDeskletContainer)dc).comp);
         desklets.add((BufferedDeskletContainer) dc);
@@ -340,11 +368,12 @@ public class BufferedWM extends WindowManager {
     }
     
     public void animateDestruction(final DeskletContainer dc) {
-        Animator anim = new Animator(750);
+        BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+        Animator anim = new Animator(500);
         //anim.addTarget(new PropertySetter(dc,"location",new Point(0,0), new Point(200,200)));
-        anim.addTarget(new PropertySetter(dc,"alpha",1f,0f));
+        anim.addTarget(new PropertySetter(dc,"alpha",bdc.getAlpha(),0f));
         //anim.addTarget(new PropertySetter(dc,"rotation",0f,(float)Math.PI*2f*5f));
-        anim.addTarget(new PropertySetter(dc,"scale",1.0,0.3));
+        anim.addTarget(new PropertySetter(dc,"scale",bdc.getScale(),0.3));
         anim.addTarget(new TimingTarget() {
             public void begin() {            }
             public void end() {            }
@@ -382,6 +411,8 @@ public class BufferedWM extends WindowManager {
         BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
         return bdc.getLocation();
     }
+    
+    
     
     
 }

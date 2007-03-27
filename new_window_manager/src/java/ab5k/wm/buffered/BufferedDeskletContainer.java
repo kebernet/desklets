@@ -1,6 +1,8 @@
 package ab5k.wm.buffered;
 
 import ab5k.desklet.DeskletContainer;
+import ab5k.desklet.DeskletContext;
+import ab5k.security.DefaultContext;
 import ab5k.util.MoveMouseListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -32,8 +34,10 @@ public class BufferedDeskletContainer implements DeskletContainer {
     private double scale = 1.0;
 
     private boolean dirty = true;
+    DefaultContext context;
     
-    BufferedDeskletContainer(BufferedWM wm) {
+    BufferedDeskletContainer(BufferedWM wm, DefaultContext context) {
+        this.context = context;
         comp = new DeskletToplevel();
         comp.setBorder(BorderFactory.createLineBorder(Color.RED));
         comp.setLayout(new BorderLayout());

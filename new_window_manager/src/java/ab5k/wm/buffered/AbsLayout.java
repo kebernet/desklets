@@ -1,9 +1,10 @@
-package ab5k.wm;
+package ab5k.wm.buffered;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
+import org.joshy.util.u;
 
 
 
@@ -13,6 +14,7 @@ import java.awt.LayoutManager;
 class AbsLayout implements LayoutManager {
     
     public void addLayoutComponent(String name, Component comp) {
+        u.p("adding: " + name);
     }
     
     public void layoutContainer(Container parent) {

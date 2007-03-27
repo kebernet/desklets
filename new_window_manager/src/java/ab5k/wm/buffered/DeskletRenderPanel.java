@@ -2,11 +2,13 @@ package ab5k.wm.buffered;
 
 import ab5k.desklet.DeskletContainer;
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.swing.CellRendererPane;
 import javax.swing.JPanel;
@@ -22,6 +24,7 @@ class DeskletRenderPanel extends JPanel {
     
     
     private CellRendererPane rendererPane;
+    private boolean animating = false;
     
     
     public DeskletRenderPanel(BufferedWM bufferedWM) {
@@ -29,7 +32,10 @@ class DeskletRenderPanel extends JPanel {
         this.bufferedWM = bufferedWM;
         rendererPane = new CellRendererPane();
         add(rendererPane);
+        this.setLayout(new AbsLayout());
     }
+    
+    
     
     protected void paintComponent(Graphics g) {
         //u.p("repainting main panel");
@@ -38,6 +44,11 @@ class DeskletRenderPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         
         g.setColor(Color.RED);
+        if(isAnimating()) {
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        } else {
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        }
         for(DeskletContainer dc : this.bufferedWM.desklets) {
             if(dc instanceof BufferedDeskletContainer) {
                 BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
@@ -71,8 +82,8 @@ class DeskletRenderPanel extends JPanel {
                 g3.translate(pt.x,pt.y);
                 g3.translate(size.width/2,size.height/2);
                 g3.rotate(bdc.getRotation(),0,0);
-                g3.scale(bdc.getScale(),bdc.getScale());
                 g3.translate(-size.width/2,-size.height/2);
+                g3.scale(bdc.getScale(),bdc.getScale());
                 
                 if(g3.getClip().intersects(0,0,bdc.getBuffer().getWidth(),bdc.getBuffer().getHeight())) {
                     g3.drawImage(bdc.getBuffer(), 0, 0, null);
@@ -84,9 +95,31 @@ class DeskletRenderPanel extends JPanel {
                     }  else {
                         g3.setColor(Color.BLACK);
                     }
+                    g3.setStroke(new BasicStroke(3));
                     g3.drawRect(0, 0, size.width, size.height);
                 }
-                g3.dispose();
+                
+                if(this.bufferedWM.DEBUG_BORDERS) {
+                    g3.setColor(Color.GRAY);
+                    String text = pt.x + "," + pt.y + " - " + bdc.getSize().getWidth() + "x" + bdc.getSize().getHeight();
+                    g3.drawString(text,5,16);
+                    g3.setColor(Color.WHITE);
+                    g3.drawString(text,6,17);
+                    g3.dispose();
+                }
+                /*
+                 
+                // draw the close boxes
+                Graphics2D g4 = (Graphics2D) g2.create();
+                g4.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g4.translate(pt.x,pt.y);
+                g4.translate(-30,0);
+                g4.setColor(Color.BLACK);
+                g4.setStroke(new BasicStroke(4));
+                g4.drawOval(0,0,20,20);
+                g4.drawLine(0,0,20,20);
+                g4.drawLine(20,0,0,20);
+                g4.dispose();*/
             }
         }
         
@@ -96,5 +129,13 @@ class DeskletRenderPanel extends JPanel {
             g2.draw(g2.getClip());
         }
         
+    }
+    
+    public boolean isAnimating() {
+        return animating;
+    }
+    
+    public void setAnimating(boolean animating) {
+        this.animating = animating;
     }
 }
