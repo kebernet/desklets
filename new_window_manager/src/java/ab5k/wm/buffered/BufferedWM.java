@@ -134,7 +134,7 @@ public class BufferedWM extends WindowManager {
                 }
             }
         });
-        buttonPanel.add(btn);
+        //buttonPanel.add(btn);
         
         JButton startButton = new JButton("Start");
         startButton.addActionListener(new ActionListener() {
@@ -147,7 +147,7 @@ public class BufferedWM extends WindowManager {
                 }
             }
         });
-        buttonPanel.add(startButton);
+        //buttonPanel.add(startButton);
         final ManagePanelAnimations mpa = new ManagePanelAnimations(this);
         
         final JToggleButton manageButton = new JToggleButton("Manage");
@@ -197,7 +197,7 @@ public class BufferedWM extends WindowManager {
         }).start();
     }
     
-    private BufferedDeskletContainer findContainer(Point pt) {
+    BufferedDeskletContainer findContainer(Point pt) {
         for(int i=desklets.size()-1; i>=0; i--) {
             DeskletContainer dc = desklets.get(i);
             if(dc instanceof BufferedDeskletContainer) {
@@ -224,65 +224,6 @@ public class BufferedWM extends WindowManager {
         }
     }
     
-    void redispatch(MouseEvent e) {
-        if(!desklets.isEmpty()) {
-            BufferedDeskletContainer bdc = findContainer(e.getPoint());
-            if(bdc != null) {
-                Point pt = bdc.getLocation();
-                Point ept = e.getPoint();
-                ept.translate(-pt.x,-pt.y);
-                //e.translatePoint(-pt.x,-pt.y);
-                JComponent comp = bdc.comp;
-                comp.setSize(new Dimension((int)bdc.getSize().getWidth(),
-                        (int)bdc.getSize().getHeight()));
-                comp.setLocation(0,0);
-                redispatchToLowest(comp,e,ept);
-            }
-        }
-    }
-    
-    private void redispatchToLowest(JComponent comp, MouseEvent e, Point ept) {
-        //u.p("comp = " + comp.getClass());
-        //u.p("e = " + e);
-        
-        // translate into the top component space
-        //e.translatePoint(comp.getX(),comp.getY());
-        ept.translate(comp.getX(), comp.getY());
-        //u.p("e = " + e);
-        //u.p("point = " + e.getPoint());
-        
-        // find the deepest child to send this event to
-        Component child = SwingUtilities.getDeepestComponentAt(comp,ept.x,ept.y);
-        Point pt2 = SwingUtilities.convertPoint(comp,ept,child);
-        //u.p("pt2 = " + pt2);
-        //u.p("final child = " + child);
-        
-        if(child != null) {
-            // pass the mouse event back up the stack if this component doesn't
-            // care about mouse events. w/o this we'd lose dragging
-            // go back up the stack
-            while(child.getMouseListeners() == null ||
-                    child.getMouseListeners().length == 0) {
-                pt2.translate(child.getX(),child.getY());
-                child = child.getParent();
-                //u.p("back up to parent " + child);
-            }
-            MouseEvent e2 = new MouseEvent(child,
-                    e.getID(),
-                    e.getWhen(),
-                    e.getModifiers(),
-                    pt2.x,
-                    pt2.y,
-                    e.getXOnScreen(),
-                    e.getYOnScreen(),
-                    e.getClickCount(),
-                    e.isPopupTrigger(),
-                    e.getButton());
-            //u.p("e2 = " + e2);
-            child.dispatchEvent(e2);
-        }
-        //child.dispatchEvent(e);
-    }
     
     /* ===== methods dealing with the overall conatiner === */
     public Object getTopLevel() {
