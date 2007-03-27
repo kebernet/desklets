@@ -19,25 +19,22 @@ import javax.swing.JPanel;
 import org.joshy.util.u;
 
 
-public class BufferedDeskletContainer implements DeskletContainer {
+public class BufferedDeskletContainer extends BaseDC {
     JComponent comp;
     private Point location = new Point(-1, -1);
-    Dimension2D size = new Dimension(50, 50);
     
     private boolean draggable = false;
     MoveMouseListener mml;
     
-    private JComponent content;
     private BufferedImage buffer;
     private float alpha = 1f;
     private double rotation = 0;
     private double scale = 1.0;
 
     private boolean dirty = true;
-    DefaultContext context;
     
     BufferedDeskletContainer(BufferedWM wm, DefaultContext context) {
-        this.context = context;
+        super(wm, context);
         comp = new DeskletToplevel();
         comp.setBorder(BorderFactory.createLineBorder(Color.RED));
         comp.setLayout(new BorderLayout());
@@ -45,10 +42,29 @@ public class BufferedDeskletContainer implements DeskletContainer {
         setBackgroundDraggable(false);
     }
     
+    Dimension2D size = new Dimension(50, 50);
+    
     public Dimension2D getSize() {
         return size;
     }
     
+    public void setSize(Dimension2D dimension2D) {
+        comp.setSize((Dimension) dimension2D);
+        this.size = dimension2D;
+    }
+    
+    public double getScale() {
+        return scale;
+    }
+
+    public Point getLocation() {
+        return location;
+    }
+    
+    public void setLocation(Point point) {
+        this.location = point;
+    }
+
     
     // must rewrite this to use a global mouse since the desklet won't
     // get the mouse events anymore
@@ -57,7 +73,6 @@ public class BufferedDeskletContainer implements DeskletContainer {
             return;
         }
         if(backgroundDraggable) {
-            u.p("added drag listener");
             comp.addMouseListener(mml);
             comp.addMouseMotionListener(mml);
         } else {
@@ -67,7 +82,6 @@ public class BufferedDeskletContainer implements DeskletContainer {
     }
     
     public void setContent(JComponent content) {
-        u.p("content set to : " + content);
         if(this.content != null) {
             comp.remove(this.content);
         }
@@ -75,6 +89,7 @@ public class BufferedDeskletContainer implements DeskletContainer {
         comp.add(content,"Center");
         comp.setSize(comp.getLayout().preferredLayoutSize(comp));
         setSize(comp.getSize());
+        setDirty(true);
         //comp.getLayout().layoutContainer(comp);
         //comp.validate();
     }
@@ -85,20 +100,7 @@ public class BufferedDeskletContainer implements DeskletContainer {
     public void setShaped(boolean b) {
     }
     
-    public void setSize(Dimension2D dimension2D) {
-        comp.setSize((Dimension) dimension2D);
-        this.size = dimension2D;
-    }
-    
     public void setVisible(boolean b) {
-    }
-    
-    public Point getLocation() {
-        return location;
-    }
-    
-    public void setLocation(Point point) {
-        this.location = point;
     }
     
     public BufferedImage getBuffer() {
@@ -125,10 +127,6 @@ public class BufferedDeskletContainer implements DeskletContainer {
         this.rotation = rotation;
     }
 
-    public double getScale() {
-        return scale;
-    }
-
     public void setScale(double scale) {
         this.scale = scale;
     }
@@ -141,10 +139,6 @@ public class BufferedDeskletContainer implements DeskletContainer {
         return this.dirty;
     }
 
-    JComponent getContent() {
-        u.p("content still: " + this.content);
-        return this.content;
-    }
 
 
 }

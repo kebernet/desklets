@@ -196,7 +196,7 @@ public class ManagePanelAnimations {
                 });
             }
         }
-        anim.addTarget(new Repainter(wm.panel));
+        anim.addTarget(new AnimRepainter(wm.panel));
         anim.addTarget(new ToggleAnimatingProperty());
         anim.start();
     }
@@ -215,7 +215,7 @@ public class ManagePanelAnimations {
                 }
             }
         }
-        anim.addTarget(new Repainter(wm.panel));
+        anim.addTarget(new AnimRepainter(wm.panel));
         anim.addTarget(new TimingTarget() {
             public void begin() {
                 for(JButton b : stopButtons.values()) {
@@ -233,27 +233,6 @@ public class ManagePanelAnimations {
         anim.addTarget(new ToggleAnimatingProperty());
         anim.start();
         originalLocations.clear();
-    }
-
-    private class Repainter implements TimingTarget {
-
-        private JComponent comp;
-        public Repainter(JComponent comp) {
-            this.comp = comp;
-        }
-
-        public void begin() {
-        }
-
-        public void end() {
-        }
-
-        public void repeat() {
-        }
-
-        public void timingEvent(float f) {
-            comp.repaint();
-        }
     }
 
     private class ToggleAnimatingProperty implements TimingTarget {

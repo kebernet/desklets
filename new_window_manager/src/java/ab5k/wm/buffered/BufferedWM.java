@@ -65,7 +65,7 @@ public class BufferedWM extends WindowManager {
     static final boolean DEBUG_BORDERS = false;
     static final boolean DEBUG_REPAINT_AREA = false;
     
-    List<DeskletContainer> desklets;
+    List<BaseDC> desklets;
     JFrame frame;
     DeskletRenderPanel panel;
     
@@ -81,7 +81,7 @@ public class BufferedWM extends WindowManager {
         hidden = new JDialog();
         //hidden.setVisible(true);
         RepaintManager.setCurrentManager(new DeskletRepaintManager(this));
-        desklets = new ArrayList<DeskletContainer>();
+        desklets = new ArrayList<BaseDC>();
         
         panel = new DeskletRenderPanel(this);
         frame = new JFrame("AB5k");
@@ -172,7 +172,7 @@ public class BufferedWM extends WindowManager {
         if(dc instanceof BufferedDeskletContainer) {
             DeskletManager manager = DeskletManager.getInstance();
             manager.shutdownDesklet(
-                    ((BufferedDeskletContainer)dc).context.getConfig().getUUID());
+                    ((BufferedDeskletContainer)dc).getContext().getConfig().getUUID());
         }
     }
     void stop(final DeskletRunner d) {
@@ -315,12 +315,10 @@ public class BufferedWM extends WindowManager {
     
     public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
         if(dc == null) return null;
-        desklets.remove(dc);
-        JFrameDeskletContainer cont = new JFrameDeskletContainer(this);
-        BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+        BaseDC bdc = (BaseDC) dc;
+        desklets.remove(bdc);
+        JFrameDeskletContainer cont = new JFrameDeskletContainer(this, bdc.getContext());
         cont.setContent(bdc.getContent());
-        //JFrameDeskletContainter cont = new JFrameDeskletContainer(this);
-        //cont.setLocation(new Point(300,300));
         desklets.add(cont);
         cont.frame.pack();
         cont.setVisible(true);
@@ -329,11 +327,12 @@ public class BufferedWM extends WindowManager {
     
     public DeskletContainer convertExternalToInternalContainer(DeskletContainer dc) {
         if(dc == null) return null;
-        desklets.remove(dc);
+        BaseDC bdc = (BaseDC) dc;
+        desklets.remove(bdc);
         JFrameDeskletContainer jdc = (JFrameDeskletContainer) dc;
         jdc.frame.getContentPane().remove(jdc.getContent());
         
-        BufferedDeskletContainer cont = new BufferedDeskletContainer(this,null);
+        BufferedDeskletContainer cont = new BufferedDeskletContainer(this, bdc.getContext());
         cont.setContent(jdc.getContent());
         desklets.add(cont);
         hidden.add(cont.comp);
@@ -347,23 +346,18 @@ public class BufferedWM extends WindowManager {
     }
     
     public void animateCreation(DeskletContainer dc) {
-        //panel.add(((BufferedDeskletContainer)dc).comp);
-        desklets.add((BufferedDeskletContainer) dc);
-        hidden.add(((BufferedDeskletContainer)dc).comp);
-        ((BufferedDeskletContainer)dc).setLocation(new Point(100,100));
+        BaseDC bdc = (BaseDC) dc;
+        desklets.add(bdc);
+        if(bdc instanceof BufferedDeskletContainer) {
+            hidden.add(((BufferedDeskletContainer)dc).comp);
+        }
+        bdc.setLocation(new Point(100,100));
         Animator anim = new Animator(750);
         anim.addTarget(new PropertySetter(dc,"location",new Point(100,100), new Point(100,100)));
         anim.addTarget(new PropertySetter(dc,"alpha",0f,1f));
         anim.addTarget(new PropertySetter(dc,"rotation",Math.PI,Math.PI*2.0));
         anim.addTarget(new PropertySetter(dc,"scale",0.1,1.0));
-        anim.addTarget(new TimingTarget() {
-            public void begin() {  }
-            public void end() {  }
-            public void repeat() { }
-            public void timingEvent(float f) {
-                panel.repaint();
-            }
-        });
+        anim.addTarget(new AnimRepainter(panel));
         anim.start();
     }
     
@@ -411,8 +405,4 @@ public class BufferedWM extends WindowManager {
         BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
         return bdc.getLocation();
     }
-    
-    
-    
-    
 }

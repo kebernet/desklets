@@ -10,7 +10,9 @@
 package ab5k.wm.buffered;
 
 import ab5k.desklet.DeskletContainer;
+import ab5k.security.DefaultContext;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.geom.Dimension2D;
@@ -23,16 +25,12 @@ import org.joshy.util.u;
  *
  * @author joshy
  */
-public class JFrameDeskletContainer implements DeskletContainer {
-    
-    private BufferedWM wm;
+public class JFrameDeskletContainer extends BaseDC {
     JFrame frame;
     
-    private JComponent content;
-    
     /** Creates a new instance of JFrameDeskletContainer */
-    public JFrameDeskletContainer(final BufferedWM wm) {
-        this.wm = wm;
+    public JFrameDeskletContainer(final BufferedWM wm, DefaultContext context) {
+        super(wm, context);
         this.frame = new JFrame();
         this.frame.addComponentListener(new ComponentListener() {
             public void componentHidden(ComponentEvent e) {
@@ -82,8 +80,13 @@ public class JFrameDeskletContainer implements DeskletContainer {
         frame.setSize(new Dimension((int)d.getWidth(), (int)d.getHeight()));
     }
     
-    JComponent getContent() {
-        return content;
+
+    public Point getLocation() {
+        return frame.getLocation();
+    }
+
+    public void setLocation(Point point) {
+        frame.setLocation(point);
     }
     
 }
