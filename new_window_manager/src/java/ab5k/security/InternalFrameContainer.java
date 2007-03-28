@@ -14,7 +14,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Shape;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -32,7 +34,7 @@ import org.joshy.util.u;
  *
  * @author cooper
  */
-public class InternalFrameContainer implements DeskletContainer {
+public class InternalFrameContainer extends DeskletContainer {
     JComponent content;
     JDesktopPane desktop;
     public JInternalFrame iframe = new JInternalFrame() {
@@ -145,6 +147,18 @@ public class InternalFrameContainer implements DeskletContainer {
     
     public void setVisible(boolean visible) {
         iframe.setVisible(visible);
+    }
+
+    // do nothing for now
+    public void setShape(Shape shape) {
+    }
+
+    // do nothing for now
+    public void setLocation(Point2D location) {
+    }
+
+    public void pack() {
+        iframe.pack();
     }
     
     class HackedInternalFrameUI extends BasicInternalFrameUI {

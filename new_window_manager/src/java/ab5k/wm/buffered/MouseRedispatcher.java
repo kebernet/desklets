@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import org.joshy.util.u;
@@ -42,6 +43,8 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     
     public void mouseReleased(MouseEvent e) {
         redispatch(e);
+        lastComp = null;
+        lastDC = null;
     }
     
     public void mouseDragged(MouseEvent e) {
@@ -54,7 +57,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     
     
     void redispatch(MouseEvent e) {
-        if(!bufferedWM.desklets.isEmpty()) {
+        if(!bufferedWM.getDesklets().isEmpty()) {
             BufferedDeskletContainer bdc = bufferedWM.findContainer(e.getPoint());
             if(bdc != null) {
                 lastDC = bdc;
@@ -66,7 +69,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     // redispatches drag events to the desklet being dragged rather 
     // than to the desklet currently under the mouse
     private void redispatchDragged(MouseEvent e) {
-        if(bufferedWM.desklets.isEmpty()) {
+        if(bufferedWM.getDesklets().isEmpty()) {
             redispatch(e);
             return;
         }
@@ -77,9 +80,9 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     }
     
     private void redispatch(final MouseEvent e, final BufferedDeskletContainer bdc) {
-        Point pt = bdc.getLocation();
+        Point2D pt = bdc.getLocation();
         Point ept = e.getPoint();
-        ept.translate(-pt.x,-pt.y);
+        ept.translate((int)-pt.getX(),(int)-pt.getY());
         //e.translatePoint(-pt.x,-pt.y);
         JComponent comp = bdc.comp;
         comp.setSize(new Dimension((int)bdc.getSize().getWidth(),

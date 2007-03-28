@@ -4,6 +4,7 @@ import ab5k.desklet.DeskletContainer;
 import ab5k.wm.WindowManager;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 import javax.swing.*;
 import org.joshy.util.u;
 
@@ -30,8 +31,7 @@ public class MoveMouseListener implements MouseListener, MouseMotionListener {
 */
     Point getScreenLocation(MouseEvent e) {
         Point cursor = e.getPoint();
-        Point target_location = wm.getLocation(dc);
-        //Point target_location = this.target.getLocationOnScreen();
+        Point2D target_location = wm.getLocation(dc);
         return new Point(
             (int)(target_location.getX()+cursor.getX()),
             (int)(target_location.getY()+cursor.getY()));
@@ -42,7 +42,7 @@ public class MoveMouseListener implements MouseListener, MouseMotionListener {
     public void mousePressed(MouseEvent e) {
         this.start_drag = this.getScreenLocation(e);
         //this.start_loc = this.getFrame(this.target).getLocation();
-        this.start_loc = wm.getLocation(dc);
+        this.start_loc = GraphicsUtil.toPoint(wm.getLocation(dc));
     }
 
     public void mouseReleased(MouseEvent e) {}

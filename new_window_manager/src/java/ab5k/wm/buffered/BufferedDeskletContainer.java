@@ -9,9 +9,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -21,7 +23,7 @@ import org.joshy.util.u;
 
 public class BufferedDeskletContainer extends BaseDC {
     JComponent comp;
-    private Point location = new Point(-1, -1);
+    private Point2D location = new Point(-1, -1);
     
     private boolean draggable = false;
     MoveMouseListener mml;
@@ -32,6 +34,8 @@ public class BufferedDeskletContainer extends BaseDC {
     private double scale = 1.0;
 
     private boolean dirty = true;
+
+    private boolean visible = false;
     
     BufferedDeskletContainer(BufferedWM wm, DefaultContext context) {
         super(wm, context);
@@ -57,11 +61,11 @@ public class BufferedDeskletContainer extends BaseDC {
         return scale;
     }
 
-    public Point getLocation() {
+    public Point2D getLocation() {
         return location;
     }
     
-    public void setLocation(Point point) {
+    public void setLocation(Point2D point) {
         this.location = point;
     }
 
@@ -87,11 +91,7 @@ public class BufferedDeskletContainer extends BaseDC {
         }
         this.content = content;
         comp.add(content,"Center");
-        comp.setSize(comp.getLayout().preferredLayoutSize(comp));
-        setSize(comp.getSize());
-        setDirty(true);
-        //comp.getLayout().layoutContainer(comp);
-        //comp.validate();
+        pack();
     }
     
     public void setResizable(boolean b) {
@@ -101,6 +101,7 @@ public class BufferedDeskletContainer extends BaseDC {
     }
     
     public void setVisible(boolean b) {
+        this.visible = b;
     }
     
     public BufferedImage getBuffer() {
@@ -137,6 +138,21 @@ public class BufferedDeskletContainer extends BaseDC {
 
     boolean isDirty() {
         return this.dirty;
+    }
+
+    // do nothing for now
+    public void setShape(Shape shape) {
+    }
+
+    public void pack() {
+        // how do we do packing?
+        comp.setSize(comp.getLayout().preferredLayoutSize(comp));
+        setSize(comp.getSize());
+        setDirty(true);
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 
 

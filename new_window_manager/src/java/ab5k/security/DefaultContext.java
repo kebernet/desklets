@@ -14,6 +14,7 @@ import ab5k.desklet.DeskletContext;
 
 import java.awt.Container;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,11 +33,11 @@ import org.joshy.util.u;
  *
  * @author cooper
  */
-public class DefaultContext implements DeskletContext {
+public class DefaultContext extends DeskletContext {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private BrowserHandler browserHandler;
-    private Container configDisplay;
-    private Container dialogDisplay;
+    private DeskletContainer configDisplay;
+    private DeskletContainer dialogDisplay;
     private DeskletConfig config;
     private DeskletContainer container;
     private DeskletContainer dockingDisplay;
@@ -81,7 +82,7 @@ public class DefaultContext implements DeskletContext {
         FileOutputStream fos = new FileOutputStream(props);
         //InternalFrameContainer ifc = (InternalFrameContainer) this.container;
         u.p("container = " + container);
-        Point pt = core.getWindowManager().getLocation(container);
+        Point2D pt = core.getWindowManager().getLocation(container);
         u.p("pt = " + pt);
         prefs.setProperty(ContainerFactory.LOCATION_X, Integer.toString( (int) pt.getX() ) );
         prefs.setProperty(ContainerFactory.LOCATION_Y, Integer.toString( (int) pt.getY()) );
@@ -97,7 +98,10 @@ public class DefaultContext implements DeskletContext {
         return this.config;
     }
 
-    public Container getConfigurationContainer() {
+    public DeskletContainer getConfigurationContainer() {
+        this.configDisplay = (this.configDisplay == null) ? 
+            ContainerFactory.getInstance().createConfigContainer(this)
+            : this.configDisplay;
         return this.configDisplay;
     }
 
@@ -109,8 +113,8 @@ public class DefaultContext implements DeskletContext {
        return this.container;
     }
 
-    public Container getDialog() {
-        return this.dialogDisplay;
+    public DeskletContainer getDialog() {
+        return null;
     }
 
     public DeskletContainer getDockingContainer() {

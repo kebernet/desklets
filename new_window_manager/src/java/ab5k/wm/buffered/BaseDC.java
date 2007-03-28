@@ -14,13 +14,14 @@ import ab5k.security.DefaultContext;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import javax.swing.JComponent;
 
 /**
  *
  * @author joshy
  */
-public abstract class BaseDC implements DeskletContainer {
+public abstract class BaseDC extends DeskletContainer {
     
     /** Creates a new instance of BaseDC */
     public BaseDC(BufferedWM wm, DefaultContext context) {
@@ -35,9 +36,9 @@ public abstract class BaseDC implements DeskletContainer {
     
 
     
-    public abstract Point getLocation();
+    public abstract Point2D getLocation();
     
-    public abstract void setLocation(Point point);
+    public abstract void setLocation(Point2D point);
     
     JComponent getContent() {
         return this.content;

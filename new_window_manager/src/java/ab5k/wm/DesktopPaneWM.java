@@ -15,9 +15,11 @@ import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import ab5k.security.InternalFrameContainer;
+import ab5k.util.GraphicsUtil;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.HashMap;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
@@ -88,11 +90,11 @@ public class DesktopPaneWM extends WindowManager {
         
     }
     
-    public void setLocation(DeskletContainer ifc, Point point) {
-        ((InternalFrameContainer)ifc).iframe.setLocation(point);
+    public void setLocation(DeskletContainer ifc, Point2D point) {
+        ((InternalFrameContainer)ifc).iframe.setLocation(GraphicsUtil.toPoint(point));
     }
     
-    public Point getLocation(DeskletContainer deskletContainer) {
+    public Point2D getLocation(DeskletContainer deskletContainer) {
         final InternalFrameContainer ifc = (InternalFrameContainer) deskletContainer;
         Point location = ifc.iframe.getLocation();
         return location;
@@ -126,6 +128,10 @@ public class DesktopPaneWM extends WindowManager {
         }
         frame.getContentPane().validate();
         dock.validate();
+    }
+
+    public DeskletContainer createDialog(DeskletContainer deskletContainer) {
+        return null;
     }
     
 }

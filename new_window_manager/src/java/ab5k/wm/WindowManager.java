@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ComponentListener;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
@@ -32,6 +33,8 @@ public abstract class WindowManager {
     abstract public void animateDestruction(DeskletContainer dc);
     
     abstract public void destroyContainer(DeskletContainer dc);
+    
+    abstract public DeskletContainer createDialog(DeskletContainer deskletContainer);
     
     
     public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
@@ -82,9 +85,9 @@ public abstract class WindowManager {
 
     public abstract Dimension getContainerSize();
 
-    public abstract void setLocation(DeskletContainer ifc, Point point);
+    public abstract void setLocation(DeskletContainer ifc, Point2D point);
 
-    public abstract Point getLocation(DeskletContainer deskletContainer);
+    public abstract Point2D getLocation(DeskletContainer deskletContainer);
 
     public abstract void setDockComponent(JComponent dock);
     

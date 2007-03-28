@@ -8,6 +8,7 @@ package ab5k.security;
 import ab5k.desklet.DeskletContainer;
 import ab5k.wm.WindowManager;
 import java.awt.Dimension;
+import java.awt.geom.Point2D;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
@@ -49,7 +50,7 @@ public class ContainerFactory {
 
         if(context.hasContainer()) {
             // save the state
-            Point location = wm.getLocation(context.getContainer());
+            Point2D location = wm.getLocation(context.getContainer());
             
             context.setPreference(ContainerFactory.LOCATION_X,
                 Double.toString(location.getX()));
@@ -105,6 +106,12 @@ public class ContainerFactory {
         wm.animateCreation(ifc);
         return ifc;
     }
+    
+    DeskletContainer createConfigContainer(DefaultContext defaultContext) {
+        DeskletContainer dc = wm.createDialog(defaultContext.getContainer());
+        return dc;
+    }
+    
 
     public static ContainerFactory getInstance() {
         return instance;
@@ -114,4 +121,5 @@ public class ContainerFactory {
         this.wm = wm;
         this.dock = dock;
     }
+
 }

@@ -11,11 +11,14 @@ package ab5k.wm.buffered;
 
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
+import ab5k.util.GraphicsUtil;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -81,12 +84,20 @@ public class JFrameDeskletContainer extends BaseDC {
     }
     
 
-    public Point getLocation() {
+    public Point2D getLocation() {
         return frame.getLocation();
     }
 
-    public void setLocation(Point point) {
-        frame.setLocation(point);
+    public void setLocation(Point2D point) {
+        frame.setLocation(GraphicsUtil.toPoint(point));
+    }
+
+    // do nothing for now
+    public void setShape(Shape shape) {
+    }
+
+    public void pack() {
+        frame.pack();
     }
     
 }

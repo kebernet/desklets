@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,13 +134,13 @@ public class ManagePanelAnimations {
     }
     
 
-    Map<BufferedDeskletContainer, Point> originalLocations = new HashMap<BufferedDeskletContainer, Point>();
+    Map<BufferedDeskletContainer, Point2D> originalLocations = new HashMap<BufferedDeskletContainer, Point2D>();
     Map<BufferedDeskletContainer, JButton> stopButtons = new HashMap<BufferedDeskletContainer, JButton>();
     
     void moveDeskletsToColumns() {
         Animator anim = new Animator(500);
-        for(int i=0; i<wm.desklets.size(); i++) {
-            DeskletContainer dc = wm.desklets.get(i);
+        for(int i=0; i<wm.getDesklets().size(); i++) {
+            DeskletContainer dc = wm.getDesklets().get(i);
             if(dc instanceof BufferedDeskletContainer) {
                 final BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
                 
@@ -177,7 +178,8 @@ public class ManagePanelAnimations {
                         close.setRolloverIcon(closeOverIcon);
                         close.setBorderPainted(false);
                         close.setOpaque(false);
-                        close.setLocation(bdc.getLocation().x-44,bdc.getLocation().y);
+                        close.setLocation((int)bdc.getLocation().getX()-44,
+                                (int)bdc.getLocation().getY());
                         wm.panel.add(close);
                         close.setPreferredSize(new Dimension(40,40));
                         close.setSize(new Dimension(40,40));
@@ -203,7 +205,7 @@ public class ManagePanelAnimations {
 
     void moveDeskletsToOriginalPositions() {
         Animator anim = new Animator(500);
-        for(DeskletContainer dc : wm.desklets) {
+        for(DeskletContainer dc : wm.getDesklets()) {
             if(dc instanceof BufferedDeskletContainer) {
                 BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
                 anim.addTarget(new PropertySetter(bdc,"location",

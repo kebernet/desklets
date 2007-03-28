@@ -27,7 +27,7 @@ class DeskletRepaintManager extends RepaintManager {
             
             bdc.setDirty(true);
             super.addDirtyRegion(wm.panel,
-                    bdc.getLocation().x, bdc.getLocation().y,
+                    (int)bdc.getLocation().getX(), (int)bdc.getLocation().getY(),
                     (int)bdc.getSize().getWidth(), (int)bdc.getSize().getHeight());
         }
         
@@ -37,7 +37,7 @@ class DeskletRepaintManager extends RepaintManager {
     private BufferedDeskletContainer findDesklet(Component invalidComponent) {
         // if at the top most comp
         if(invalidComponent instanceof DeskletToplevel) {
-            for(DeskletContainer dc : wm.desklets) {
+            for(DeskletContainer dc : wm.getWindows()) {
                 if(dc instanceof BufferedDeskletContainer) {
                     BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
                     if(bdc.comp == invalidComponent) {
