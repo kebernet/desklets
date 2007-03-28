@@ -4,39 +4,52 @@ import ab5k.desklet.DeskletContainer;
 import ab5k.desklet.DeskletContext;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.Window;
 import java.awt.geom.Dimension2D;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.RootPaneContainer;
 
-class TestDeskletContext implements DeskletContext {
+class TestDeskletContext extends DeskletContext {
     
     private DeskletContainer frame;
+    private JFrame jframe;
     private DeskletContainer dockingFrame;
+    private DeskletContainer configFrame;
     private Map<String, String> prefs;
     
     public TestDeskletContext(JFrame frame, JFrame dockingFrame) {
         super();
         prefs = new HashMap<String,String>();
         this.frame = new TestContainer(frame);
+        this.jframe = frame;
         this.dockingFrame = new TestContainer( dockingFrame );
     }
     
     public void closeRequest() {
     }
     
-    public Container getConfigurationContainer() {
-        return null;
+    public DeskletContainer getConfigurationContainer() {
+        if(configFrame == null) {
+            JDialog dialog = new JDialog(jframe);
+            this.configFrame = new TestContainer(dialog);
+        }
+        return configFrame;
     }
     
     public DeskletContainer getContainer() {
         return frame;
     }
     
-    public Container getDialog() {
+    public DeskletContainer getDialog() {
         return null;
     }
     
@@ -69,39 +82,62 @@ class TestDeskletContext implements DeskletContext {
     public File getWorkingDirectory() {
         // TODO
         return null;
-    }    
+    }
     
-    private static class TestContainer implements DeskletContainer {
+    private static class TestContainer extends DeskletContainer {
         
-        JFrame frame;
+        RootPaneContainer frame;
+        Window window;
+        boolean packed = false;
         
-        TestContainer( JFrame frame ){
+        TestContainer( RootPaneContainer frame ){
             this.frame = frame;
+            this.window = (Window)frame;
         }
         
         public void setContent(JComponent component) {
-            frame.add( component );
+            frame.getContentPane().removeAll();
+            frame.getContentPane().add(component);
         }
         
         public void setSize(Dimension2D size) {
-            frame.setSize(new Dimension((int)size.getWidth(),(int)size.getHeight()));
+            window.setSize(new Dimension((int)size.getWidth(),(int)size.getHeight()));
         }
         
         public void setVisible(boolean visible) {
+            if(!packed) {
+                window.pack();
+                packed = true;
+            }
+            window.setVisible(visible);
         }
         
         public void setShaped(boolean shaped) {
         }
         
         public void setResizable(boolean resizable) {
-            frame.setResizable(false);
+            if(frame instanceof JFrame) {
+                ((JFrame)frame).setResizable(false);
+            }
         }
         
         public void setBackgroundDraggable(boolean backgroundDraggable) {
         }
         
         public Dimension2D getSize() {
-            return frame.size();
+            return window.getSize();
+        }
+        
+        public void setShape(Shape shape) {
+        }
+        
+        public void setLocation(Point2D location) {
+            window.setLocation((Point) location);
+        }
+
+        public void pack() {
+            window.pack();
+            packed = true;
         }
         
     }
