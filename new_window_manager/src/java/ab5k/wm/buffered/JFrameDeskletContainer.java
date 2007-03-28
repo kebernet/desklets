@@ -12,15 +12,18 @@ package ab5k.wm.buffered;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import ab5k.util.GraphicsUtil;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Shape;
+import java.awt.Window;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import org.joshy.util.u;
 
@@ -30,11 +33,17 @@ import org.joshy.util.u;
  */
 public class JFrameDeskletContainer extends BaseDC {
     JFrame frame;
+    RootPaneContainer root;
+    Window window;
+
+    private boolean packed = false;
     
     /** Creates a new instance of JFrameDeskletContainer */
     public JFrameDeskletContainer(final BufferedWM wm, DefaultContext context) {
         super(wm, context);
         this.frame = new JFrame();
+        this.root = this.frame;
+        this.window = frame;
         this.frame.addComponentListener(new ComponentListener() {
             public void componentHidden(ComponentEvent e) {
             }
@@ -59,7 +68,7 @@ public class JFrameDeskletContainer extends BaseDC {
     
     public void setContent(JComponent jComponent) {
         this.content = jComponent;
-        frame.getContentPane().add(jComponent);
+        root.getContentPane().add(jComponent);
     }
     
     public void setBackgroundDraggable(boolean b) {
@@ -71,25 +80,29 @@ public class JFrameDeskletContainer extends BaseDC {
     public void setResizable(boolean b) {
     }
     
-    public void setVisible(boolean b) {
-        frame.setVisible(b);
+    public void setVisible(boolean visible) {
+        if(!packed) {
+            window.pack();
+            packed=true;
+        }
+        window.setVisible(visible);
     }
     
     public Dimension2D getSize() {
-        return frame.getSize();
+        return window.getSize();
     }
     
     public void setSize(Dimension2D d) {
-        frame.setSize(new Dimension((int)d.getWidth(), (int)d.getHeight()));
+        window.setSize(new Dimension((int)d.getWidth(), (int)d.getHeight()));
     }
     
 
     public Point2D getLocation() {
-        return frame.getLocation();
+        return window.getLocation();
     }
 
     public void setLocation(Point2D point) {
-        frame.setLocation(GraphicsUtil.toPoint(point));
+        window.setLocation(GraphicsUtil.toPoint(point));
     }
 
     // do nothing for now
@@ -97,7 +110,11 @@ public class JFrameDeskletContainer extends BaseDC {
     }
 
     public void pack() {
-        frame.pack();
+        window.pack();
+    }
+
+    public boolean isVisible() {
+        return window.isVisible();
     }
     
 }

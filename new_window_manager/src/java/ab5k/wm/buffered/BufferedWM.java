@@ -263,14 +263,20 @@ public class BufferedWM extends WindowManager {
     
     public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
         if(dc == null) return null;
+        u.p("old container = " + dc + " " + dc.hashCode());
         BaseDC bdc = (BaseDC) dc;
+        
+        u.p("context = " + bdc.getContext());
+        DefaultContext context = bdc.getContext();
         getDesklets().remove(bdc);
-        JFrameDeskletContainer cont = new JFrameDeskletContainer(this, bdc.getContext());
-        cont.setContent(bdc.getContent());
-        getDesklets().add(cont);
-        cont.frame.pack();
-        cont.setVisible(true);
-        return cont;
+        JFrameDeskletContainer newContainer = new JFrameDeskletContainer(this, context);
+        newContainer.setContent(bdc.getContent());
+        getDesklets().add(newContainer);
+        newContainer.pack();
+        newContainer.setVisible(true);
+        context.setContainer(newContainer);
+        u.p("creating the new container: " + newContainer + " " + newContainer.hashCode());
+        return newContainer;
     }
     
     public DeskletContainer convertExternalToInternalContainer(DeskletContainer dc) {
@@ -354,27 +360,46 @@ public class BufferedWM extends WindowManager {
         BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
         return bdc.getLocation();
     }
-
+    
     public DeskletContainer createDialog(DeskletContainer deskletContainer) {
-        u.p("creating a dialog");
-        BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
-        BufferedDeskletContainer dialog = new BufferedDeskletContainer(this,bdc.getContext());
-        dialog.setLocation(new Point2D.Double(
-                bdc.getLocation().getX()+bdc.getSize().getWidth()/2,
-                bdc.getLocation().getY()+bdc.getSize().getHeight()/2));
-        addDialog(bdc,dialog);
-        panel.repaint();
-        return dialog;
+        u.p("creating a dialog for: " + deskletContainer + " " + deskletContainer.hashCode());
+        try {
+            if(deskletContainer instanceof BufferedDeskletContainer) {
+                u.p("doing buffered");
+                BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
+                u.p("context = " + bdc.getContext());
+                BufferedDeskletContainer dialog = new BufferedDeskletContainer(this,bdc.getContext());
+                dialog.setLocation(new Point2D.Double(
+                        bdc.getLocation().getX()+bdc.getSize().getWidth()/2,
+                        bdc.getLocation().getY()+bdc.getSize().getHeight()/2));
+                addDialog(bdc,dialog);
+                panel.repaint();
+                return dialog;
+            }
+            if(deskletContainer instanceof JFrameDeskletContainer) {
+                u.p("doing jframe");
+                JFrameDeskletContainer dc = (JFrameDeskletContainer) deskletContainer;
+                JDialogDeskletContainer dialog = new JDialogDeskletContainer(this,dc.getContext(),dc);
+                addDialog(dc,dialog);
+                u.p("dialog created");
+                return dialog;
+            }
+        } catch (Throwable thr) {
+            u.p(thr);
+        }
+        throw new IllegalArgumentException(
+                "The Buffered Window Manager cannot accept DeskletContainer's of type: "
+                + deskletContainer.getClass().getName());
     }
-
+    
     public List<BaseDC> getDesklets() {
         return desklets;
     }
-
-    public void setDesklets(List<BaseDC> desklets) {
+    
+    void setDesklets(List<BaseDC> desklets) {
         this.desklets = desklets;
     }
-
+    
     
     private void addDialog(BaseDC dc, BaseDC dialog) {
         if(!dialogMap.containsKey(dc)) {
@@ -382,8 +407,8 @@ public class BufferedWM extends WindowManager {
         }
         dialogMap.get(dc).add(dialog);
     }
-            
-    public List<BaseDC> getWindows() {
+    
+    List<BaseDC> getWindows() {
         List<BaseDC> windows = new ArrayList<BaseDC>();
         windows.addAll(desklets);
         for(List<BaseDC> dcs : dialogMap.values()) {
@@ -391,12 +416,12 @@ public class BufferedWM extends WindowManager {
         }
         return windows;
     }
-
+    
     List<BaseDC> getDialogs(BufferedDeskletContainer dc) {
         if(!dialogMap.containsKey(dc)) {
             dialogMap.put(dc,new ArrayList<BaseDC>());
         }
         return dialogMap.get(dc);
     }
-
+    
 }

@@ -103,7 +103,7 @@ public class DeskletRunner extends Thread {
                 try {
                     Thread.sleep(1000);
                     
-                    if((System.currentTimeMillis() - begin) > (20 * 1000)) {
+                    if((System.currentTimeMillis() - begin) > (10 * 1000)) {
                         this.interrupt();
                         throw new RuntimeException(
                                 "20 Second timeout waiting for notifyStop expired.");
