@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://code.joshy.org/projects/countdown/"
+    href="halloween.jnlp">
+
+    <information>
+        <title>Halloween Countdown</title>
+        <vendor>code.joshy.org</vendor>
+        <offline-allowed/>
+        <homepage href="http://code.joshy.org/"/>
+        <description kind="one-line">Shows the days until Halloween</description>
+        <icon kind="splash" href="splash.gif"/>
+        <icon href="icon.gif"/>
+        <shortcut online="false">
+            <desktop/>
+            <menu submenu="MiniApps"/>
+        </shortcut>
+    </information>
+    
+    <resources>
+        <j2se version="1.4+"/>
+        <jar href="Countdown.jar" main="true"/>
+        <jar href="miniapp.jar"/>
+        <jar href="joshy-common.jar"/>
+        <jar href="joda-time-0.95.jar"/>
+    </resources>
+    
+    <application-desc main-class="org.joshy.countdown.CountdownMain">
+        <argument>month=10</argument>
+        <argument>year=2004</argument>
+        <argument>day=31</argument>
+        
+        <argument>background.color=#ffffff</argument>
+        <argument>background.image=http://code.joshy.org/projects/countdown/halloween.png</argument>
+        
+        <argument>days.font.href=http://code.joshy.org/projects/countdown/Spiders.ttf</argument>
+        <argument>days.font.size=115</argument>
+        <argument>days.font.color=#000000</argument>
+        <argument>days.tracking=17</argument>
+        <argument>days.digits=2</argument>
+        <argument>days.x=40</argument>
+        <argument>days.y=85</argument>
+        
+    </application-desc>
+
+    <security>
+    </security>
+    
+</jnlp>

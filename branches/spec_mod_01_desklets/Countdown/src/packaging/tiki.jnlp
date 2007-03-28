@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://code.joshy.org/projects/countdown/"
+    href="tiki.jnlp">
+
+    <information>
+        <title>Tiki Party Timer</title>
+        <vendor>code.joshy.org</vendor>
+        <offline-allowed/>
+        <homepage href="http://code.joshy.org/"/>
+        <description kind="one-line">Counts down to the Tiki Party</description>
+        <icon kind="splash" href="splash.gif"/>
+        <icon href="icon.64.gif"/>
+    </information>
+    
+    <resources>
+        <j2se version="1.4"/>
+        <jar href="Countdown.jar" main="true"/>
+        <jar href="miniapp.jar"/>
+        <jar href="joshy-common.jar"/>
+        <jar href="joda-time-1.0.jar"/>
+    </resources>
+    
+    <application-desc main-class="org.joshy.countdown.CountdownMain">
+        <argument>year=2005</argument>
+        <argument>month=5</argument>
+        <argument>day=28</argument>
+        
+        <argument>background.color=#000000</argument>
+        <argument>background.image=http://code.joshy.org/projects/countdown/xmas.png</argument>
+        
+        <argument>days.font.name=Arial</argument>
+        <argument>days.font.size=85</argument>
+        <argument>days.font.color=#000000</argument>
+        <!--
+        <argument>days.tracking=0</argument>
+        -->
+    </application-desc>
+
+    <security>
+        <all-permissions/>
+    </security>
+    
+</jnlp>

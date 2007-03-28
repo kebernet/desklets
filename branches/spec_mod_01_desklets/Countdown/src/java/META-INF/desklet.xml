@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>Countdown Clock</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Counts down the days until date X</description>
+    <class>org.joshy.countdown.CountdownMain</class>
+    
+    <repository>http://www.ab5k.org/maven/</repository>
+    <dependency>
+        <groupId>swingx</groupId>
+        <artifactId>swingx</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>joda</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>1.4</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>JoshUtil</groupId>
+        <artifactId>JoshUtil</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+</desklet>
