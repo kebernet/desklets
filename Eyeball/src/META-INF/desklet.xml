@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>Eyeball</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Watches your mouse very closely</description>
+    <class>eyeball.EyeballDesklet</class>
+    
+    <source>http://www.ab5k.org/downloads/daily/pre-install/Eyeball.desklet</source>
+    
+    <repository>http://www.ab5k.org/maven/</repository>
+    <dependency>
+        <groupId>swingx</groupId>
+        <artifactId>swingx</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>JoshUtil</groupId>
+        <artifactId>JoshUtil</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+</desklet>
