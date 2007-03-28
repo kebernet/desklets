@@ -13,7 +13,8 @@
         
     <dependency><groupId>swingx</groupId>
         <artifactId>swingx</artifactId><version>0.1</version><type>jar</type></dependency>
-    
+    <dependency><groupId>org.apache.derby</groupId>
+        <artifactId>derby</artifactId><version>10.2.2.0</version><type>jar</type></dependency>
     <!-- all of swingx-ws -->
     <dependency><groupId>swingx-ws</groupId>
         <artifactId>swingx-ws</artifactId><version>0.1</version><type>jar</type></dependency>
