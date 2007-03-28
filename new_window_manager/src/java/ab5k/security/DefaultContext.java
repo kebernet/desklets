@@ -99,7 +99,6 @@ public class DefaultContext extends DeskletContext {
     }
 
     public DeskletContainer getConfigurationContainer() {
-        u.p("creating a config container");
         this.configDisplay = (this.configDisplay == null) ? 
             ContainerFactory.getInstance().createConfigContainer(this)
             : this.configDisplay;

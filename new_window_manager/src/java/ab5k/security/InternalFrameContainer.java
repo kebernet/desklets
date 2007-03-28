@@ -148,6 +148,11 @@ public class InternalFrameContainer extends DeskletContainer {
     public void setVisible(boolean visible) {
         iframe.setVisible(visible);
     }
+    
+    public Point2D getLocation() {
+        return iframe.getLocation();
+    }
+    
 
     // do nothing for now
     public void setShape(Shape shape) {

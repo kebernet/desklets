@@ -14,6 +14,7 @@ import ab5k.DesktopBackground;
 import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
+import ab5k.security.InternalDialogContainer;
 import ab5k.security.InternalFrameContainer;
 import ab5k.util.GraphicsUtil;
 import java.awt.BorderLayout;
@@ -131,7 +132,10 @@ public class DesktopPaneWM extends WindowManager {
     }
 
     public DeskletContainer createDialog(DeskletContainer deskletContainer) {
-        return null;
+        InternalFrameContainer ifc = (InternalFrameContainer) deskletContainer;
+        InternalDialogContainer cont = new InternalDialogContainer("Configuration", this , ifc);
+        desktop.add(cont.dialog);
+        return cont;
     }
     
 }
