@@ -7,19 +7,16 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.AbstractAction;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.painter.PinstripePainter;
 
-public class ShowManageDialogAction extends AbstractAction {
+public class ShowManageDialogAction extends BaseAction {
     Core main;
     
     private MattePainter disablePainter;
@@ -35,7 +32,7 @@ public class ShowManageDialogAction extends AbstractAction {
                 final JLayeredPane layeredPane = main.getFrame().getLayeredPane();
                 
                 // get the desktop pane metrics
-                Dimension desktopSize = main.getMainPanel().desktop.getSize();
+                Dimension desktopSize = new Dimension(getOpenBounds().width, getOpenBounds().height);
                 
                 // set up an overlay to disable the widgets
                 final JXPanel gpanel = getDisablePanel(layeredPane, desktopSize);
@@ -45,7 +42,7 @@ public class ShowManageDialogAction extends AbstractAction {
                 
                 anim.setDirection(Animator.Direction.FORWARD);
                 anim.setInitialFraction(0f);
-                anim.addTarget(new TimingTarget() {
+                anim.addTarget(new TimingTargetAdapter() {
                     public void begin() {
                         ldialog.setVisible(true);
                         gpanel.setVisible(true);
@@ -53,8 +50,6 @@ public class ShowManageDialogAction extends AbstractAction {
                     public void end() {
                         anim.removeTarget(this);
                     }
-                    public void repeat() {                }
-                    public void timingEvent(float f) {                }
                 });
                 
                 anim.start();
@@ -98,8 +93,7 @@ public class ShowManageDialogAction extends AbstractAction {
                 public void actionPerformed(ActionEvent e) {
                     anim.setDirection(Animator.Direction.BACKWARD);
                     anim.setInitialFraction(1f);
-                    anim.addTarget(new TimingTarget() {
-                        public void begin() {                        }
+                    anim.addTarget(new TimingTargetAdapter() {
                         public void end() {
                             ldialog.setVisible(false);
                             gpanel.setVisible(false);
@@ -108,8 +102,6 @@ public class ShowManageDialogAction extends AbstractAction {
                             main.getFrame().setAlwaysOnTop(true);
                             anim.removeTarget(this);
                         }
-                        public void repeat() {                        }
-                        public void timingEvent(float f) {                        }
                     });
                     anim.start();
                 }
@@ -125,9 +117,7 @@ public class ShowManageDialogAction extends AbstractAction {
                     (desktopSize.height-ldialog.getHeight())/2);
             Point offScreen = new Point(upperLeft.x, -ldialog.getHeight());
             ldialog.setLocation(offScreen);
-            //anim.addTarget(new PropertySetter(ldialog,"size",new Dimension(0,500),new Dimension(700,500)));
             anim.addTarget(new PropertySetter(ldialog,"location",offScreen,upperLeft));
-            
             
             // add and center it
             layeredPane.add(ldialog,JLayeredPane.MODAL_LAYER);
