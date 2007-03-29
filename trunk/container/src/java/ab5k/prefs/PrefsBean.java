@@ -25,7 +25,7 @@ import org.joshy.util.u;
  * @author joshy
  */
 public class PrefsBean {
-    private static final File PREFS_FILE = new File(Registry.HOME,"preferences.properties");
+    private static final File PREFS_FILE = new File(Environment.HOME,"preferences.properties");
         
     public static final String MICRODOCKING = "Main.Closer.Microdocking";
     public static final String DOCKINGSIDE = "Main.MainPanel.DockingSide";

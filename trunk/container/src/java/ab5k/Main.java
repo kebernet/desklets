@@ -164,7 +164,7 @@ public abstract class Main {
     
     private static void setupFirstRunFlag() {
         // check the existence of the .ab5k dir first
-        firstRun = Registry.wasHomeDirCreated();
+        firstRun = Environment.wasHomeDirCreated();
         u.p("is first run = " + Main.isFirstRun());
     }
     
