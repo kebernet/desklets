@@ -2,7 +2,7 @@
  * Main.java
  *
  * Created on February 14, 2007, 5:05 PM
- * 
+ *
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
@@ -17,10 +17,8 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.xml.xpath.XPathFactory;
-import javax.xml.xpath.XPathVariableResolver;
 import org.jdesktop.dom.SimpleDocument;
 import org.jdesktop.http.Method;
 import org.jdesktop.http.async.HtmlHttpRequest;
@@ -29,28 +27,18 @@ import org.jdesktop.xpath.XPathUtils;
 import org.joshy.util.u;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URI;
+import java.io.File;
+import java.io.FileWriter;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.DatabaseMetaData;
+import org.jdom.*;
+import org.jdom.input.*;
+import org.jdom.output.*;
 
-import java.util.Properties;
 /**
  *
  * @author joshua@marinacci.org
  */
 public class Main extends AbstractDesklet {
-    /* the default framework is embedded*/
-    String framework = "embedded";
-    String driver = "org.apache.derby.jdbc.EmbeddedDriver";
-    String protocol = "jdbc:derby:";
     static List<PhotoFeed> feeds = new ArrayList<PhotoFeed>();
     
     public static void main(String[] args) {
@@ -58,7 +46,7 @@ public class Main extends AbstractDesklet {
     }
     
     private JXImageView view;
-
+    
     public Main() {
     }
     
@@ -113,44 +101,74 @@ public class Main extends AbstractDesklet {
     }
     
     public void LoadData() throws Exception{
-        java.io.File workingDirectory = new java.io.File(".").getCanonicalFile();
-        u.p("Working directory: "+ workingDirectory);
+        /* Eventually this will be replaced by context.getWorkingDirectory().
+         * For now, this desklet will place files most likely in the home
+         * directory
+         */
         try {
-            Class.forName(driver).newInstance();
-            Connection conn = null;
-            conn = DriverManager.getConnection(protocol + "derbyDB;create=true");
-            Statement s = conn.createStatement();
-            ResultSet set = s.executeQuery("select * from sources");
-            feeds = PhotoFeed.convertToList(set);
-        }
-        catch(Exception e) {
-            createDatabase();
+           // u.p("Working directory: "+ context.getWorkingDirectory());
+            File file = new File(new File(".").getCanonicalPath()+File.separator+"pod.xml");
+            if (file.exists() == true) {
+                //Load file
+                
+                SAXBuilder builder = new SAXBuilder();
+                Document doc = builder.build(file);
+                Element root = doc.getRootElement();
+                feeds = PhotoFeed.convertToList(root);
+            } else {
+                //Regenerate sources
+                createPhotoSources();
+            }
+        } catch(Exception ex) {
+            ex.printStackTrace();
         }
     }
     
-    public void createDatabase() {
+    public void createPhotoSources() {
         try {
-            Connection conn = null;
-            conn = DriverManager.getConnection(protocol + "derbyDB;create=true");
-            Statement s = conn.createStatement();
+            u.p("Creating photo sources");
+            Document doc = new Document();
+            Element root = new Element("sources");
+            doc.setRootElement(root);
             
-            //Table doesn't exist, create it
-            s.execute("create table sources(name varchar(40), " +
-                        "url varchar(50), page varchar(25), queryString varchar(50), sourceType varchar(50), selected varchar(1))");
-                s.execute("insert into sources values('NASA Photo of the Day'," +
-                        "'http://antwrp.gsfc.nasa.gov/apod/','astropix.html','" +
-                        "//body/center/p/a/img/@src','WEBPAGE','Y')");
-                s.execute("insert into sources values('Earth Science Photo of the Day'," +
-                        "'http://epod.usra.edu/','index.php3'," +
-                        "'//body/center/a/img/@src','WEBPAGE','N')");
-                s.execute("insert into sources values('Flickr Photo Feed'," +
-                        "'http://api.flickr.com/services/feeds/','photos_public.gne'," +
-                        "'?tags=animal&format=rss_200','RSSMEDIA','N')" );
-                u.p("created db.");
-                ResultSet set = s.executeQuery("select * from sources");
-            feeds = PhotoFeed.convertToList(set);
-        }
-        catch (Exception e) {
+            Element source = new Element("source");
+            source.addContent(new Element("name").setText("NASA Photo of the Day"));
+            source.addContent(new Element("url").setText("http://antwrp.gsfc.nasa.gov/apod/"));
+            source.addContent(new Element("page").setText("astropix.html"));
+            source.addContent(new Element("queryString").setText("//body/center/p/a/img/@src"));
+            source.addContent(new Element("type").setAttribute(new Attribute("id","WEBPAGE")));
+            source.addContent(new Element("selected").setAttribute(new Attribute("id","Y")));
+            root.addContent(source);
+            
+            source = new Element("source");
+            source.addContent(new Element("name").setText("Earth Science Photo of the Day"));
+            source.addContent(new Element("url").setText("http://epod.usra.edu/"));
+            source.addContent(new Element("page").setText("index.php3"));
+            source.addContent(new Element("queryString").setText("//body/center/a/img/@src"));
+            source.addContent(new Element("type").setAttribute(new Attribute("id","WEBPAGE")));
+            source.addContent(new Element("selected").setAttribute(new Attribute("id","N")));
+            root.addContent(source);
+            
+            source = new Element("source");
+            source.addContent(new Element("name").setText("Flickr Photo Feed"));
+            source.addContent(new Element("url").setText("http://api.flickr.com/services/feeds/photos_public.gne"));
+            source.addContent(new Element("queryString").setText("?tags=animal&format=rss_200"));
+            source.addContent(new Element("type").setAttribute(new Attribute("id","RSSMEDIA")));
+            source.addContent(new Element("selected").setAttribute(new Attribute("id","N")));
+            root.addContent(source);
+            
+            feeds = PhotoFeed.convertToList(root);
+           /* Eventually this will be replaced by context.getWorkingDirectory().
+            * For now, this desklet will place files most likely in the home
+            * directory
+            */
+            u.p("Saving photo sources to file");
+            File file = new File(new File(".").getCanonicalPath()+File.separator+"pod.xml");
+            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+            outputter.output(doc, new FileWriter(file.getAbsolutePath()));
+            
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
