@@ -36,6 +36,8 @@ public class BufferedDeskletContainer extends BaseDC {
     private boolean dirty = true;
 
     private boolean visible = false;
+
+    private Shape clip = null;
     
     BufferedDeskletContainer(BufferedWM wm, DefaultContext context) {
         super(wm, context);
@@ -145,7 +147,6 @@ public class BufferedDeskletContainer extends BaseDC {
     }
 
     public void pack() {
-        // how do we do packing?
         comp.setSize(comp.getLayout().preferredLayoutSize(comp));
         setSize(comp.getSize());
         setDirty(true);
@@ -154,7 +155,16 @@ public class BufferedDeskletContainer extends BaseDC {
     public boolean isVisible() {
         return visible;
     }
+    
+    public void setClipShape(Shape shape) {
+        setClip(shape);
+    }
 
+    public Shape getClip() {
+        return clip;
+    }
 
-
+    public void setClip(Shape clip) {
+        this.clip = clip;
+    }
 }

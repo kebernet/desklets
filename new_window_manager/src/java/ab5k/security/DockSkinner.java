@@ -40,6 +40,7 @@ public class DockSkinner {
     }
     
     public static void configureDockConatiner(final DockContainer dock) {
+        
         final Border highlightBorder = BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(
                 0, 0, 3, 0, new Color(218, 218, 218)),
                 BorderFactory.createMatteBorder(5, 5, 5, 5,

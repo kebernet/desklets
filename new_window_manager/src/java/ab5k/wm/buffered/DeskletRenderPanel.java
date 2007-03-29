@@ -57,10 +57,10 @@ class DeskletRenderPanel extends JPanel {
                     drawWindow(g2, bdc);
                 }
                 for(BaseDC dialog : bufferedWM.getDialogs(bdc)) {
-                    double x = bdc.getLocation().getX() + bdc.getSize().getWidth()/2 - dialog.getSize().getWidth()/2;
-                    double y = bdc.getLocation().getY() + bdc.getSize().getHeight()/2 - dialog.getSize().getHeight()/2;
-                    dialog.setLocation(new Point2D.Double(x,y));
-                    drawWindow(g2, (BufferedDeskletContainer) dialog);
+                    BufferedDeskletContainer bdcd = (BufferedDeskletContainer) dialog;
+                    if(bdcd.isVisible()) {
+                        drawWindow(g2, bdcd);
+                    }
                 }
             }
         }
@@ -100,8 +100,15 @@ class DeskletRenderPanel extends JPanel {
         g3.translate(-size.width/2,-size.height/2);
         g3.scale(bdc.getScale(),bdc.getScale());
         
-        if(g3.getClip().intersects(0,0,bdc.getBuffer().getWidth(),bdc.getBuffer().getHeight())) {
-            g3.drawImage(bdc.getBuffer(), 0, 0, null);
+        // only draw if in the clip rect
+        if(g3.getClip().intersects(0,0,bdc.getBuffer().getWidth(),
+                bdc.getBuffer().getHeight())) {
+            Graphics2D gimg = (Graphics2D) g3.create();
+            if(bdc.getClip() != null) {
+                gimg.setClip(bdc.getClip());
+            }
+            gimg.drawImage(bdc.getBuffer(), 0, 0, null);
+            gimg.dispose();
         }
         
         if (this.bufferedWM.DEBUG_BORDERS) {

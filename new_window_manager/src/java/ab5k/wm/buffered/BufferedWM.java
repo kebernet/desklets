@@ -362,26 +362,18 @@ public class BufferedWM extends WindowManager {
     }
     
     public DeskletContainer createDialog(DeskletContainer deskletContainer) {
-        u.p("creating a dialog for: " + deskletContainer + " " + deskletContainer.hashCode());
         try {
             if(deskletContainer instanceof BufferedDeskletContainer) {
-                u.p("doing buffered");
                 BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
-                u.p("context = " + bdc.getContext());
-                BufferedDeskletContainer dialog = new BufferedDeskletContainer(this,bdc.getContext());
-                dialog.setLocation(new Point2D.Double(
-                        bdc.getLocation().getX()+bdc.getSize().getWidth()/2,
-                        bdc.getLocation().getY()+bdc.getSize().getHeight()/2));
+                BufferedDeskletContainer dialog = new BufferedDialogContainer(this,bdc.getContext(),bdc);
                 addDialog(bdc,dialog);
                 panel.repaint();
                 return dialog;
             }
             if(deskletContainer instanceof JFrameDeskletContainer) {
-                u.p("doing jframe");
                 JFrameDeskletContainer dc = (JFrameDeskletContainer) deskletContainer;
                 JDialogDeskletContainer dialog = new JDialogDeskletContainer(this,dc.getContext(),dc);
                 addDialog(dc,dialog);
-                u.p("dialog created");
                 return dialog;
             }
         } catch (Throwable thr) {

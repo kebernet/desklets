@@ -113,11 +113,17 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
         if(child != null) {
             // pass the mouse event back up the stack if this component doesn't
             // care about mouse events. w/o this we'd lose dragging
+            
             // go back up the stack
             while(child.getMouseListeners() == null ||
+                    child.getMouseListeners() == null ||
                     child.getMouseListeners().length == 0) {
                 pt2.translate(child.getX(),child.getY());
                 child = child.getParent();
+                if(child == null) {
+                    u.p("fell off the end. this is an orphan!");
+                    return;
+                }
                 //u.p("back up to parent " + child);
             }
             MouseEvent e2 = new MouseEvent(child,

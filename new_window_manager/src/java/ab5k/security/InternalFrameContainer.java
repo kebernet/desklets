@@ -165,6 +165,10 @@ public class InternalFrameContainer extends DeskletContainer {
     public void pack() {
         iframe.pack();
     }
+
+    public boolean isVisible() {
+        return iframe.isVisible();
+    }
     
     class HackedInternalFrameUI extends BasicInternalFrameUI {
         HackedInternalFrameUI(JInternalFrame iframe) {
@@ -177,9 +181,7 @@ public class InternalFrameContainer extends DeskletContainer {
         }
         
         private JComponent createDummy() {
-            JComponent dummy = new JComponent() {
-            };
-            
+            JComponent dummy = new JComponent() { };
             Dimension size = new Dimension(0,0);
             dummy.setSize(size);
             dummy.setMinimumSize(size);

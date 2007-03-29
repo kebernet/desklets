@@ -6,6 +6,7 @@
 package ab5k.security;
 
 import ab5k.desklet.DeskletContainer;
+import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 
@@ -93,5 +94,13 @@ public class DockContainer extends DeskletContainer {
 
     public void pack() {
         // isn't this implicit? do we need this here?
+    }
+
+    public boolean isVisible() {
+        return panel.isVisible();
+    }
+
+    public Point2D getLocation() {
+        return new Point(0,0);
     }
 }
