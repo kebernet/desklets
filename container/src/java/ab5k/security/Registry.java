@@ -7,6 +7,7 @@
 package ab5k.security;
 
 import ab5k.Core;
+import ab5k.Environment;
 import com.totsp.util.BeanArrayList;
 import com.totsp.util.SimpleUUIDGen;
 import com.totsp.util.StreamUtility;
@@ -49,7 +50,6 @@ import javax.swing.JOptionPane;
 public class Registry {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final Properties TYPE_TO_DIRECTORY = new Properties();
-    private static boolean justCreated = false;
     
     private Core core;
     
@@ -64,10 +64,7 @@ public class Registry {
     private static final SimpleUUIDGen UUID = new SimpleUUIDGen();
     private static final DeskletAdministrationPermission PERMISSION = new DeskletAdministrationPermission("Desklet Registry",
             "all");
-    public static final File HOME = getUserPreferredHome();
-    public static final File REPO = new File(HOME, "repository");
     private static final Registry INSTANCE = new Registry();
-    private static final String AB5K_HOME = ".ab5k";
     private BeanArrayList<DeskletConfig> deskletConfigs = new BeanArrayList<DeskletConfig>("deskletConfigs",
             this);
     
@@ -76,21 +73,21 @@ public class Registry {
         u.p("registry created");
         
         try {
-            if(!HOME.exists()) {
-                if(!HOME.mkdirs()) {
+            if(!Environment.HOME.exists()) {
+                if(!Environment.HOME.mkdirs()) {
                     throw new Exception(
                             "Unable to make ab5k configuration directory.");
                 }
             }
             
-            if(!REPO.exists()) {
-                if(!REPO.mkdirs()) {
+            if(!Environment.REPO.exists()) {
+                if(!Environment.REPO.mkdirs()) {
                     throw new Exception(
                             "Unable to make ab5k repository directory.");
                 }
             }
             
-            final File[] inHome = HOME.listFiles();
+            final File[] inHome = Environment.HOME.listFiles();
             
             for(File checkDesklet : inHome) {
                 boolean isDesklet = false;
@@ -119,47 +116,12 @@ public class Registry {
         }
     }
     
-    private static File getUserPreferredHome() {
-        // maybe user have already setup their own AB5K_HOME
-        File f = new File("" + System.getenv("AB5K_HOME"), AB5K_HOME); // "" - just in case getenv return null
-        if (System.getenv("AB5K_HOME") == null || createAppHome(f)) {
-            // maybe default home dir is fine
-            f = new File(System.getProperty("user.home"), AB5K_HOME);
-            if (createAppHome(f)) {
-                // failed to mkdir in user home - maybe windows with network profile
-                f = new File("" + System.getenv("APPDATA"), AB5K_HOME); // "" - just in case getenv return null
-                if (System.getenv("APPDATA") == null || createAppHome(f)) {
-                    // now we are in real bind ... go and ask user
-                    String homeAgain = JOptionPane
-                            .showInputDialog(
-                                    null,
-                                    "There seems to be problem while creating configuration on your system.\n"
-                                            + " It may be that your home directory is write protected \nor your system is not setup "
-                                            + "in a way understood by ab5k. \nWould you like to specify home directory manualy?\n"
-                                            + " (We might need to ask for its location on every start, \n"
-                                            + "or you might just set up AB5K_HOME system property pointing to such directory).",
-                                    "Home directory setup", JOptionPane.OK_CANCEL_OPTION);
-                    f = new File(homeAgain, AB5K_HOME);
-                    justCreated = f.mkdirs();
-                    if (!justCreated && (!f.exists() || !f.isDirectory())) {
-                        // can't create - ignore or ask again, that is the question ...
-                    }
-                }
-            }
-        }
-        return f;
-    }
-    
-    private static boolean createAppHome(File f) {
-        justCreated = f.mkdirs();
-        return !justCreated && (!f.exists() || !f.isDirectory());
-    }
 
     URL[] getDependencies(DeskletConfig config) throws IOException {
         ArrayList<URL> urls = new ArrayList<URL>();
-        urls.add(new File(HOME, config.getUUID()).toURI().toURL());
+        urls.add(new File(Environment.HOME, config.getUUID()).toURI().toURL());
         
-        File common = new File(HOME, "common" + File.separator + "lib");
+        File common = new File(Environment.HOME, "common" + File.separator + "lib");
         common.mkdirs();
         
         File[] commonLibs = common.listFiles();
@@ -186,7 +148,7 @@ public class Registry {
                 continue;
             }
             
-            File repoDest = new File(REPO,
+            File repoDest = new File(Environment.REPO,
                     dep.getGroupId() + File.separator +
                     TYPE_TO_DIRECTORY.getProperty(dep.getType(), "./"));
             repoDest.mkdirs();
@@ -252,7 +214,7 @@ public class Registry {
     }
     
     public DeskletConfig getDeskletConfig(String uuid) {
-        if(!(new File(HOME, uuid).exists())) {
+        if(!(new File(Environment.HOME, uuid).exists())) {
             return null;
         }
         
@@ -303,7 +265,7 @@ public class Registry {
                     ext.substring(PROTOCOL.length(), ext.length()));
         }
         
-        File file = new File(HOME, uuid + ".jar");
+        File file = new File(Environment.HOME, uuid + ".jar");
         
         // actually download the desklets
         core.getMainPanel().getSpinner().setBusy(true);
@@ -323,7 +285,7 @@ public class Registry {
         core.getMainPanel().getSpinner().setBusy(false);
         
         JarFile jar = new JarFile(file);
-        File destination = new File(HOME, uuid);
+        File destination = new File(Environment.HOME, uuid);
         destination.mkdirs();
         
         Enumeration<JarEntry> entries = jar.entries();
@@ -489,7 +451,7 @@ public class Registry {
             LOG.log(Level.INFO, "Exception on shutdown before uninstall.", e);
         }
         
-        File jar = new File(HOME, config.getUUID() + ".jar");
+        File jar = new File(Environment.HOME, config.getUUID() + ".jar");
         jar.delete();
         this.deskletConfigs.remove(config);
         recursiveDelete(config.getHomeDir());
@@ -500,7 +462,4 @@ public class Registry {
         this.core = main;
     }
 
-    public static boolean wasHomeDirCreated() {
-        return HOME.exists() && HOME.isDirectory() && justCreated ;
-    }
 }

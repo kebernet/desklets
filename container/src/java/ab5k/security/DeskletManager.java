@@ -6,6 +6,7 @@
 package ab5k.security;
 
 import ab5k.Core;
+import ab5k.Environment;
 import ab5k.prefs.ConfigurationImportExport;
 
 import com.totsp.util.BeanArrayList;
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DeskletManager {
     private static final Properties prefs = new Properties();
-    private static final File STARTUP_PROPS = new File(Registry.HOME,
+    private static final File STARTUP_PROPS = new File(Environment.HOME,
             "startup.properties");
     static Core main;
     private final static DeskletAdministrationPermission PERMISSION = new DeskletAdministrationPermission("Desklet Manager",
