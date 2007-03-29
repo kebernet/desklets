@@ -9,14 +9,7 @@ package ab5k;
 import ab5k.prefs.PrefsBean;
 import ab5k.util.BeanArrayListModel;
 import java.awt.Component;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
 import javax.swing.DefaultListCellRenderer;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import org.joshy.util.u;
@@ -27,8 +20,6 @@ import org.joshy.util.u;
  */
 public class PreferencesPanel extends javax.swing.JPanel {
     private Core main;
-    private boolean isPanelLoaded = false;
-
     
     /** Creates new form PreferencesPanel */
     public PreferencesPanel(Core main) {

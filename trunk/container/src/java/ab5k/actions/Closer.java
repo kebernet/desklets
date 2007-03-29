@@ -29,6 +29,7 @@ public class Closer {
     private Core main;
     private boolean microdocking = false;
     private boolean microCollapsed = false;
+    private boolean onTheMove = false;
     
     
     /** Creates a new instance of CloseState */
@@ -38,7 +39,7 @@ public class Closer {
     }
     
     
-    private boolean isMicroCollapsed() {
+    boolean isMicroCollapsed() {
         return microCollapsed;
     }
     
@@ -48,7 +49,14 @@ public class Closer {
     public void setMicrodocking(boolean microdocking) {
         this.microdocking = microdocking;
     }
+
+    public void setOnTheMove(boolean onTheMove) {
+        this.onTheMove = onTheMove;
+    }
     
+    public boolean isOnTheMove() {
+        return onTheMove;
+    }
     
     private void microOpen() {
         if(isWindowClosed() && isMicrodocking()) {
@@ -98,20 +106,20 @@ public class Closer {
                 if(main.getFrame() == null) continue;
                 if (intime < 0) {
                     if (main.getFrame().getBounds().contains(info.getLocation())) {
-//                        u.p("inside the dock");
+                        //u.p("inside the dock");
                         outtime = -1;
                         intime = new Date().getTime();
                     }
                 }
                 if (intime > 0 && outtime < 0) {
                     if (!main.getFrame().getBounds().contains(info.getLocation())) {
-//                        u.p("moved out");
+                        //u.p("moved out");
                         outtime = new Date().getTime();
                     }
                 }
-                if (intime > 0 && outtime > 0) {
+                if (intime > 0 && outtime > 0 && !isOnTheMove()) {
                     if (new Date().getTime() - outtime > 300) {
-//                        u.p("in then out for more than one sec. closing");
+                        //u.p("in then out for more than one sec. closing");
                         microClose();
                         intime = -1;
                         outtime = -1;
@@ -123,11 +131,11 @@ public class Closer {
                     if (intime < 0) {
                         if (main.getFrame().getBounds().contains(info.getLocation())) {
                             intime = new Date().getTime();
-//                            u.p("moved in");
+                            //u.p("moved in");
                         }
                     }
                     if (intime > 0 && ((new Date().getTime() - intime) > 300)) {
-//                        u.p("inside for more than one sec. opening");
+                        //u.p("inside for more than one sec. opening");
                         microOpen();
                         intime = -1;
                         outtime = -1;

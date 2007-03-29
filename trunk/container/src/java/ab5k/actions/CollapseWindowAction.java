@@ -17,9 +17,9 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import javax.swing.Action;
+import java.awt.geom.Point2D;
+
 import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.joshy.util.u;
@@ -27,6 +27,7 @@ import org.joshy.util.u;
 /**
  *
  * @author joshy
+ * @author rah003
  */
 public class CollapseWindowAction extends BaseAction {
     Core main;
@@ -41,9 +42,7 @@ public class CollapseWindowAction extends BaseAction {
         Toolkit tk = Toolkit.getDefaultToolkit();
         GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         Rectangle rect = gc.getBounds();
-        //System.out.println("gc bounds:" + rect);
         Insets insets = tk.getScreenInsets(gc);
-        //System.out.println("gc insets:" + insets);
         int top_edge = insets.top;
         int height = rect.height - insets.top - insets.bottom;
         
@@ -74,7 +73,6 @@ public class CollapseWindowAction extends BaseAction {
             }
             
         }
-        //System.out.println("Returning closed bounds: " + closedBounds);
         return closedBounds;
     }
     
@@ -106,12 +104,6 @@ public class CollapseWindowAction extends BaseAction {
             }
         });
         main.getCloser().setWindowClosed(false);
-        /*
-        if(main.getMainPanel().getDockingSide() == MainPanel.DockingSide.Right) {
-            this.putValue(Action.NAME, ">>");
-        } else {
-            this.putValue(Action.NAME, "<<");
-        }*/
         anim.start();
     }
     
@@ -121,24 +113,31 @@ public class CollapseWindowAction extends BaseAction {
         Animator anim = new Animator(1000);
         anim.setAcceleration(.3f);
         anim.setDeceleration(.6f);
+        final Point2D location = current.getLocation().equals(closed.getLocation()) ? new Point2D.Double(closed.getLocation()
+                .getX()
+                + getClosedBounds().width - current.width, closed.getLocation().getY()) : (Point2D) closed.getLocation();
         // FYI: change location before size on colapse to prevent flickering.
-        anim.addTarget(new PropertySetter(this.main.getFrame(),"location",current.getLocation(),closed.getLocation()));
-        
+        anim.addTarget(new PropertySetter(this.main.getFrame(),"location",current.getLocation(),location));
         
         //anim.addTarget(new PropertySetter(this.main.getFrame(),"size",current.getSize(),closed.getSize()));
         // instead of resizing along the way we just set to small at the end
         anim.addTarget(new TimingTargetAdapter() {
+            public void begin() {
+                main.getCloser().setWindowClosed(true);
+                // skip microdocking while moving
+                main.getCloser().setOnTheMove(true);
+            }
             public void end() {
                 main.getFrame().setSize(closed.getSize());
+                if (location.getX() < 0) {
+                    main.getFrame().setLocation(0, (int) location.getY());
+                }
+                Closer closer = main.getCloser();
+                if (closer.isMicrodocking()) {
+                    closer.setOnTheMove(false);
+                } 
             }
         });
-        main.getCloser().setWindowClosed(true);
-        /*
-        if(main.getMainPanel().getDockingSide() == MainPanel.DockingSide.Right) {
-            this.putValue(Action.NAME, "<<");
-        } else {
-            this.putValue(Action.NAME, ">>");
-        }*/
         anim.start();
     }
     
