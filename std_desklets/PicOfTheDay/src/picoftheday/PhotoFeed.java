@@ -27,12 +27,9 @@ import java.awt.image.BufferedImage;
 import java.awt.Image;
 import javax.imageio.ImageIO;
 import org.joshy.util.u;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.DatabaseMetaData;
+import org.jdom.*;
+import org.jdom.input.*;
+import org.jdom.output.*;
 import java.util.Properties;
 /**
  *
@@ -43,7 +40,7 @@ public class PhotoFeed {
     public Properties props;
     private String name;
     private String url;
-    private String webpage;
+    private String webpage="";
     private String queryString;
     private SourceType sourceType;
     private static PhotoFeed selectedFeed;
@@ -57,7 +54,7 @@ public class PhotoFeed {
     public void prepareURLS() {
         urls = new ArrayList<URI>();
         try {
-            String query = url+webpage+"?"+queryString;
+            String query = url+webpage+queryString;
             Reader reader = new InputStreamReader(new URL(query).openStream());
             SyndFeed feed = new SyndFeedInput().build(reader);
             if (sourceType == SourceType.RSSMEDIA) {
@@ -69,8 +66,7 @@ public class PhotoFeed {
                     URL url = ((UrlReference)cont.getReference()).getUrl();
                     urls.add(url.toURI());
                 }
-            }
-            else {
+            } else {
                 for(SyndEntry en : (List<SyndEntry>)feed.getEntries()) {
                     SyndEnclosure enclosure = (SyndEnclosure)en.getEnclosures().get(0);
                     u.p("got enclosure: "+ enclosure.getUrl() );
@@ -102,68 +98,71 @@ public class PhotoFeed {
         return img;
     }
     
-    public static ArrayList<PhotoFeed> convertToList(ResultSet set) {
+    public static ArrayList<PhotoFeed> convertToList(Element element) {
         ArrayList<PhotoFeed> feeds = new ArrayList<PhotoFeed>();
         try {
-        while (set.next()) {
-            PhotoFeed feed = new PhotoFeed();
-            feed.setName(set.getString(1));
-            feed.setBaseUrl(set.getString(2));
-            feed.setPageUrl(set.getString(3));
-            feed.setQueryString(set.getString(4));
-            feed.setSourceType(SourceType.valueOf(set.getString(5)));
-            String x = set.getString(6);
-            if (set.getString(6).equals("Y"))
-                PhotoFeed.setSelectedFeed(feed);
-            feeds.add(feed);
-        }
-        }
-        catch (Exception e) {
-            
+            for(Object obj : element.getChildren("source")) {
+                Element e = (Element)obj;
+                PhotoFeed feed = new PhotoFeed();
+                feed.setName(e.getChild("name").getText());
+                feed.setBaseUrl(e.getChild("url").getText());
+                if (e.getChild("page") != null)
+                    feed.setPageUrl(e.getChild("page").getText());
+                feed.setQueryString(e.getChild("queryString").getText());
+                feed.setSourceType(SourceType.valueOf(e.getChild("type")
+                .getAttribute("id").getValue()));
+                
+                if (e.getChild("selected") != null &&
+                        e.getChild("selected").getAttribute("id").getValue().equals("Y"))
+                    PhotoFeed.setSelectedFeed(feed);
+                feeds.add(feed);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return feeds;
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public String getBaseUrl() {
         return url;
     }
-
+    
     public void setBaseUrl(String url) {
         this.url = url;
     }
-
+    
     public String getPageUrl() {
         return webpage;
     }
-
+    
     public void setPageUrl(String webpage) {
         this.webpage = webpage;
     }
-
+    
     public String getQueryString() {
         return queryString;
     }
-
+    
     public void setQueryString(String queryString) {
         this.queryString = queryString;
     }
-
+    
     public SourceType getSourceType() {
         return sourceType;
     }
-
+    
     public void setSourceType(SourceType sourceType) {
         this.sourceType = sourceType;
     }
-
+    
     public static PhotoFeed getSelectedFeed() {
         if (selectedFeed == null) {
             int random = new Random(new java.util.Date().getTime()).nextInt(Main.feeds.size());
@@ -172,7 +171,7 @@ public class PhotoFeed {
         
         return selectedFeed;
     }
-
+    
     public static void setSelectedFeed(PhotoFeed aSelectedFeed) {
         selectedFeed = aSelectedFeed;
     }
