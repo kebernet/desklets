@@ -1,3 +1,8 @@
 #Build Number for ANT. Do not edit!
+<<<<<<< .working
 #Tue Mar 27 22:17:03 PDT 2007
 build.number=1301
+=======
+#Wed Mar 28 17:24:18 PDT 2007
+build.number=789
+>>>>>>> .merge-right.r238

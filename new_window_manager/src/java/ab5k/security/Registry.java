@@ -7,6 +7,7 @@
 package ab5k.security;
 
 import ab5k.Core;
+import ab5k.Environment;
 import com.totsp.util.BeanArrayList;
 import com.totsp.util.SimpleUUIDGen;
 import com.totsp.util.StreamUtility;
@@ -39,6 +40,8 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -61,9 +64,6 @@ public class Registry {
     private static final SimpleUUIDGen UUID = new SimpleUUIDGen();
     private static final DeskletAdministrationPermission PERMISSION = new DeskletAdministrationPermission("Desklet Registry",
             "all");
-    public static final File HOME = new File(System.getProperty("user.home") +
-            File.separator + ".ab5k");
-    public static final File REPO = new File(HOME, "repository");
     private static final Registry INSTANCE = new Registry();
     private BeanArrayList<DeskletConfig> deskletConfigs = new BeanArrayList<DeskletConfig>("deskletConfigs",
             this);
@@ -73,21 +73,21 @@ public class Registry {
         u.p("registry created");
         
         try {
-            if(!HOME.exists()) {
-                if(!HOME.mkdirs()) {
+            if(!Environment.HOME.exists()) {
+                if(!Environment.HOME.mkdirs()) {
                     throw new Exception(
                             "Unable to make ab5k configuration directory.");
                 }
             }
             
-            if(!REPO.exists()) {
-                if(!REPO.mkdirs()) {
+            if(!Environment.REPO.exists()) {
+                if(!Environment.REPO.mkdirs()) {
                     throw new Exception(
                             "Unable to make ab5k repository directory.");
                 }
             }
             
-            final File[] inHome = HOME.listFiles();
+            final File[] inHome = Environment.HOME.listFiles();
             
             for(File checkDesklet : inHome) {
                 boolean isDesklet = false;
@@ -116,11 +116,12 @@ public class Registry {
         }
     }
     
+
     URL[] getDependencies(DeskletConfig config) throws IOException {
         ArrayList<URL> urls = new ArrayList<URL>();
-        urls.add(new File(HOME, config.getUUID()).toURI().toURL());
+        urls.add(new File(Environment.HOME, config.getUUID()).toURI().toURL());
         
-        File common = new File(HOME, "common" + File.separator + "lib");
+        File common = new File(Environment.HOME, "common" + File.separator + "lib");
         common.mkdirs();
         
         File[] commonLibs = common.listFiles();
@@ -147,7 +148,7 @@ public class Registry {
                 continue;
             }
             
-            File repoDest = new File(REPO,
+            File repoDest = new File(Environment.REPO,
                     dep.getGroupId() + File.separator +
                     TYPE_TO_DIRECTORY.getProperty(dep.getType(), "./"));
             repoDest.mkdirs();
@@ -213,7 +214,7 @@ public class Registry {
     }
     
     public DeskletConfig getDeskletConfig(String uuid) {
-        if(!(new File(HOME, uuid).exists())) {
+        if(!(new File(Environment.HOME, uuid).exists())) {
             return null;
         }
         
@@ -264,7 +265,7 @@ public class Registry {
                     ext.substring(PROTOCOL.length(), ext.length()));
         }
         
-        File file = new File(HOME, uuid + ".jar");
+        File file = new File(Environment.HOME, uuid + ".jar");
         
         // actually download the desklets
         core.getMainPanel().getSpinner().setBusy(true);
@@ -284,7 +285,7 @@ public class Registry {
         core.getMainPanel().getSpinner().setBusy(false);
         
         JarFile jar = new JarFile(file);
-        File destination = new File(HOME, uuid);
+        File destination = new File(Environment.HOME, uuid);
         destination.mkdirs();
         
         Enumeration<JarEntry> entries = jar.entries();
@@ -296,8 +297,10 @@ public class Registry {
             if(entry.isDirectory()) {
                 new File(destination, entry.getName()).mkdirs();
             } else {
+                File entryFile = new File(destination, entry.getName());
+                entryFile.getParentFile().mkdirs();
                 StreamUtility.copyStream(jar.getInputStream(entry),
-                        new FileOutputStream(new File(destination, entry.getName())));
+                        new FileOutputStream(entryFile));
             }
         }
         
@@ -448,7 +451,7 @@ public class Registry {
             LOG.log(Level.INFO, "Exception on shutdown before uninstall.", e);
         }
         
-        File jar = new File(HOME, config.getUUID() + ".jar");
+        File jar = new File(Environment.HOME, config.getUUID() + ".jar");
         jar.delete();
         this.deskletConfigs.remove(config);
         recursiveDelete(config.getHomeDir());
@@ -458,4 +461,5 @@ public class Registry {
     public void setMain(Core main) {
         this.core = main;
     }
+
 }

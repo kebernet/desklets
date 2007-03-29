@@ -37,7 +37,6 @@ public abstract class Main {
     // indicates if this is the first time AB5k has been run
     // currently based on the presence of the ~/.ab5k dir
     private static boolean firstRun = false;
-    public static File HOME_DIR = new File(System.getProperty("user.home") + File.separator + ".ab5k");
     
     /** This is the startup main method for all of AB5k.
      * It ensures that everything is intializes in the correct
@@ -161,10 +160,7 @@ public abstract class Main {
     
     private static void setupFirstRunFlag() {
         // check the existence of the .ab5k dir first
-        firstRun = true;
-        if(HOME_DIR.exists()) {
-            firstRun = false;
-        }
+        firstRun = Environment.wasHomeDirCreated();
         u.p("is first run = " + Main.isFirstRun());
     }
     
