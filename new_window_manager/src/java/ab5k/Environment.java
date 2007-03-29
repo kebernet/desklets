@@ -18,9 +18,10 @@ import org.joshy.util.u;
  * @author joshy
  */
 public final class Environment {
+    private static final String AB5K_HOME = System.getProperty("org.ab5k.test.althomedirname") == null ? ".ab5k" :
+        System.getProperty("org.ab5k.test.althomedirname");
     public static final File HOME = getUserPreferredHome();
     public static final File REPO = new File(HOME, "repository");
-    private static final String AB5K_HOME = ".ab5k";
     private static boolean justCreated = false;
     
     private static String AB5K_HOME_ENVNAME = "AB5K_HOME";
