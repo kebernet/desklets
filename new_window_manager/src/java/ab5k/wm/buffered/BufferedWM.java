@@ -162,10 +162,10 @@ public class BufferedWM extends WindowManager {
             public void actionPerformed(ActionEvent e) {
                 if(manageButton.isSelected()) {
                     mpa.showManagePanel();
-                    mpa.moveDeskletsToColumns();
+                    mpa.moveDeskletsToColumns(manageButton);
                 } else {
                     mpa.hideManagePanel();
-                    mpa.moveDeskletsToOriginalPositions();
+                    mpa.moveDeskletsToOriginalPositions(manageButton);
                 }
             }
         });
@@ -263,10 +263,10 @@ public class BufferedWM extends WindowManager {
     
     public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
         if(dc == null) return null;
-        u.p("old container = " + dc + " " + dc.hashCode());
+        //u.p("old container = " + dc + " " + dc.hashCode());
         BaseDC bdc = (BaseDC) dc;
         
-        u.p("context = " + bdc.getContext());
+        //u.p("context = " + bdc.getContext());
         DefaultContext context = bdc.getContext();
         getDesklets().remove(bdc);
         JFrameDeskletContainer newContainer = new JFrameDeskletContainer(this, context);
@@ -275,7 +275,7 @@ public class BufferedWM extends WindowManager {
         newContainer.pack();
         newContainer.setVisible(true);
         context.setContainer(newContainer);
-        u.p("creating the new container: " + newContainer + " " + newContainer.hashCode());
+        //u.p("creating the new container: " + newContainer + " " + newContainer.hashCode());
         return newContainer;
     }
     

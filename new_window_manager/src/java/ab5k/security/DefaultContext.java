@@ -61,6 +61,7 @@ public class DefaultContext extends DeskletContext {
 
             if(props.exists()) {
                 FileInputStream fis = new FileInputStream(props);
+                u.p("loading props from: " + props.getAbsolutePath());
 
                 try {
                     prefs.load(fis);
@@ -80,10 +81,11 @@ public class DefaultContext extends DeskletContext {
 
     void flushPreferences() throws IOException {
         FileOutputStream fos = new FileOutputStream(props);
+        u.p("saving to props: " + props.getAbsolutePath());
         //InternalFrameContainer ifc = (InternalFrameContainer) this.container;
-        u.p("container = " + container);
+        //u.p("container = " + container);
         Point2D pt = core.getWindowManager().getLocation(container);
-        u.p("pt = " + pt);
+        //u.p("pt = " + pt);
         prefs.setProperty(ContainerFactory.LOCATION_X, Integer.toString( (int) pt.getX() ) );
         prefs.setProperty(ContainerFactory.LOCATION_Y, Integer.toString( (int) pt.getY()) );
         try {

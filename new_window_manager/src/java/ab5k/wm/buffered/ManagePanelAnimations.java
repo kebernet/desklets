@@ -12,10 +12,14 @@ package ab5k.wm.buffered;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DeskletConfig;
 import ab5k.security.Registry;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,6 +35,11 @@ import javax.swing.JComponent;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.Painter;
+import org.jdesktop.swingx.painter.RectanglePainter;
+import org.jdesktop.swingx.painter.TextPainter;
 
 /**
  *
@@ -136,11 +146,17 @@ public class ManagePanelAnimations {
 
     Map<BufferedDeskletContainer, Point2D> originalLocations = new HashMap<BufferedDeskletContainer, Point2D>();
     Map<BufferedDeskletContainer, JButton> stopButtons = new HashMap<BufferedDeskletContainer, JButton>();
+    Map<BufferedDeskletContainer, JXPanel> rolloverPanels = new HashMap<BufferedDeskletContainer, JXPanel>();
     
-    void moveDeskletsToColumns() {
+    void moveDeskletsToColumns(final AbstractButton button) {
         Animator anim = new Animator(500);
+        anim.addTarget(new AnimButtonDisabler(button));
         for(int i=0; i<wm.getDesklets().size(); i++) {
             DeskletContainer dc = wm.getDesklets().get(i);
+            final int scaledWidth = 200;
+            final int scaledHeight = 100;
+            final int rowGap = 10;
+            final int columnGap = 70;
             if(dc instanceof BufferedDeskletContainer) {
                 final BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
                 
@@ -148,22 +164,22 @@ public class ManagePanelAnimations {
                 originalLocations.put(bdc,bdc.getLocation());
                 
                 // constrain to 200x100 if needed
-                if(bdc.getSize().getWidth() > 200 || bdc.getSize().getHeight() > 100) {
-                    double targetScale = 200/bdc.getSize().getWidth();
+                if(bdc.getSize().getWidth() > scaledWidth || bdc.getSize().getHeight() > scaledHeight) {
+                    double targetScale = scaledWidth/bdc.getSize().getWidth();
                     // if still too big
-                    if(targetScale*bdc.getSize().getHeight() > 100) {
-                        targetScale = 100/bdc.getSize().getHeight();
+                    if(targetScale*bdc.getSize().getHeight() > scaledHeight) {
+                        targetScale = scaledHeight/bdc.getSize().getHeight();
                     }
                     anim.addTarget(new PropertySetter(bdc, "scale", 1.0, targetScale));
                 }
                 
                 int x = firstColumnX;
-                int y = i*105 + 50;
+                int y = i*(scaledHeight + rowGap) + 50;
                 
                 // wrap to new columns
-                while(y > wm.panel.getHeight()-105) {
-                    x+=205+50;
-                    y-=(wm.panel.getHeight()-105);
+                while(y > wm.panel.getHeight()-scaledHeight-rowGap) {
+                    x+=scaledWidth+columnGap;
+                    y-=(wm.panel.getHeight()-scaledHeight-rowGap);
                 }
                 
                 anim.addTarget(new PropertySetter(bdc,"location",
@@ -173,12 +189,13 @@ public class ManagePanelAnimations {
                     public void begin() {
                     }
                     public void end() {
+                        // the close button
                         final JButton close = new JButton();
                         close.setIcon(closeIcon);
                         close.setRolloverIcon(closeOverIcon);
                         close.setBorderPainted(false);
                         close.setOpaque(false);
-                        close.setLocation((int)bdc.getLocation().getX()-44,
+                        close.setLocation((int)bdc.getLocation().getX()-44-10,
                                 (int)bdc.getLocation().getY());
                         wm.panel.add(close);
                         close.setPreferredSize(new Dimension(40,40));
@@ -190,6 +207,27 @@ public class ManagePanelAnimations {
                                 wm.panel.remove(close);
                             }
                         });
+                        
+                        // the overlay rollover panel
+                        final JXPanel panel = new JXPanel();
+                        Dimension dim = new Dimension(scaledWidth+10*2,scaledHeight+10*2);
+                        panel.setPreferredSize(dim);
+                        panel.setSize(dim);
+                        panel.setLocation((int)bdc.getLocation().getX()-10, (int)bdc.getLocation().getY()-10);
+                        panel.setOpaque(false);
+                        wm.panel.add(panel);
+                        rolloverPanels.put(bdc,panel);
+                        String text = bdc.getContext().getConfig().getName();
+                        Font font = new Font(Font.SANS_SERIF,Font.BOLD,20);
+                        // set a rollover painter
+                        panel.addMouseListener(new AnimPanelRollover(panel,
+                                null,
+                                new CompoundPainter(
+                                    new RectanglePainter(5, 5, 5, 5, 20, 20, true, new Color(0, 0, 0, 160), 3.0f, Color.WHITE),
+                                    //new RectanglePainter(35, 35, 35, 35, 20, 20, true, new Color(0, 0, 0, 200), 0.0f, Color.WHITE),
+                                    new TextPainter(text,font,Color.WHITE)
+                                )
+                                ));
                     }
                     public void repeat() {
                     }
@@ -203,8 +241,9 @@ public class ManagePanelAnimations {
         anim.start();
     }
 
-    void moveDeskletsToOriginalPositions() {
+    void moveDeskletsToOriginalPositions(final AbstractButton button) {
         Animator anim = new Animator(500);
+        anim.addTarget(new AnimButtonDisabler(button));
         for(DeskletContainer dc : wm.getDesklets()) {
             if(dc instanceof BufferedDeskletContainer) {
                 BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
@@ -224,6 +263,10 @@ public class ManagePanelAnimations {
                     wm.panel.remove(b);
                 }
                 stopButtons.clear();
+                for(JXPanel p : rolloverPanels.values()) {
+                    wm.panel.remove(p);
+                }
+                rolloverPanels.clear();
             }
             public void end() {
             }
@@ -253,6 +296,63 @@ public class ManagePanelAnimations {
         public void timingEvent(float f) {
         }
     }
+
+    private class AnimButtonDisabler implements TimingTarget {
+
+        private AbstractButton button;
+
+        public AnimButtonDisabler(AbstractButton button) {
+            super();
+            this.button = button;
+        }
+
+        public void begin() {
+            button.setEnabled(false);
+        }
+
+        public void end() {
+            button.setEnabled(true);
+        }
+
+        public void repeat() {
+        }
+
+        public void timingEvent(float f) {
+        }
+    }
+
+    private class AnimPanelRollover implements MouseListener {
+
+        private JXPanel panel;
+        private Painter normal;
+        private Painter rollover;
+
+        public AnimPanelRollover(JXPanel panel, Painter normal, Painter rollover) {
+            super();
+            this.panel = panel;
+            this.normal = normal;
+            this.rollover = rollover;
+        }
+
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        public void mouseEntered(MouseEvent e) {
+            panel.setBackgroundPainter(rollover);
+        }
+
+        public void mouseExited(MouseEvent e) {
+            panel.setBackgroundPainter(normal);
+        }
+
+        public void mousePressed(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+    }
+
+
 
 
     
