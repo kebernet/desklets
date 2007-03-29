@@ -31,11 +31,7 @@ public abstract class BaseAction extends AbstractAction {
         Toolkit tk = Toolkit.getDefaultToolkit();
         GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         Rectangle rect = gc.getBounds();
-        //u.p("rect = " + rect);
         Insets insets = tk.getScreenInsets(gc);
-        //u.p("insets = " + insets);
-        //Dimension dim = tk.getScreenSize();
-        //u.p("size = " + dim);
         int top_edge = insets.top;
         int height = rect.height - insets.top - insets.bottom;
         
