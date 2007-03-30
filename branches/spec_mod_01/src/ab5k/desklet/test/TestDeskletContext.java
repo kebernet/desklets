@@ -83,6 +83,15 @@ class TestDeskletContext extends DeskletContext {
         // TODO
         return null;
     }
+
+    // the test env doesn't support any services (yet)
+    public Object getService(Class serviceClass) {
+        return null;
+    }
+
+    public boolean serviceAvailable(Class serviceClass) {
+        return false;
+    }
     
     private static class TestContainer extends DeskletContainer {
         
