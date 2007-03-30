@@ -11,6 +11,7 @@ package eyeball;
 
 import ab5k.desklet.AbstractDesklet;
 import ab5k.desklet.DeskletContext;
+import ab5k.desklet.services.GlobalMouse;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,6 +23,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputListener;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.AbstractPainter;
 import org.jdesktop.swingx.painter.CompoundPainter;
@@ -31,7 +33,9 @@ import org.jdesktop.swingx.painter.CompoundPainter;
  * @author joshy
  */
 public class EyeballDesklet extends AbstractDesklet {
-    JXPanel panel;
+    private JXPanel panel;
+    private PupilPainter pupil;
+    
     /** Creates a new instance of EyeballDesklet */
     public EyeballDesklet() {
     }
@@ -42,60 +46,47 @@ public class EyeballDesklet extends AbstractDesklet {
         context.getContainer().setResizable(false);
         context.getContainer().setShaped(true);
         panel = new JXPanel();
-        /*panel.addMouseListener(new MouseListener() {
-            public void mouseClicked(MouseEvent e) {
-            }
-            public void mouseEntered(MouseEvent e) {
-            }
-            public void mouseExited(MouseEvent e) {
-            }
-            public void mousePressed(MouseEvent e) {
-                System.out.println("pressed: " + e);
-            }
-            public void mouseReleased(MouseEvent e) {
-                System.out.println("released: " + e);
-            }
-        });*/
         panel.setOpaque(false);
         panel.setPreferredSize(new Dimension(300,300));
+        pupil = new PupilPainter();
         panel.setBackgroundPainter(new CompoundPainter(
                 new CompoundPainter(true, new EyeballPainter()),
-                new PupilPainter()));
-        //context.getContainer().setLayout(new BorderLayout());
+                pupil));
         context.getContainer().setContent(panel);
         context.getContainer().setVisible(true);
     }
     
-    private boolean go = false;
     public void start() throws Exception {
-        new Thread(new Runnable() {
-            public void run() {
-                go = true;
-                Point pt = MouseInfo.getPointerInfo().getLocation();
-                while(go) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                    Point pt2 = MouseInfo.getPointerInfo().getLocation();
-                    if(!pt.equals(pt2)) {
-                        panel.repaint();
-                    }
-                    pt = pt2;
+        if(context.serviceAvailable(GlobalMouse.class)) {
+            GlobalMouse mouse = (GlobalMouse) context.getService(GlobalMouse.class);
+            mouse.addMouseListener(new MouseInputListener() {
+                public void mouseClicked(MouseEvent e) {
                 }
-                context.notifyStopped();
-            }
-        }).start();
+                public void mouseDragged(MouseEvent e) {
+                }
+                public void mouseEntered(MouseEvent e) {
+                }
+                public void mouseExited(MouseEvent e) {
+                }
+                public void mouseMoved(MouseEvent e) {
+                    pupil.setMouseLocation(e.getPoint());
+                    panel.repaint();
+                }
+                public void mousePressed(MouseEvent e) {
+                }
+                public void mouseReleased(MouseEvent e) {
+                }
+            },panel);
+        }
     }
     
     public void stop() throws Exception {
-        go = false;
+        context.notifyStopped();
     }
     
     public void destroy() throws Exception {
     }
-
-
+    
+    
     
 }
