@@ -28,7 +28,7 @@ public class Desklet extends AbstractDesklet{
     final SimpleDateFormat miniFormat = new SimpleDateFormat("hh:mm aa");
     final SimpleDateFormat format = new SimpleDateFormat("hh:mm");
     final SimpleDateFormat ampm = new SimpleDateFormat("aa");
-
+    
     private JLabel timeLabel;
     
     /** Creates a new instance of Desklet */
@@ -39,13 +39,13 @@ public class Desklet extends AbstractDesklet{
     public void destroy() throws Exception {
     }
     
+    private Thread thread;
     public void start() throws Exception {
-        new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
             public void run() {
+                running = true;
                 while(running) {
                     try {
-                        Thread.sleep(1000);
-                        
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
                                 display.currentTime.setText(format.format(new Date()));
@@ -59,19 +59,22 @@ public class Desklet extends AbstractDesklet{
                                 }
                             }
                         });
+                        Thread.currentThread().sleep(1000);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
                 }
-                System.out.println("notifying of stoppage");
                 context.notifyStopped();
             }
-        }).start();
+        });
+        thread.start();
     }
     
     
     public void stop() throws Exception {
         this.running = false;
+        thread.interrupt();
+        System.out.println("stop finishing");
     }
     
     public void init(DeskletContext context) throws Exception {
