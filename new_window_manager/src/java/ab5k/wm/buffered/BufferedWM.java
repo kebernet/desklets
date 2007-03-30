@@ -156,8 +156,9 @@ public class BufferedWM extends WindowManager {
     void stop(DeskletContainer dc) {
         if(dc instanceof BufferedDeskletContainer) {
             DeskletManager manager = DeskletManager.getInstance();
-            manager.shutdownDesklet(
-                    ((BufferedDeskletContainer)dc).getContext().getConfig().getUUID());
+            BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+            DeskletRunner runner = manager.getDeskletRunner(bdc.getContext());
+            manager.shutdownRunner(runner);
         }
     }
     void stop(final DeskletRunner d) {

@@ -79,6 +79,16 @@ public class DeskletManager {
 
         return runners;
     }
+    
+    public DeskletRunner getDeskletRunner(DefaultContext context) {
+        checkSecurity();
+        for(DeskletRunner r : runners) {
+            if(r.getContext() == context) {
+                return r;
+            }
+        }
+        return null;
+    }
 
     private ArrayList<String> getRunningDeskletIds() {
         ArrayList<String> results = new ArrayList<String>();
@@ -219,7 +229,7 @@ public class DeskletManager {
         }
     }
 
-    private void shutdownRunner(DeskletRunner runner) {
+    public void shutdownRunner(DeskletRunner runner) {
         runner.stopDesklet();
         runner.destroyDesklet();
         runners.remove(runner);

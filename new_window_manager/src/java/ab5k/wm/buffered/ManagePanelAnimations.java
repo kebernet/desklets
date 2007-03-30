@@ -223,12 +223,6 @@ public class ManagePanelAnimations {
                         close.setPreferredSize(new Dimension(40,40));
                         close.setSize(new Dimension(40,40));
                         stopButtons.put(bdc,close);
-                        close.addActionListener(new ActionListener() {
-                            public void actionPerformed(ActionEvent e) {
-                                wm.stop(bdc);
-                                wm.panel.remove(close);
-                            }
-                        });
                         
                         // the overlay rollover panel
                         final JXPanel panel = new JXPanel();
@@ -250,6 +244,13 @@ public class ManagePanelAnimations {
                                     new TextPainter(text,font,Color.WHITE)
                                 )
                                 ));
+                        close.addActionListener(new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                                wm.stop(bdc);
+                                wm.panel.remove(close);
+                                wm.panel.remove(panel);
+                            }
+                        });
                     }
                     public void repeat() {
                     }
