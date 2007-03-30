@@ -103,4 +103,24 @@ public class DockContainer extends DeskletContainer {
     public Point2D getLocation() {
         return new Point(0,0);
     }
+
+    public JComponent getContent() {
+        return content;
+    }
+
+    public boolean isBackgroundDraggable() {
+        return false;
+    }
+
+    public boolean isShaped() {
+        return !panel.isOpaque();
+    }
+
+    public Shape getShape() {
+        return null;
+    }
+
+    public boolean isResizable() {
+        return false;
+    }
 }

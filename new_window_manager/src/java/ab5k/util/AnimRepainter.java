@@ -1,4 +1,4 @@
-package ab5k.wm.buffered;
+package ab5k.util;
 
 import javax.swing.JComponent;
 import org.jdesktop.animation.timing.TimingTarget;

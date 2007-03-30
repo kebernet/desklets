@@ -13,6 +13,7 @@ import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import javax.swing.JComponent;
@@ -40,11 +41,24 @@ public abstract class BaseDC extends DeskletContainer {
     
     public abstract void setLocation(Point2D point);
     
-    JComponent getContent() {
+    public JComponent getContent() {
         return this.content;
     }
 
     public DefaultContext getContext() {
         return context;
+    }
+    public void setResizable(boolean b) {
+    }
+    public boolean isResizable() {
+        return false;
+    }
+    
+    public Shape getShape() {
+        return null;
+    }
+    
+    // do nothing for now
+    public void setShape(Shape shape) {
     }
 }

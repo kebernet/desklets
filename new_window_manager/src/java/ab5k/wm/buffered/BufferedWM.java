@@ -19,6 +19,7 @@ import ab5k.security.DeskletManager;
 import ab5k.security.DeskletRunner;
 import ab5k.security.LifeCycleException;
 import ab5k.security.Registry;
+import ab5k.util.AnimRepainter;
 import ab5k.util.GraphicsUtil;
 import ab5k.wm.WindowManager;
 import com.totsp.util.BeanArrayList;
@@ -83,6 +84,7 @@ public class BufferedWM extends WindowManager {
     private JComponent dock;
     Container hidden;
     private DeskletContainer selectedDesklet = null;
+    private Point selectedDeskletOffset;
     
     Core core;
     
@@ -206,6 +208,11 @@ public class BufferedWM extends WindowManager {
             getWindows().remove(bdc);
             getWindows().add(bdc);
             selectedDesklet = bdc;
+            u.p("current mouse = " + e.getPoint());
+            u.p("desklet = " + selectedDesklet.getLocation());
+            selectedDeskletOffset = new Point(
+                    (int)(e.getPoint().getX() - selectedDesklet.getLocation().getX()),
+                    (int)(e.getPoint().getY() - selectedDesklet.getLocation().getY()));
             panel.repaint();
         }
     }
@@ -242,14 +249,21 @@ public class BufferedWM extends WindowManager {
     
     public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
         if(dc == null) return null;
-        //u.p("old container = " + dc + " " + dc.hashCode());
         BaseDC bdc = (BaseDC) dc;
-        
-        //u.p("context = " + bdc.getContext());
         DefaultContext context = bdc.getContext();
+        // remove all the old stuff
+        if(bdc instanceof BufferedDeskletContainer) {
+            hidden.remove(((BufferedDeskletContainer)bdc).comp);
+        }
         getDesklets().remove(bdc);
+        
+        // create a new container
         JFrameDeskletContainer newContainer = new JFrameDeskletContainer(this, context);
+        
+        // copy the settings
         newContainer.setContent(bdc.getContent());
+        newContainer.setShaped(bdc.isShaped());
+        
         getDesklets().add(newContainer);
         newContainer.pack();
         newContainer.setVisible(true);
@@ -396,6 +410,7 @@ public class BufferedWM extends WindowManager {
     }
     
     private class InternalToExternalMouseHandler extends MouseAdapter {
+        boolean wasDragging = false;
         
         private Core core;
         
@@ -417,21 +432,33 @@ public class BufferedWM extends WindowManager {
             wasDragging = false;
         }
         
-        boolean wasDragging = false;
         
         public void mouseDragged(MouseEvent e) {
             wasDragging = true;
             if (e.getPoint().getX() < 20) {
                 u.p("outside!");
                 u.p("must close");
-                core.getCollapseWindowAction().doCollapse();
+                if(!core.getCloser().isWindowClosed()) {
+                    core.getCollapseWindowAction().doCollapse();
+                    selectedDesklet = convertInternalToExternalContainer(selectedDesklet);
+                }
+                //selectedDeskletOffset = new Point(100,100);
+            }
+            
+            if(core.getCloser().isWindowClosed() &&
+                    selectedDesklet instanceof JFrameDeskletContainer) {
+                u.p("outside now. keep moving the desklet");
+                Point pt = e.getPoint();
+                SwingUtilities.convertPointToScreen(pt,panel);
+                selectedDesklet.setLocation(new Point(pt.x - selectedDeskletOffset.x,
+                        pt.y - selectedDeskletOffset.y));
+                
             }
         }
         
         public void mouseReleased(MouseEvent e) {
             if (e.getPoint().getX() < 0 && wasDragging) {
                 u.p("dropped outside!");
-                convertInternalToExternalContainer(selectedDesklet);
             }
         }
         

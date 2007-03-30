@@ -102,5 +102,25 @@ public class InternalDialogContainer extends DeskletContainer {
         double y = parent.getLocation().getY() + parent.getSize().getHeight()/2 - getSize().getHeight()/2;
         setLocation(new Point2D.Double(x,y));
     }
+
+    public JComponent getContent() {
+        return content;
+    }
+
+    public boolean isBackgroundDraggable() {
+        return false;
+    }
+
+    public boolean isShaped() {
+        return false;
+    }
+
+    public Shape getShape() {
+        return null;
+    }
+
+    public boolean isResizable() {
+        return false;
+    }
     
 }

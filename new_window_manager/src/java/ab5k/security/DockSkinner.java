@@ -9,7 +9,7 @@
 package ab5k.security;
 
 import ab5k.MainPanel;
-import ab5k.wm.buffered.AnimRepainter;
+import ab5k.util.AnimRepainter;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;

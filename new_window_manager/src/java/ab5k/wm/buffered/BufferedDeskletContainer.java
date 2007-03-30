@@ -86,6 +86,9 @@ public class BufferedDeskletContainer extends BaseDC {
             comp.removeMouseMotionListener(mml);
         }
     }
+    public boolean isBackgroundDraggable() {
+        return this.draggable;
+    }
     
     public void setContent(JComponent content) {
         if(this.content != null) {
@@ -96,11 +99,6 @@ public class BufferedDeskletContainer extends BaseDC {
         pack();
     }
     
-    public void setResizable(boolean b) {
-    }
-    
-    public void setShaped(boolean b) {
-    }
     
     public void setVisible(boolean b) {
         this.visible = b;
@@ -142,9 +140,6 @@ public class BufferedDeskletContainer extends BaseDC {
         return this.dirty;
     }
 
-    // do nothing for now
-    public void setShape(Shape shape) {
-    }
 
     public void pack() {
         comp.setSize(comp.getLayout().preferredLayoutSize(comp));
@@ -166,5 +161,12 @@ public class BufferedDeskletContainer extends BaseDC {
 
     public void setClip(Shape clip) {
         this.clip = clip;
+    }
+
+
+    public void setShaped(boolean b) {
+    }
+    public boolean isShaped() {
+        return true;
     }
 }

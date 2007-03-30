@@ -65,6 +65,7 @@ public class InternalFrameContainer extends DeskletContainer {
     MoveMouseListener mml;
     boolean draggable = false;
     boolean shaped = false;
+    private boolean resizable = false;
     
     /**
      * Creates a new instance of InternalFrameContainer
@@ -105,6 +106,7 @@ public class InternalFrameContainer extends DeskletContainer {
     }
     
     public void setResizable(boolean resizable) {
+        this.resizable = resizable;
         iframe.setResizable(resizable);
     }
     
@@ -168,6 +170,26 @@ public class InternalFrameContainer extends DeskletContainer {
 
     public boolean isVisible() {
         return iframe.isVisible();
+    }
+
+    public JComponent getContent() {
+        return content;
+    }
+
+    public boolean isBackgroundDraggable() {
+        return draggable;
+    }
+
+    public boolean isShaped() {
+        return shaped;
+    }
+
+    public Shape getShape() {
+        return null;
+    }
+
+    public boolean isResizable() {
+        return resizable;
     }
     
     class HackedInternalFrameUI extends BasicInternalFrameUI {

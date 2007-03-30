@@ -10,6 +10,7 @@
 package ab5k.wm.buffered;
 
 import ab5k.security.DefaultContext;
+import ab5k.util.AnimRepainter;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;

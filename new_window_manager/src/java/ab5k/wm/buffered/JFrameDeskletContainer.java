@@ -12,6 +12,7 @@ package ab5k.wm.buffered;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import ab5k.util.GraphicsUtil;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -35,8 +36,10 @@ public class JFrameDeskletContainer extends BaseDC {
     JFrame frame;
     RootPaneContainer root;
     Window window;
-
+    
     private boolean packed = false;
+
+    private boolean shaped = false;
     
     /** Creates a new instance of JFrameDeskletContainer */
     public JFrameDeskletContainer(final BufferedWM wm, DefaultContext context) {
@@ -73,8 +76,23 @@ public class JFrameDeskletContainer extends BaseDC {
     
     public void setBackgroundDraggable(boolean b) {
     }
+    public boolean isBackgroundDraggable() {
+        return false;
+    }
     
-    public void setShaped(boolean b) {
+    
+    public void setShaped(boolean shaped) {
+        if(this.shaped != shaped) {
+            if(shaped) {
+                frame.setUndecorated(true);
+                frame.setBackground(new Color(0,0,0,0));
+            } else {
+                frame.setBackground(new Color(255,255,255,255));
+            }
+        }
+    }
+    public boolean isShaped() {
+        return this.shaped;
     }
     
     public void setResizable(boolean b) {
@@ -96,25 +114,26 @@ public class JFrameDeskletContainer extends BaseDC {
         window.setSize(new Dimension((int)d.getWidth(), (int)d.getHeight()));
     }
     
-
+    
     public Point2D getLocation() {
         return window.getLocation();
     }
-
+    
     public void setLocation(Point2D point) {
         window.setLocation(GraphicsUtil.toPoint(point));
     }
-
+    
     // do nothing for now
     public void setShape(Shape shape) {
     }
-
+    
     public void pack() {
         window.pack();
     }
-
+    
     public boolean isVisible() {
         return window.isVisible();
     }
+    
     
 }

@@ -12,6 +12,7 @@ package ab5k.wm.buffered;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DeskletConfig;
 import ab5k.security.Registry;
+import ab5k.util.AnimRepainter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
