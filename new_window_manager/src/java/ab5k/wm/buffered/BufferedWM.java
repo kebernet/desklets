@@ -20,6 +20,7 @@ import ab5k.security.DeskletRunner;
 import ab5k.security.LifeCycleException;
 import ab5k.security.Registry;
 import ab5k.util.AnimRepainter;
+import ab5k.util.GlobalMouse;
 import ab5k.util.GraphicsUtil;
 import ab5k.wm.WindowManager;
 import com.totsp.util.BeanArrayList;
@@ -54,10 +55,12 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputListener;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
@@ -87,6 +90,7 @@ public class BufferedWM extends WindowManager {
     private Point selectedDeskletOffset;
     
     Core core;
+    GlobalMouse globalMouseService = GlobalMouse.getInstance();
     
     /** Creates a new instance of BufferedWM */
     public BufferedWM(final Core core) {
@@ -112,6 +116,7 @@ public class BufferedWM extends WindowManager {
         panel.addMouseMotionListener(ma);
         
         setupManageButtons();
+        globalMouseService = new CustomGlobalMouseService();
     }
     
     public void setupManageButtons() {
@@ -205,11 +210,11 @@ public class BufferedWM extends WindowManager {
     void raiseWindow(MouseEvent e) {
         BufferedDeskletContainer bdc = findContainer(e.getPoint());
         if(bdc != null) {
-            getWindows().remove(bdc);
-            getWindows().add(bdc);
+            // raise the container
+            desklets.remove(bdc);
+            desklets.add(bdc);
+            // raise it's dialogs. josh: it's a map! how do we affect the order?
             selectedDesklet = bdc;
-            u.p("current mouse = " + e.getPoint());
-            u.p("desklet = " + selectedDesklet.getLocation());
             selectedDeskletOffset = new Point(
                     (int)(e.getPoint().getX() - selectedDesklet.getLocation().getX()),
                     (int)(e.getPoint().getY() - selectedDesklet.getLocation().getY()));
@@ -238,12 +243,11 @@ public class BufferedWM extends WindowManager {
     public void setDockingSide(MainPanel.DockingSide side) {
     }
     
-    
-    
     /* ====== the desklet container lifecycle ===== */
     public DeskletContainer createInternalContainer(DefaultContext context) {
         BufferedDeskletContainer cont = new BufferedDeskletContainer(this,context);
         cont.setLocation(new Point(0,0));
+        context.services.put(ab5k.desklet.services.GlobalMouse.class, globalMouseService);
         return cont;
     }
     
@@ -465,6 +469,49 @@ public class BufferedWM extends WindowManager {
         public void mouseExited(MouseEvent e) {
         }
     }
+
+    private class CustomGlobalMouseService extends GlobalMouse {
+
+        protected Point convertPointToComponent(JComponent comp, Point pt) {
+            Component topParent = getTopParent(comp);
+            
+            // if this is a component in a buffered desklet container.
+            if(topParent == hidden) {
+                DeskletToplevel top = (DeskletToplevel)getTopParent(comp,DeskletToplevel.class);
+                BufferedDeskletContainer bdc = top.getContainer();
+                Point pt2 = new Point(pt);
+                SwingUtilities.convertPointFromScreen(pt2,BufferedWM.this.panel);
+                pt2.translate(-(int)bdc.getLocation().getX(), -(int)bdc.getLocation().getY());
+                Point pt3 = convertPointFromParentToChild(top,comp, pt2);
+                u.p("final point = " + pt3);
+                return pt3;
+            } else {
+                return super.convertPointToComponent(comp,pt);
+            }
+        }
+
+        private Component getTopParent(Component comp) {
+            return SwingUtilities.getWindowAncestor(comp);
+        }
+        
+        private Component getTopParent(Component comp, Class targetClass) {
+            if(comp.getClass().isAssignableFrom(targetClass)) {
+                return comp;
+            }
+            return getTopParent(comp.getParent(),targetClass);
+        }
+
+        // convert from the child point to the parent point. the child must be a real child of this parent
+        private Point convertPointFromParentToChild(Component parent, Component child, Point pt) {
+            if(parent == child) {
+                return pt;
+            }
+            Point pt2 = new Point(pt);
+            pt2.translate(child.getLocation().x,child.getLocation().y);
+            return convertPointFromParentToChild(parent, child.getParent(), pt2);
+        }
+    }
+
     
     
 }

@@ -41,7 +41,7 @@ public class BufferedDeskletContainer extends BaseDC {
     
     BufferedDeskletContainer(BufferedWM wm, DefaultContext context) {
         super(wm, context);
-        comp = new DeskletToplevel();
+        comp = new DeskletToplevel(this);
         //comp.setBorder(BorderFactory.createLineBorder(Color.RED));
         comp.setLayout(new BorderLayout());
         mml = new MoveMouseListener(this, wm);

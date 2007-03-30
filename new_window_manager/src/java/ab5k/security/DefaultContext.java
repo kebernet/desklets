@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.Properties;
 import java.util.logging.Level;
@@ -45,6 +47,7 @@ public class DefaultContext extends DeskletContext {
     private Properties prefs;
     private boolean shutdownWhenIdle = true;
     private boolean stopped = false;
+    public Map<Class,Object> services;
 
     private Core core;
 
@@ -52,6 +55,7 @@ public class DefaultContext extends DeskletContext {
     public DefaultContext(Core core, DeskletConfig config) {
         this.core = core;
         this.config = config;
+        services = new HashMap<Class, Object>();
 
         try {
             File metainf = new File(config.getHomeDir(), "META-INF");
@@ -176,5 +180,13 @@ public class DefaultContext extends DeskletContext {
     
     public void setContainer(DeskletContainer container) {
         this.container = container;
+    }
+
+    public Object getService(Class serviceClass) {
+        return services.get(serviceClass);
+    }
+
+    public boolean serviceAvailable(Class serviceClass) {
+        return services.containsKey(serviceClass);
     }
 }
