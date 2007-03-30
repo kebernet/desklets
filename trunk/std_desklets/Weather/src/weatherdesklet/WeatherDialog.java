@@ -5,6 +5,7 @@
  */
 
 package weatherdesklet;
+import ab5k.desklet.DeskletContainer;
 import java.awt.Component;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import org.jdesktop.swingx.combobox.EnumComboBoxModel;
@@ -23,13 +25,17 @@ import org.joshy.weather.WeatherFactory;
  *
  * @author  joshy
  */
-public class WeatherDialog extends javax.swing.JDialog {
+public class WeatherDialog extends JPanel {
     WeatherFactory fact = WeatherFactory.newInstance();
     public String selectedStation = "KATL";
+    Desklet desklet;
+
+    private DeskletContainer dc;
     
     /** Creates new form WeatherDialog */
-    public WeatherDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    public WeatherDialog(Desklet desklet, DeskletContainer dc) {
+        this.desklet = desklet;
+        this.dc = dc;
         initComponents();
         try {
             List regionList;
@@ -66,7 +72,6 @@ public class WeatherDialog extends javax.swing.JDialog {
         stations = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         jLabel1.setText("Region:");
 
         regions.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -87,8 +92,8 @@ public class WeatherDialog extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -101,9 +106,12 @@ public class WeatherDialog extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(stations, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton1))
+                        .addComponent(stations, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(78, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,18 +124,16 @@ public class WeatherDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(stations, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         selectedStation = stations.getSelectedItem().toString();
-        setVisible(false);
-// TODO add your handling code here:
+        dc.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void regionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regionsActionPerformed
@@ -135,7 +141,7 @@ public class WeatherDialog extends javax.swing.JDialog {
             Map stationMap = fact.getStations(regions.getSelectedItem()+"");
             stations.setModel(new MapComboBoxModel(stationMap));
             stations.repaint();
-            pack();
+            dc.pack();
         } catch (Exception ex) {
             u.p(ex);
         }
