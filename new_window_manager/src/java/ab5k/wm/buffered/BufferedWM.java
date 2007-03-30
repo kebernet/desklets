@@ -30,10 +30,13 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -57,6 +60,9 @@ import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.swingx.JXBoxPanel;
+import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.RectanglePainter;
 import org.joshy.util.u;
 
 /**
@@ -99,65 +105,23 @@ public class BufferedWM extends WindowManager {
         panel.addMouseMotionListener(mouse);
         
         // deal with converting internal to external desklets
-        MouseAdapter ma = new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-            }
-            public void mouseEntered(MouseEvent e) {
-            }
-            public void mouseMoved(MouseEvent e) {
-            }
-            public void mousePressed(MouseEvent e) {
-                wasDragging = false;
-            }
-            boolean wasDragging = false;
-            public void mouseDragged(MouseEvent e) {
-                wasDragging = true;
-                if(e.getPoint().getX() < -20) {
-                    u.p("outside!");
-                    u.p("must close");
-                    core.getCollapseWindowAction().doCollapse();
-                }
-            }
-            public void mouseReleased(MouseEvent e) {
-                if(e.getPoint().getX() < 0 && wasDragging) {
-                    u.p("dropped outside!");
-                    convertInternalToExternalContainer(selectedDesklet);
-                }
-            }
-            public void mouseExited(MouseEvent e) {
-            }
-        };
+        MouseAdapter ma = new InternalToExternalMouseHandler(core);
         panel.addMouseListener(ma);
         panel.addMouseMotionListener(ma);
         
-        JPanel buttonPanel = new JPanel();
-        JButton btn = new JButton("stop");
-        btn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                BeanArrayList<DeskletRunner> runners = DeskletManager.getInstance().getRunners();
-                if(runners.size() > 0) {
-                    DeskletRunner d = runners.get(0);
-                    stop(d);
-                }
-            }
-        });
-        //buttonPanel.add(btn);
-        
-        JButton startButton = new JButton("Start");
-        startButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Registry registry = Registry.getInstance();
-                BeanArrayList<DeskletConfig> configs = registry.getDeskletConfigs();
-                if(configs.size() > 0) {
-                    DeskletConfig d = configs.get(0);
-                    start(d);
-                }
-            }
-        });
-        //buttonPanel.add(startButton);
+        setupManageButtons();
+    }
+    
+    public void setupManageButtons() {
+        final JXBoxPanel buttonPanel = new JXBoxPanel();
+        buttonPanel.setBackgroundPainter(new RectanglePainter(3,3,3,3, 20,20, true,
+                Color.ORANGE, 3, Color.BLACK));
+        buttonPanel.setPadding(new Insets(5,5,5,5));
+        buttonPanel.setOpaque(false);
         final ManagePanelAnimations mpa = new ManagePanelAnimations(this);
         
-        final JToggleButton manageButton = new JToggleButton("Manage");
+        final JToggleButton manageButton = new JToggleButton("Manage Widgets");
+        manageButton.setOpaque(false);
         manageButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(manageButton.isSelected()) {
@@ -170,9 +134,23 @@ public class BufferedWM extends WindowManager {
             }
         });
         buttonPanel.add(manageButton);
+        final JButton getMore = new JButton("Get More Widgets");
+        getMore.setOpaque(false);
+        buttonPanel.add(getMore);
         
         panel.add(buttonPanel);
-        buttonPanel.setLocation(500/*panel.getWidth()-buttonPanel.getWidth()*/,0);
+        panel.addComponentListener(new ComponentListener() {
+            public void componentHidden(ComponentEvent e) {
+            }
+            public void componentMoved(ComponentEvent e) {
+            }
+            public void componentResized(ComponentEvent e) {
+                u.p("resized");
+                buttonPanel.setLocation(panel.getWidth()-buttonPanel.getWidth(),0);
+            }
+            public void componentShown(ComponentEvent e) {
+            }
+        });
     }
     
     void stop(DeskletContainer dc) {
@@ -415,5 +393,50 @@ public class BufferedWM extends WindowManager {
         }
         return dialogMap.get(dc);
     }
+    
+    private class InternalToExternalMouseHandler extends MouseAdapter {
+        
+        private Core core;
+        
+        public InternalToExternalMouseHandler(Core core) {
+            super();
+            this.core = core;
+        }
+        
+        public void mouseClicked(MouseEvent e) {
+        }
+        
+        public void mouseEntered(MouseEvent e) {
+        }
+        
+        public void mouseMoved(MouseEvent e) {
+        }
+        
+        public void mousePressed(MouseEvent e) {
+            wasDragging = false;
+        }
+        
+        boolean wasDragging = false;
+        
+        public void mouseDragged(MouseEvent e) {
+            wasDragging = true;
+            if (e.getPoint().getX() < 20) {
+                u.p("outside!");
+                u.p("must close");
+                core.getCollapseWindowAction().doCollapse();
+            }
+        }
+        
+        public void mouseReleased(MouseEvent e) {
+            if (e.getPoint().getX() < 0 && wasDragging) {
+                u.p("dropped outside!");
+                convertInternalToExternalContainer(selectedDesklet);
+            }
+        }
+        
+        public void mouseExited(MouseEvent e) {
+        }
+    }
+    
     
 }

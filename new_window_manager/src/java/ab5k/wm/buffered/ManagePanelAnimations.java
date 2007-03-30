@@ -12,9 +12,12 @@ package ab5k.wm.buffered;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DeskletConfig;
 import ab5k.security.Registry;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,10 +35,14 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.swingx.JXInsets;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.color.ColorUtil;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.painter.RectanglePainter;
@@ -58,47 +65,85 @@ public class ManagePanelAnimations {
         }
     }
     
-    private List<JButton> manageButtons;
+    private List<JPanel> manageButtons;
 
     private BufferedWM wm;
     private final int transitionLength = 500;
     private final int manageButtonGap = 60;
     private final int manageButtonSpacing = 10;
+    private final int manageButtonWidth = 200;
     private final int firstColumnX = 100;
     private Icon closeIcon, closeOverIcon; 
     
     void showManagePanel() {
-        manageButtons = new ArrayList<JButton>();
+        manageButtons = new ArrayList<JPanel>();
         List<DeskletConfig> configs = Registry.getInstance().getDeskletConfigs();
         
         Animator firstAnim = new Animator(1);
         Animator prevAnim = firstAnim;
         Animator lastAnim = firstAnim;
         int y = 0;
-        final int x = wm.panel.getWidth()-200;
+        final int x = wm.panel.getWidth()-manageButtonWidth-50;
         int animlen = transitionLength / configs.size();
         for(DeskletConfig cfg : configs) {
             final DeskletConfig config = cfg;
-            final JButton btn = new JButton(cfg.getName());
+            final ManageDeskletPanel panel = new ManageDeskletPanel();
+            panel.setDeskletName(cfg.getName());
+            panel.setDeskletDescription(cfg.getDescription());
+            panel.addButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    wm.start(config);
+                }
+            });
+            panel.setOpaque(false);
+            panel.setPadding(new JXInsets(3));
+            RectanglePainter rect = new RectanglePainter(2,2,2,2, 10,10, true,
+                    new GradientPaint(
+                        new Point(0,0), Color.ORANGE,
+                        new Point(0,1), ColorUtil.setSaturation(Color.ORANGE,0.5f)),
+                        3, Color.BLACK);
+            rect.setPaintStretched(true);
+            panel.setBackgroundPainter(rect);
+            /*
+            final JXPanel panel = new JXPanel();
+            panel.setLayout(new BorderLayout());
+            
+            JPanel panel2 = new JPanel();
+            panel2.setLayout(new BorderLayout());
+            JLabel name = new JLabel(cfg.getName());
+            panel2.add(name,"North");
+            JLabel desc = new JLabel(cfg.getDescription());
+            panel2.add(desc,"Center");
+            
+            panel.add(panel2,"Center");
+            
+            final JButton btn = new JButton("+");
             btn.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     wm.start(config);
                 }
             });
-            btn.setOpaque(false);
-            manageButtons.add(btn);
+            btn.setMargin(new Insets(0,0,0,0));
+            btn.setPreferredSize(new Dimension(30,30));
+            panel.add(btn,"West");
+            panel.setOpaque(true);*/
+            manageButtons.add(panel);
             final int startY = y;
             final int endY = y+manageButtonGap;
             
-            final Animator propAnim = PropertySetter.createAnimator(animlen, btn, "location",
+            final Animator propAnim = PropertySetter.createAnimator(animlen, panel, "location",
                     new Point(x,startY), new Point(x,endY));
             TimingTarget creator = new TimingTarget() {
                 public void begin() {
-                    wm.panel.add(btn);
-                    btn.setLocation(x,startY);
-                    Dimension dim = new Dimension(150,manageButtonGap-manageButtonSpacing);
-                    btn.setPreferredSize(dim);
-                    btn.setSize(dim);
+                    wm.panel.add(panel);
+                    panel.setLocation(x,startY);
+                    int manageButtonHeight = panel.getPreferredSize().height;
+                    manageButtonHeight = 60;
+                    Dimension dim = new Dimension(manageButtonWidth,
+                            manageButtonHeight/*manageButtonGap-manageButtonSpacing*/);
+                    panel.setPreferredSize(dim);
+                    panel.setSize(dim);
+                    panel.validate();
                 }
                 public void end() {
                 }
@@ -111,7 +156,7 @@ public class ManagePanelAnimations {
             prevAnim.addTarget(new StartAnimAfter(propAnim));
             prevAnim = propAnim;
             lastAnim = propAnim;
-            y+=manageButtonGap;
+            y+=60+20;//manageButtonGap;
         }
         firstAnim.start();
     }
@@ -122,14 +167,14 @@ public class ManagePanelAnimations {
         int animlen = transitionLength / manageButtons.size();
         // create the animators in reverse order 
         for(int i=manageButtons.size()-1; i>=0; i--) {
-            final JButton btn = manageButtons.get(i);
-            final Animator propAnim = PropertySetter.createAnimator(animlen,btn,"location", btn.getLocation(),
-                    new Point(btn.getLocation().x,btn.getLocation().y-manageButtonGap));
+            final JPanel panel = manageButtons.get(i);
+            final Animator propAnim = PropertySetter.createAnimator(animlen,panel,"location", panel.getLocation(),
+                    new Point(panel.getLocation().x,panel.getLocation().y-manageButtonGap));
             propAnim.addTarget(new TimingTarget() {
                 public void begin() {
                 }
                 public void end() {
-                    wm.panel.remove(btn);
+                    wm.panel.remove(panel);
                 }
                 public void repeat() {
                 }
