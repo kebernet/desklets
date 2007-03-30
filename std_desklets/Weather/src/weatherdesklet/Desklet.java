@@ -33,27 +33,47 @@ public class Desklet extends AbstractDesklet{
     public void destroy() throws Exception {
     }
     
+    
     Thread thread;
     public void start() throws Exception {
         thread = new Thread(new Runnable() {
             public void run() {
                 running = true;
                 while( running ){
+                    // check the weather
+                    updateWeather();
+                    // sleep for 30 min
                     try {
-                        Weather wth = WeatherFactory.newInstance().getWeather(getStationID());
-                        display.setWeather(wth);
-                        u.p("got weather: " + wth);
-                        dockLabel.setText(wth.getTempF()+" " + wth.getWeather());
-                        dockLabel.setIcon(display.icons16.get(wth.getType()));
-                        Thread.currentThread().sleep(30 * 60 * 1000); //sleep for 30 min
-                    } catch (Exception ex) {
+                        Thread.currentThread().sleep(5 * 60 * 1000); //sleep for 5 min
+                    } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
-                    context.notifyStopped();
                 }
+                u.p("stopping");
+                context.notifyStopped();
             }
+            
         });
         thread.start();
+    }
+    
+    private void updateWeather() {
+        Weather wth = null;
+        try {
+            wth = WeatherFactory.newInstance().getWeather(getStationID());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        u.p("got weather: " + wth);
+        display.setWeather(wth);
+        /*
+        if(wth == null) {
+            dockLabel.setText("-99 unknown");
+            dockLabel.setIcon(display.icons16.get(Weather.UNKNOWN));
+        } else {
+            dockLabel.setText(wth.getTempF()+" " + wth.getWeather());
+            dockLabel.setIcon(display.icons16.get(wth.getType()));
+        }*/
     }
     
     public void stop() throws Exception {
@@ -61,6 +81,9 @@ public class Desklet extends AbstractDesklet{
         thread.interrupt();
     }
     
+    public DeskletContext getContext() {
+        return this.context;
+    }
     
     public void init(DeskletContext context) throws Exception {
         this.context = context;
@@ -76,11 +99,11 @@ public class Desklet extends AbstractDesklet{
         stationID = context.getPreference("STATION_ID","KATL");
         u.p("station ID = " + stationID);
     }
-
+    
     public String getStationID() {
         return stationID;
     }
-
+    
     public void setStationID(String stationID) {
         this.stationID = stationID;
         System.out.println("saved station ID"+ stationID);

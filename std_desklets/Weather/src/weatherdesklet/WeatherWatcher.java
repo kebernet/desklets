@@ -6,6 +6,7 @@
 
 package weatherdesklet;
 
+import ab5k.desklet.DeskletContainer;
 import java.awt.Color;
 import java.awt.Insets;
 import java.util.HashMap;
@@ -86,14 +87,22 @@ public class WeatherWatcher extends JXPanel {
     
     public void setWeather(Weather weather) {
         this.weather = weather;
-        
-        description.setText(getWeather().getLocation());
-        temp.setText(getWeather().getTempF()+"");
-        type.setText(getWeather().getWeather());
         weatherIcon.setText("");
-        weatherIcon.setIcon(icons32.get(getWeather().getType()));
-        desklet.dockLabel.setText(weather.getTempF()+" " + weather.getWeather());
-        desklet.dockLabel.setIcon(icons16.get(weather.getType()));
+        if(weather == null) {
+            description.setText("unknown");
+            temp.setText("-99");
+            type.setText("Unknown");
+            weatherIcon.setIcon(icons32.get(Weather.UNKNOWN));
+            desklet.dockLabel.setText("-99 unknown");
+            desklet.dockLabel.setIcon(icons16.get(Weather.UNKNOWN));
+        } else {
+            description.setText(getWeather().getLocation());
+            temp.setText(getWeather().getTempF()+"");
+            type.setText(getWeather().getWeather());
+            weatherIcon.setIcon(icons32.get(getWeather().getType()));
+            desklet.dockLabel.setText(weather.getTempF()+" " + weather.getWeather());
+            desklet.dockLabel.setIcon(icons16.get(weather.getType()));
+        }
     }
     
     
@@ -172,15 +181,20 @@ public class WeatherWatcher extends JXPanel {
     private void setupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setupButtonActionPerformed
         
         if(getWeather() != null) { getWeather().getStationID(); }
-        WeatherDialog dia = new WeatherDialog((JFrame)SwingUtilities.windowForComponent(this),true);
-        dia.setVisible(true);
+        
+        DeskletContainer dc = desklet.getContext().getConfigurationContainer();
+        System.out.println("context = " + dc);
+        WeatherDialog dia = new WeatherDialog(desklet, dc);
+        dc.setContent(dia);
+        dc.setVisible(true);
+        /*
         u.p("selected station = " + dia.selectedStation);
         try {
             setWeather(getFact().getWeather(dia.selectedStation));
             setSelectedStation(dia.selectedStation);
         } catch (Exception ex) {
             u.p(ex);
-        }
+        }*/
         
     }//GEN-LAST:event_setupButtonActionPerformed
     
