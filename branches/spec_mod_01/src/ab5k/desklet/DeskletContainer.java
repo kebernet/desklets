@@ -20,10 +20,19 @@ import javax.swing.JComponent;
 public abstract class DeskletContainer {
     
     public abstract void setContent( JComponent component );
+    public abstract JComponent getContent();
+    
     public abstract void setBackgroundDraggable( boolean backgroundDraggable );
+    public abstract boolean isBackgroundDraggable();
+    
     public abstract void setShaped( boolean shaped );
+    public abstract boolean isShaped();
+    
     public abstract void setShape( Shape shape );
+    public abstract Shape getShape();
+    
     public abstract void setResizable( boolean resizable );
+    public abstract boolean isResizable();
     
     public abstract void setVisible(boolean visible );
     public abstract boolean isVisible();

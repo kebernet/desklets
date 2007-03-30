@@ -89,6 +89,7 @@ class TestDeskletContext extends DeskletContext {
         RootPaneContainer frame;
         Window window;
         boolean packed = false;
+        private JComponent content;
         
         TestContainer( RootPaneContainer frame ){
             this.frame = frame;
@@ -96,8 +97,9 @@ class TestDeskletContext extends DeskletContext {
         }
         
         public void setContent(JComponent component) {
+            this.content = component;
             frame.getContentPane().removeAll();
-            frame.getContentPane().add(component);
+            frame.getContentPane().add(content);
         }
         
         public void setSize(Dimension2D size) {
@@ -138,6 +140,37 @@ class TestDeskletContext extends DeskletContext {
         public void pack() {
             window.pack();
             packed = true;
+        }
+
+        public boolean isVisible() {
+            return window.isVisible();
+        }
+
+        public Point2D getLocation() {
+            return window.getLocation();
+        }
+
+        public JComponent getContent() {
+            return content;
+        }
+
+        public boolean isBackgroundDraggable() {
+            return false;
+        }
+
+        public boolean isShaped() {
+            return false;
+        }
+
+        public Shape getShape() {
+            return null;
+        }
+
+        public boolean isResizable() {
+            if(frame instanceof JFrame) {
+                return ((JFrame)frame).isResizable();
+            }
+            return false;
         }
         
     }
