@@ -440,8 +440,6 @@ public class BufferedWM extends WindowManager {
         public void mouseDragged(MouseEvent e) {
             wasDragging = true;
             if (e.getPoint().getX() < 20) {
-                u.p("outside!");
-                u.p("must close");
                 if(!core.getCloser().isWindowClosed()) {
                     core.getCollapseWindowAction().doCollapse();
                     selectedDesklet = convertInternalToExternalContainer(selectedDesklet);
@@ -451,7 +449,6 @@ public class BufferedWM extends WindowManager {
             
             if(core.getCloser().isWindowClosed() &&
                     selectedDesklet instanceof JFrameDeskletContainer) {
-                u.p("outside now. keep moving the desklet");
                 Point pt = e.getPoint();
                 SwingUtilities.convertPointToScreen(pt,panel);
                 selectedDesklet.setLocation(new Point(pt.x - selectedDeskletOffset.x,
@@ -462,7 +459,6 @@ public class BufferedWM extends WindowManager {
         
         public void mouseReleased(MouseEvent e) {
             if (e.getPoint().getX() < 0 && wasDragging) {
-                u.p("dropped outside!");
             }
         }
         
@@ -483,7 +479,6 @@ public class BufferedWM extends WindowManager {
                 SwingUtilities.convertPointFromScreen(pt2,BufferedWM.this.panel);
                 pt2.translate(-(int)bdc.getLocation().getX(), -(int)bdc.getLocation().getY());
                 Point pt3 = convertPointFromParentToChild(top,comp, pt2);
-                u.p("final point = " + pt3);
                 return pt3;
             } else {
                 return super.convertPointToComponent(comp,pt);
