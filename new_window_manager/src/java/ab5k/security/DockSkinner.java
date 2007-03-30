@@ -9,9 +9,16 @@
 package ab5k.security;
 
 import ab5k.MainPanel;
+import ab5k.wm.buffered.AnimRepainter;
+import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTarget;
+import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.animation.timing.triggers.MouseTrigger;
+import org.jdesktop.animation.timing.triggers.MouseTriggerEvent;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.AlphaPainter;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.painter.RectanglePainter;
@@ -46,9 +53,9 @@ public class DockSkinner {
                 BorderFactory.createMatteBorder(5, 5, 5, 5,
                 new Color(215, 116, 0)));
         final Border normalBorder = BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(
-                0, 0, 3, 0, new Color(218, 218, 218)),
+                0, 0, 1, 0, new Color(218, 218, 218)),
                 BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        dock.panel.setBackground(Color.GREEN);
+        //dock.panel.setBackground(Color.GREEN);
         dock.panel.setBorder(normalBorder);
         
         RectanglePainter rp = new RectanglePainter(new Color(234, 214, 171),
@@ -62,34 +69,22 @@ public class DockSkinner {
         
         GlowPathEffect glow = new GlowPathEffect();
         glow.setBrushColor(new Color(215, 116, 0));
+        glow.setEffectWidth(10);
         rp.setAreaEffects(glow);
         
-        final Painter hiPainter = new CompoundPainter(rp);
+        final AlphaPainter hiPainter = new AlphaPainter();
+        hiPainter.setPainters(rp);
+        hiPainter.setAlpha(0f);
         
-        final Painter noPainter = new CompoundPainter();
-        dock.panel.setBackgroundPainter(noPainter);
+        dock.panel.setBackgroundPainter(hiPainter);
         
-        MouseListener ml = new MouseListener() {
-            public void mouseClicked(MouseEvent e) {
-            }
-            
-            public void mouseEntered(MouseEvent e) {
-                dock.panel.setBackgroundPainter(hiPainter);
-            }
-            
-            public void mouseExited(MouseEvent e) {
-                dock.panel.setBackgroundPainter(noPainter);
-            }
-            
-            public void mousePressed(MouseEvent e) {
-            }
-            
-            public void mouseReleased(MouseEvent e) {
-            }
-        };
+        // create a .3 sec anim
+        final Animator anim = new Animator(300);
+        anim.addTarget(new PropertySetter(hiPainter,"alpha",0f,1f));
         
-        dock.panel.addMouseListener(ml);
-        
+        // make the container repaint properly
+        anim.addTarget(new AnimRepainter(dock.panel));
+        MouseTrigger.addTrigger(dock.panel,anim,MouseTriggerEvent.ENTER,true);
         //dock.panel.setOpaque(true);
     }
     
