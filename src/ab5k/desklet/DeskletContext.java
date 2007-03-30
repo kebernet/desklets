@@ -43,4 +43,8 @@ public abstract class DeskletContext {
     public abstract void setShutdownWhenIdle(boolean shutdownWhenIdle);
     
     public abstract File getWorkingDirectory();
+    
+    // service support
+    public abstract Object getService(Class serviceClass);
+    public abstract boolean serviceAvailable(Class serviceClass);
 }
