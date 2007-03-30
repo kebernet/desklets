@@ -104,29 +104,6 @@ public class ManagePanelAnimations {
                         3, Color.BLACK);
             rect.setPaintStretched(true);
             panel.setBackgroundPainter(rect);
-            /*
-            final JXPanel panel = new JXPanel();
-            panel.setLayout(new BorderLayout());
-            
-            JPanel panel2 = new JPanel();
-            panel2.setLayout(new BorderLayout());
-            JLabel name = new JLabel(cfg.getName());
-            panel2.add(name,"North");
-            JLabel desc = new JLabel(cfg.getDescription());
-            panel2.add(desc,"Center");
-            
-            panel.add(panel2,"Center");
-            
-            final JButton btn = new JButton("+");
-            btn.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    wm.start(config);
-                }
-            });
-            btn.setMargin(new Insets(0,0,0,0));
-            btn.setPreferredSize(new Dimension(30,30));
-            panel.add(btn,"West");
-            panel.setOpaque(true);*/
             manageButtons.add(panel);
             final int startY = y;
             final int endY = y+manageButtonGap;
@@ -140,7 +117,7 @@ public class ManagePanelAnimations {
                     int manageButtonHeight = panel.getPreferredSize().height;
                     manageButtonHeight = 60;
                     Dimension dim = new Dimension(manageButtonWidth,
-                            manageButtonHeight/*manageButtonGap-manageButtonSpacing*/);
+                            manageButtonHeight);
                     panel.setPreferredSize(dim);
                     panel.setSize(dim);
                     panel.validate();
