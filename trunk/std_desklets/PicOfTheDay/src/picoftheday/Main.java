@@ -81,7 +81,9 @@ public class Main extends AbstractDesklet {
     
     public void start() throws Exception {
         PhotoFeed.loadFromXML();
-        LoadImage();
+        if (PhotoFeed.feeds.size() > 0) {
+            LoadImage();
+        }
     }
     public void stop() throws Exception {
         this.context.notifyStopped();
