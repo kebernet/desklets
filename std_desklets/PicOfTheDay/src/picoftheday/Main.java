@@ -33,19 +33,18 @@ import java.net.URL;
 import org.jdom.*;
 import org.jdom.input.*;
 import org.jdom.output.*;
-
+import javax.swing.*;
+import java.awt.event.*;
 /**
  *
  * @author joshua@marinacci.org
  */
 public class Main extends AbstractDesklet {
-    static List<PhotoFeed> feeds = new ArrayList<PhotoFeed>();
-    
     public static void main(String[] args) {
         DeskletTester.start(Main.class);
     }
     
-    private JXImageView view;
+    private static JXImageView view = new JXImageView();
     
     public Main() {
     }
@@ -53,7 +52,26 @@ public class Main extends AbstractDesklet {
     
     public void init(DeskletContext context) throws Exception {
         this.context = context;
-        view = new JXImageView();
+        
+        final JPopupMenu menu = new JPopupMenu();
+        
+        // Create and add a menu item
+        JMenuItem item = new JMenuItem("Manage Sources");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new ConfigForm().setVisible(true);
+            }
+        });
+        menu.add(item);
+        final JButton btnSetup = new JButton("Setup");
+        view.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent evt) {
+                if (evt.isPopupTrigger()) {
+                    menu.show(evt.getComponent(), evt.getX(), evt.getY());
+                }
+            }
+        });
+        view.add(menu);
         view.setPreferredSize(new Dimension(300,300));
         context.getContainer().setContent(view);
         context.getContainer().setResizable(true);
@@ -62,7 +80,17 @@ public class Main extends AbstractDesklet {
     
     
     public void start() throws Exception {
-        LoadData();
+        PhotoFeed.loadFromXML();
+        LoadImage();
+    }
+    public void stop() throws Exception {
+        this.context.notifyStopped();
+    }
+    
+    public void destroy() throws Exception {
+    }
+    
+    public static void LoadImage() {
         final PhotoFeed pf = PhotoFeed.getSelectedFeed();
         if (pf.getSourceType() == PhotoFeed.SourceType.WEBPAGE) {
             final HtmlHttpRequest req = new HtmlHttpRequest();
@@ -90,86 +118,8 @@ public class Main extends AbstractDesklet {
         } else {
             PhotoFeed d = PhotoFeed.getSelectedFeed();
             view.setImage(d.pickRandom());
-            
         }
-    }
-    public void stop() throws Exception {
-        this.context.notifyStopped();
+        
     }
     
-    public void destroy() throws Exception {
-    }
-    
-    public void LoadData() throws Exception{
-        /* Eventually this will be replaced by context.getWorkingDirectory().
-         * For now, this desklet will place files most likely in the home
-         * directory
-         */
-        try {
-           // u.p("Working directory: "+ context.getWorkingDirectory());
-            File file = new File(new File(".").getCanonicalPath()+File.separator+"pod.xml");
-            if (file.exists() == true) {
-                //Load file
-                
-                SAXBuilder builder = new SAXBuilder();
-                Document doc = builder.build(file);
-                Element root = doc.getRootElement();
-                feeds = PhotoFeed.convertToList(root);
-            } else {
-                //Regenerate sources
-                createPhotoSources();
-            }
-        } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-    
-    public void createPhotoSources() {
-        try {
-            u.p("Creating photo sources");
-            Document doc = new Document();
-            Element root = new Element("sources");
-            doc.setRootElement(root);
-            
-            Element source = new Element("source");
-            source.addContent(new Element("name").setText("NASA Photo of the Day"));
-            source.addContent(new Element("url").setText("http://antwrp.gsfc.nasa.gov/apod/"));
-            source.addContent(new Element("page").setText("astropix.html"));
-            source.addContent(new Element("queryString").setText("//body/center/p/a/img/@src"));
-            source.addContent(new Element("type").setAttribute(new Attribute("id","WEBPAGE")));
-            source.addContent(new Element("selected").setAttribute(new Attribute("id","Y")));
-            root.addContent(source);
-            
-            source = new Element("source");
-            source.addContent(new Element("name").setText("Earth Science Photo of the Day"));
-            source.addContent(new Element("url").setText("http://epod.usra.edu/"));
-            source.addContent(new Element("page").setText("index.php3"));
-            source.addContent(new Element("queryString").setText("//body/center/a/img/@src"));
-            source.addContent(new Element("type").setAttribute(new Attribute("id","WEBPAGE")));
-            source.addContent(new Element("selected").setAttribute(new Attribute("id","N")));
-            root.addContent(source);
-            
-            source = new Element("source");
-            source.addContent(new Element("name").setText("Flickr Photo Feed"));
-            source.addContent(new Element("url").setText("http://api.flickr.com/services/feeds/photos_public.gne"));
-            source.addContent(new Element("queryString").setText("?tags=animal&format=rss_200"));
-            source.addContent(new Element("type").setAttribute(new Attribute("id","RSSMEDIA")));
-            source.addContent(new Element("selected").setAttribute(new Attribute("id","N")));
-            root.addContent(source);
-            
-            feeds = PhotoFeed.convertToList(root);
-           /* Eventually this will be replaced by context.getWorkingDirectory().
-            * For now, this desklet will place files most likely in the home
-            * directory
-            */
-            u.p("Saving photo sources to file");
-            File file = new File(new File(".").getCanonicalPath()+File.separator+"pod.xml");
-            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
-            outputter.output(doc, new FileWriter(file.getAbsolutePath()));
-            
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
