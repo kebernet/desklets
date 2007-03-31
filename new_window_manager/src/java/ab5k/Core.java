@@ -85,7 +85,9 @@ public class Core {
     }
     
     private void preinstallStandardDesklets() {
+        u.p("checking for first run");
         if(Main.isFirstRun()) {
+            u.p("is first run");
             String[] options = { "Yes", "No" };
             int value = JOptionPane.showOptionDialog(this.mainPanel, "This seems to be your first run of AB5k. Would you like to install some default desklets from the web?",
                     "First Run", JOptionPane.YES_NO_CANCEL_OPTION,

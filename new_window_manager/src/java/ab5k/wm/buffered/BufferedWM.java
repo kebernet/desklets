@@ -515,6 +515,7 @@ public class BufferedWM extends WindowManager {
         }
         
         private void hideDeskletInGlasspane() {
+            intExtGlasspane.setVisible(false);
         }
     }
     

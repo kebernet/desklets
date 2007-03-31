@@ -18,11 +18,16 @@ import org.joshy.util.u;
  * @author joshy
  */
 public final class Environment {
-    private static final String AB5K_HOME = System.getProperty("org.ab5k.test.althomedirname") == null ? ".ab5k" :
+    // if autograntall is set to anything then make it true
+    public static final boolean autoGrantAll = 
+            System.getProperty("org.ab5k.test.autoGrantAll") == null ? false : true;
+
+    private static final String AB5K_HOME = 
+            System.getProperty("org.ab5k.test.althomedirname") == null ? ".ab5k" :
         System.getProperty("org.ab5k.test.althomedirname");
+    private static boolean justCreated = false;
     public static final File HOME = getUserPreferredHome();
     public static final File REPO = new File(HOME, "repository");
-    private static boolean justCreated = false;
     
     private static String AB5K_HOME_ENVNAME = "AB5K_HOME";
     private static File getUserPreferredHome() {
@@ -34,7 +39,7 @@ public final class Environment {
             // maybe default home dir is fine
             f = new File(System.getProperty("user.home"), AB5K_HOME);
             u.p("user.home = " + System.getProperty("user.home"));
-            u.p("file = " + f + " " + f.getAbsolutePath());
+            u.p("file = " + f.getAbsolutePath());
             if (createAppHome(f)) {
                 u.p("checking app data now");
                 // failed to mkdir in user home - maybe windows with network profile
@@ -61,12 +66,21 @@ public final class Environment {
         return f;
     }
     
+    // returns true if the creation failed and we should try other options
     private static boolean createAppHome(File f) {
+        u.p("creating: " + f.getAbsolutePath());
         justCreated = f.mkdirs();
+        u.p("Just created = " + justCreated);
+        // if created then don't continue
+        if(justCreated) return false;
+        
         return !justCreated && (!f.exists() || !f.isDirectory());
     }
     
     public static boolean wasHomeDirCreated() {
+        u.p("home exists = " + HOME.exists());
+        u.p("is dir = " + HOME.isDirectory());
+        u.p("jsut created = " + justCreated);
         return HOME.exists() && HOME.isDirectory() && justCreated ;
     }
     

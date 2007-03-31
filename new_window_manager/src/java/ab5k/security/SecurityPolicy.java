@@ -45,6 +45,8 @@ public class SecurityPolicy extends Policy {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final File SECURITY_PROPS = new File( Environment.HOME, "security.properties");
     private static final ArrayList<String> SAFE_RUNTIME = new ArrayList<String>();
+
+    
     static{
         SAFE_RUNTIME.add( "modifyThread");
         SAFE_RUNTIME.add( "modifyThreadGroup");
@@ -122,6 +124,8 @@ public class SecurityPolicy extends Policy {
     
     public boolean implies(ProtectionDomain protectionDomain,
             Permission permission) {
+        
+        if(Environment.autoGrantAll) { return true; }
         
         if(permission instanceof java.awt.AWTPermission ||
                 permission instanceof java.util.PropertyPermission ||
