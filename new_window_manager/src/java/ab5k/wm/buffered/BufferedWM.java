@@ -511,6 +511,7 @@ public class BufferedWM extends WindowManager {
                 intExtGlasspane.setVisible(true);
                 u.p("turned on glasspane");
             }
+            intExtGlasspane.setVisible(true);
             intExtGlasspane.repaint();
         }
         
