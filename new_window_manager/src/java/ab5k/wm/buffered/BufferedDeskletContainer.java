@@ -15,6 +15,8 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -39,6 +41,8 @@ public class BufferedDeskletContainer extends BaseDC {
 
     private Shape clip = null;
     
+    List<BufferedPopup> popups;
+    
     BufferedDeskletContainer(BufferedWM wm, DefaultContext context) {
         super(wm, context);
         comp = new DeskletToplevel(this);
@@ -46,6 +50,7 @@ public class BufferedDeskletContainer extends BaseDC {
         comp.setLayout(new BorderLayout());
         mml = new MoveMouseListener(this, wm);
         setBackgroundDraggable(false);
+        popups = new ArrayList<BufferedPopup>();
     }
     
     Dimension2D size = new Dimension(50, 50);

@@ -58,6 +58,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.Popup;
+import javax.swing.PopupFactory;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
@@ -97,6 +99,7 @@ public class BufferedWM extends WindowManager {
         this.core = core;
         hidden = new JDialog();
         //hidden.setVisible(true);
+        //hidden.setVisible(true);
         RepaintManager.setCurrentManager(new DeskletRepaintManager(this));
         desklets = new ArrayList<BaseDC>();
         dialogMap = new HashMap<BaseDC,List<BaseDC>>();
@@ -117,6 +120,7 @@ public class BufferedWM extends WindowManager {
         
         setupManageButtons();
         globalMouseService = new CustomGlobalMouseService();
+        //setupPopupHacking();
     }
     
     public void setupManageButtons() {
@@ -255,6 +259,7 @@ public class BufferedWM extends WindowManager {
         if(dc == null) return null;
         BaseDC bdc = (BaseDC) dc;
         DefaultContext context = bdc.getContext();
+        
         // remove all the old stuff
         if(bdc instanceof BufferedDeskletContainer) {
             hidden.remove(((BufferedDeskletContainer)bdc).comp);
@@ -272,7 +277,6 @@ public class BufferedWM extends WindowManager {
         newContainer.pack();
         newContainer.setVisible(true);
         context.setContainer(newContainer);
-        //u.p("creating the new container: " + newContainer + " " + newContainer.hashCode());
         return newContainer;
     }
     
@@ -364,6 +368,7 @@ public class BufferedWM extends WindowManager {
                 BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
                 BufferedDeskletContainer dialog = new BufferedDialogContainer(this,bdc.getContext(),bdc);
                 addDialog(bdc,dialog);
+                hidden.add(dialog.comp);
                 panel.repaint();
                 return dialog;
             }
@@ -413,6 +418,21 @@ public class BufferedWM extends WindowManager {
         return dialogMap.get(dc);
     }
     
+    private void setupPopupHacking() {
+        PopupFactory.setSharedInstance(new PopupFactory() {
+            public Popup getPopup(final Component owner, final Component contents, int x, int y) throws IllegalArgumentException {
+                return new BufferedPopup(BufferedWM.this, owner, contents);
+            }
+        });
+    }
+    
+    Component getTopParent(Component comp, Class targetClass) {
+        if(targetClass.isAssignableFrom(comp.getClass())) {
+            return comp;
+        }
+        return getTopParent(comp.getParent(),targetClass);
+    }
+    
     private class InternalToExternalMouseHandler extends MouseAdapter {
         boolean wasDragging = false;
         
@@ -439,6 +459,7 @@ public class BufferedWM extends WindowManager {
         
         public void mouseDragged(MouseEvent e) {
             wasDragging = true;
+            showDeskletInGlasspane();
             if (e.getPoint().getX() < 20) {
                 if(!core.getCloser().isWindowClosed()) {
                     core.getCollapseWindowAction().doCollapse();
@@ -458,22 +479,53 @@ public class BufferedWM extends WindowManager {
         }
         
         public void mouseReleased(MouseEvent e) {
+            hideDeskletInGlasspane();
             if (e.getPoint().getX() < 0 && wasDragging) {
             }
         }
         
         public void mouseExited(MouseEvent e) {
         }
+        
+        JPanel intExtGlasspane = new JPanel() {
+            public void paintComponent(Graphics g) {
+                u.p("painting");
+                if(selectedDesklet != null) {
+                    if(selectedDesklet instanceof BufferedDeskletContainer) {
+                        BufferedDeskletContainer bdc = (BufferedDeskletContainer) selectedDesklet;
+                        Point pt = panel.getLocation();
+                        pt.translate((int)bdc.getLocation().getX(),
+                                (int)bdc.getLocation().getY());
+                        g.drawImage(bdc.getBuffer(),
+                                (int)pt.getX(),
+                                (int)pt.getY(), null);
+                    }
+                }
+            }
+        };
+        
+        private void showDeskletInGlasspane() {
+            if(frame.getGlassPane() != intExtGlasspane) {
+                intExtGlasspane.setOpaque(false);
+                frame.setGlassPane(intExtGlasspane);
+                intExtGlasspane.setVisible(true);
+                u.p("turned on glasspane");
+            }
+            intExtGlasspane.repaint();
+        }
+        
+        private void hideDeskletInGlasspane() {
+        }
     }
-
+    
     private class CustomGlobalMouseService extends GlobalMouse {
-
+        
         protected Point convertPointToComponent(JComponent comp, Point pt) {
             Component topParent = getTopParent(comp);
             
             // if this is a component in a buffered desklet container.
             if(topParent == hidden) {
-                DeskletToplevel top = (DeskletToplevel)getTopParent(comp,DeskletToplevel.class);
+                DeskletToplevel top = (DeskletToplevel)BufferedWM.this.getTopParent(comp,DeskletToplevel.class);
                 BufferedDeskletContainer bdc = top.getContainer();
                 Point pt2 = new Point(pt);
                 SwingUtilities.convertPointFromScreen(pt2,BufferedWM.this.panel);
@@ -484,18 +536,12 @@ public class BufferedWM extends WindowManager {
                 return super.convertPointToComponent(comp,pt);
             }
         }
-
+        
         private Component getTopParent(Component comp) {
             return SwingUtilities.getWindowAncestor(comp);
         }
         
-        private Component getTopParent(Component comp, Class targetClass) {
-            if(comp.getClass().isAssignableFrom(targetClass)) {
-                return comp;
-            }
-            return getTopParent(comp.getParent(),targetClass);
-        }
-
+        
         // convert from the child point to the parent point. the child must be a real child of this parent
         private Point convertPointFromParentToChild(Component parent, Component child, Point pt) {
             if(parent == child) {
@@ -506,7 +552,7 @@ public class BufferedWM extends WindowManager {
             return convertPointFromParentToChild(parent, child.getParent(), pt2);
         }
     }
-
+    
     
     
 }

@@ -12,6 +12,7 @@ import java.awt.RenderingHints;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import javax.swing.CellRendererPane;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import org.joshy.util.u;
 
@@ -62,8 +63,25 @@ class DeskletRenderPanel extends JPanel {
                         drawWindow(g2, bdcd);
                     }
                 }
+                for(BufferedPopup popup : bdc.popups) {
+                    u.p("drawing popup");
+                    drawPopup(g2, popup, bdc);
+                }
             }
         }
+    }
+    
+    private void drawPopup(Graphics2D g2, BufferedPopup popup, BufferedDeskletContainer bdc) {
+        Dimension size = new Dimension(100,200);
+        Point2D pt = new Point(20,20);
+        
+        BufferedImage img = drawToBuffer(popup.panel, size);
+        
+        Graphics2D g3 = (Graphics2D) g2.create();
+        g3.translate(bdc.getLocation().getX(), bdc.getLocation().getX());
+        g3.translate(pt.getX(), pt.getY());
+        g3.drawImage(img,0,0,null);
+        g3.dispose();
     }
     
     private void drawWindow(final Graphics2D g2, final BufferedDeskletContainer bdc) {
@@ -71,18 +89,7 @@ class DeskletRenderPanel extends JPanel {
         Point2D pt = bdc.getLocation();
         boolean wasDirty = false;
         if (bdc.getBuffer() == null || bdc.isDirty()) {
-            BufferedImage img = new BufferedImage((int)size.getWidth(), (int)size.getHeight(), BufferedImage.TYPE_INT_ARGB);
-            Graphics gx = img.getGraphics();
-            rendererPane.add(bdc.comp);
-            rendererPane.paintComponent(gx, bdc.comp, this,
-                    0,0,  size.width, size.height,
-                    true);
-            if (this.bufferedWM.DEBUG_BORDERS) {
-                gx.setColor(Color.GREEN);
-                gx.drawLine(0,0,size.width,size.height);
-                gx.drawLine(size.width,0,0,size.height);
-            }
-            gx.dispose();
+            BufferedImage img = drawToBuffer(bdc.comp, size);
             bdc.setBuffer(img);
             rendererPane.removeAll();
             bdc.setDirty(false);
@@ -130,6 +137,24 @@ class DeskletRenderPanel extends JPanel {
             g3.dispose();
         }
     }
+
+    private BufferedImage drawToBuffer(final JComponent comp, final Dimension size) {
+        BufferedImage img = new BufferedImage((int)size.getWidth(), (int)size.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics gx = img.getGraphics();
+        rendererPane.add(comp);
+        rendererPane.paintComponent(gx, comp, this,
+                0,0,  size.width, size.height,
+                true);
+        if (this.bufferedWM.DEBUG_BORDERS) {
+            gx.setColor(Color.GREEN);
+            gx.drawLine(0,0,size.width,size.height);
+            gx.drawLine(size.width,0,0,size.height);
+        }
+        gx.setColor(Color.RED);
+        gx.drawString("comps: "+ comp.getComponentCount(),2,15);
+        gx.dispose();
+        return img;
+    }
     
     public boolean isAnimating() {
         return animating;
@@ -138,4 +163,5 @@ class DeskletRenderPanel extends JPanel {
     public void setAnimating(boolean animating) {
         this.animating = animating;
     }
+
 }
