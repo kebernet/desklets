@@ -104,6 +104,10 @@ public class Main extends AbstractDesklet {
                             SimpleDocument html = req.getResponseHtml();
                             u.p("xpath class = " + XPathFactory.newInstance().getClass());
                             u.p("html = " + html);
+                            if (html = null) {
+                                // failed to connect to the feed
+                                return;
+                            }
                             u.p("text = " + html.toXML());
                             String url = XPathUtils.getString(pf.getQueryString(),html);
                             URL furl = new URL(pf.getBaseUrl()+url);
