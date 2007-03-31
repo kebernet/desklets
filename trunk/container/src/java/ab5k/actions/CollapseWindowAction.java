@@ -22,7 +22,6 @@ import java.awt.geom.Point2D;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.joshy.util.u;
 
 /**
  *
@@ -125,7 +124,9 @@ public class CollapseWindowAction extends BaseAction {
             public void begin() {
                 main.getCloser().setWindowClosed(true);
                 // skip microdocking while moving
-                main.getCloser().setOnTheMove(true);
+                if (main.getCloser().isMicrodocking()) {
+                    main.getCloser().setOnTheMove(true);
+                }
             }
             public void end() {
                 main.getFrame().setSize(closed.getSize());

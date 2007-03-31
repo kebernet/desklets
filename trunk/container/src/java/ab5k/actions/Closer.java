@@ -17,6 +17,7 @@ import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.util.Date;
 import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.joshy.util.u;
 
@@ -64,6 +65,17 @@ public class Closer {
             Animator anim = PropertySetter.createAnimator(300, main.getFrame(), "location",
                     main.getFrame().getLocation(), 
                     new Point(cb.x, cb.y));
+            anim.addTarget(new TimingTargetAdapter() {
+                @Override
+                public void begin() {
+                    if(main.getMainPanel().getDockingSide() == MainPanel.DockingSide.Left) {
+                        // if on the left move location back to minus before resize
+                        main.getFrame().setLocation(-main.getMainPanel().getDockWidth()+2, main.getFrame().getY());
+                    }
+                    // set dock size
+                    main.getFrame().setSize(main.getMainPanel().getDockWidth(),main.getFrame().getHeight());
+                }
+            });
             anim.start();
         }
         microCollapsed = false;
@@ -79,13 +91,23 @@ public class Closer {
                 ml = new Point(cb.x - main.getMainPanel().getDockWidth()+2, cb.y);
             }
             Animator anim = PropertySetter.createAnimator(300, main.getFrame(), "location",
-                    main.getFrame().getLocation(), 
-                    ml);
+                    main.getFrame().getLocation(), ml);
+            anim.addTarget(new TimingTargetAdapter() {
+                   @Override
+                public void end() {
+                       // minimize dock after sliding away from the screen
+                    main.getFrame().setSize(2, main.getFrame().getHeight());
+                    if(main.getMainPanel().getDockingSide() == MainPanel.DockingSide.Left) {
+                        // if on the left move location back to zero after resize
+                        main.getFrame().setLocation(0, main.getFrame().getY());
+                    }
+                } 
+            });
             anim.start();
+            
         }
         microCollapsed = true;
     }
-    
     
     public boolean isWindowClosed() {
         return windowClosed;
