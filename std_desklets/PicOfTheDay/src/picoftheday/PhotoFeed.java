@@ -267,7 +267,7 @@ public class PhotoFeed {
     }
     
     public static PhotoFeed getSelectedFeed() {
-        if (selectedFeed == null) {
+        if (selectedFeed == null && feeds.size() > 0) {
             int random = new Random(new java.util.Date().getTime()).nextInt(feeds.size());
             selectedFeed = feeds.get(random);
         }        

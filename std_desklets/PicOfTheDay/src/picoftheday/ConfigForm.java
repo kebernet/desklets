@@ -13,10 +13,14 @@ import org.joshy.util.u;
  * @author  jwill
  */
 public class ConfigForm extends javax.swing.JFrame {
-    PhotoFeed oldSelected = PhotoFeed.getSelectedFeed();
+   PhotoFeed oldSelected;
     /** Creates new form ConfigForm */
     public ConfigForm() {
         initComponents();
+        try {
+         oldSelected = PhotoFeed.getSelectedFeed();
+        }
+        catch(Exception ex) { }
     }
     
     /** This method is called from within the constructor to
@@ -185,7 +189,7 @@ public class ConfigForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
-                if (PhotoFeed.getSelectedFeed() != oldSelected) {
+                if (PhotoFeed.getSelectedFeed() != oldSelected && PhotoFeed.getSelectedFeed() != null) {
             Main.LoadImage();
         }
         PhotoFeed.saveToXML();
@@ -210,15 +214,15 @@ public class ConfigForm extends javax.swing.JFrame {
                     else { jCheckBox1.setSelected(false); }
                     break;
                 }
-                else {
+            }
+                if (item.equals("Add New")) {
                     txtName.setText("");
                     txtUrl.setText("");
                     txtPage.setText("");
                     txtQuery.setText("");
                     jCheckBox1.setSelected(false);
                 }
-            }
-        }
+            }        
     }//GEN-LAST:event_sourcesComboBoxItemStateChanged
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
