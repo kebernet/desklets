@@ -24,6 +24,7 @@ import org.jdesktop.http.Method;
 import org.jdesktop.http.async.HtmlHttpRequest;
 import org.jdesktop.swingx.JXImageView;
 import org.jdesktop.xpath.XPathUtils;
+import org.jdesktop.swingx.StackLayout;
 import org.joshy.util.u;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class Main extends AbstractDesklet {
     }
     
     private static JXImageView view = new JXImageView();
+    private static ConfigPanel configPanel = new ConfigPanel();
     
     public Main() {
     }
@@ -59,7 +61,8 @@ public class Main extends AbstractDesklet {
         JMenuItem item = new JMenuItem("Manage Sources");
         item.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new ConfigForm().setVisible(true);
+                configPanel.setVisible(true);
+                
             }
         });
         menu.add(item);
@@ -72,6 +75,9 @@ public class Main extends AbstractDesklet {
             }
         });
         view.add(menu);
+        view.setLayout(new StackLayout());
+        configPanel.setVisible(false);
+        view.add(configPanel,StackLayout.TOP);
         view.setPreferredSize(new Dimension(300,300));
         context.getContainer().setContent(view);
         context.getContainer().setResizable(true);
@@ -104,7 +110,7 @@ public class Main extends AbstractDesklet {
                             SimpleDocument html = req.getResponseHtml();
                             u.p("xpath class = " + XPathFactory.newInstance().getClass());
                             u.p("html = " + html);
-                            if (html = null) {
+                            if (html == null) {
                                 // failed to connect to the feed
                                 return;
                             }

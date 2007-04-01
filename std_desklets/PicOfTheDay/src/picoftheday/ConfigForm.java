@@ -189,7 +189,7 @@ public class ConfigForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowDeactivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowDeactivated
-                if (PhotoFeed.getSelectedFeed() != oldSelected && PhotoFeed.getSelectedFeed() != null) {
+        if (PhotoFeed.getSelectedFeed() != oldSelected && PhotoFeed.getSelectedFeed() != null) {
             Main.LoadImage();
         }
         PhotoFeed.saveToXML();
