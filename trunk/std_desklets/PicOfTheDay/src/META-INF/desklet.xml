@@ -8,6 +8,11 @@
     
     <repository>http://www.ab5k.org/maven/</repository>
     
+    
+    <dependency><groupId>rome</groupId>
+        <artifactId>rome</artifactId><version>0.8</version><type>jar</type></dependency>
+    
+    
     <dependency><groupId>JoshUtil</groupId>
         <artifactId>JoshUtil</artifactId><version>0.1</version><type>jar</type></dependency>
     <dependency><groupId>swingx</groupId>
