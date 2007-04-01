@@ -11,7 +11,9 @@ package clockdesklet;
 
 import ab5k.desklet.AbstractDesklet;
 import ab5k.desklet.DeskletContext;
+import ab5k.desklet.test.DeskletTester;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JLabel;
@@ -22,12 +24,13 @@ import javax.swing.SwingUtilities;
  * @author cooper
  */
 public class Desklet extends AbstractDesklet{
+    public static void main(String[] args) {
+        DeskletTester.start(clockdesklet.Desklet.class);
+    }
     
     private ClockDisplay display;
     private boolean running = false;
     final SimpleDateFormat miniFormat = new SimpleDateFormat("hh:mm aa");
-    final SimpleDateFormat format = new SimpleDateFormat("hh:mm");
-    final SimpleDateFormat ampm = new SimpleDateFormat("aa");
     
     private JLabel timeLabel;
     
@@ -48,15 +51,8 @@ public class Desklet extends AbstractDesklet{
                     try {
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                display.currentTime.setText(format.format(new Date()));
                                 timeLabel.setText(miniFormat.format(new Date()));
-                                if(ampm.format(new Date()).equals("am")) {
-                                    display.amLabel.setForeground(Color.RED);
-                                    display.pmLabel.setForeground(Color.RED.darker().darker());
-                                } else {
-                                    display.amLabel.setForeground(Color.RED.darker().darker());
-                                    display.pmLabel.setForeground(Color.RED);
-                                }
+                                display.setTime();
                             }
                         });
                         Thread.currentThread().sleep(1000);
@@ -76,7 +72,12 @@ public class Desklet extends AbstractDesklet{
         thread.interrupt();
         System.out.println("stop finishing");
     }
+
     
+    public DeskletContext getContext() {
+        return this.context;
+    }
+
     public void init(DeskletContext context) throws Exception {
         this.context = context;
         running = true;
@@ -85,13 +86,12 @@ public class Desklet extends AbstractDesklet{
         context.getDockingContainer().setContent(timeLabel);
         
         
-        display = new ClockDisplay();
+        display = new ClockDisplay(this);
         display.setOpaque( false );
         context.getContainer().setContent(this.display);
-        display.currentTime.setText(format.format(new Date()));
         context.getContainer().setShaped(true);
         context.getContainer().setBackgroundDraggable(true);
-        context.getContainer().setResizable(false);
+        context.getContainer().setResizable(true);
         context.getContainer().setVisible(true);
     }
     
