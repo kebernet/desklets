@@ -74,7 +74,11 @@ public class MainPanel extends javax.swing.JPanel {
         //stripButtonRight.addActionListener(main.getCollapseWindowAction());
         logoButton.addActionListener(main.getCollapseWindowAction());
         
+        ((JXButton)logoButton).setBackgroundPainter(new CompoundPainter());
+        ((JXPanel)dockPanel).setBackgroundPainter(new CompoundPainter());
+        
         DockSkinner.skinDock(this);
+        
     }
     
     public void setMain(Core main) {
@@ -140,6 +144,7 @@ public class MainPanel extends javax.swing.JPanel {
         dockPanel.setLayout(new java.awt.GridBagLayout());
 
         dockPanel.setBackground(new java.awt.Color(102, 255, 102));
+        dockPanel.setOpaque(false);
         dockPanel.setPreferredSize(new java.awt.Dimension(180, 500));
         dockPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -161,9 +166,11 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         dockPanel.add(manageButton, gridBagConstraints);
 
+        logoButton.setBackground(new java.awt.Color(255, 51, 51));
         logoButton.setBorderPainted(false);
         logoButton.setContentAreaFilled(false);
         logoButton.setFocusable(false);
+        logoButton.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

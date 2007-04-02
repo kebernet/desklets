@@ -197,14 +197,16 @@ public class BufferedWM extends WindowManager {
     BufferedDeskletContainer findContainer(Point pt) {
         for(int i=getWindows().size()-1; i>=0; i--) {
             DeskletContainer dc = getWindows().get(i);
-            if(dc instanceof BufferedDeskletContainer) {
-                BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
-                
-                Point loc = GraphicsUtil.toPoint(bdc.getLocation());
-                Dimension2D size = bdc.getSize();
-                Rectangle rect = new Rectangle(loc.x, loc.y, (int)size.getWidth(), (int)size.getHeight());
-                if(rect.contains(pt)) {
-                    return bdc;
+            if(dc.isVisible()) {
+                if(dc instanceof BufferedDeskletContainer) {
+                    BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+                    
+                    Point loc = GraphicsUtil.toPoint(bdc.getLocation());
+                    Dimension2D size = bdc.getSize();
+                    Rectangle rect = new Rectangle(loc.x, loc.y, (int)size.getWidth(), (int)size.getHeight());
+                    if(rect.contains(pt)) {
+                        return bdc;
+                    }
                 }
             }
         }

@@ -46,17 +46,16 @@ public class DockSkinner {
     public DockSkinner() {
     }
     
-    public static void configureDockConatiner(final DockContainer dock) {
-        
+    public static void configureDockConatiner(final DockContainer dockCont) {
+        dockCont.panel.setPadding(new Insets(5,5,5,5));
+        dockCont.panel.setBorder(BorderFactory.createEmptyBorder());
+        dockCont.panel.setMargins(new Insets(0,0,0,0));
+        /*
         final Border highlightBorder = BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(
                 0, 0, 3, 0, new Color(218, 218, 218)),
                 BorderFactory.createMatteBorder(5, 5, 5, 5,
-                new Color(215, 116, 0)));
-        final Border normalBorder = BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(
-                0, 0, 1, 0, new Color(218, 218, 218)),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        //dock.panel.setBackground(Color.GREEN);
-        dock.panel.setBorder(normalBorder);
+                new Color(215, 116, 0)));*/
+        dockCont.panel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(218, 218, 218)));
         
         RectanglePainter rp = new RectanglePainter(new Color(234, 214, 171),
                 new Color(215, 116, 0));
@@ -75,16 +74,17 @@ public class DockSkinner {
         final AlphaPainter hiPainter = new AlphaPainter();
         hiPainter.setPainters(rp);
         hiPainter.setAlpha(0f);
+        hiPainter.setCacheable(false);
         
-        dock.panel.setBackgroundPainter(hiPainter);
+        dockCont.panel.setBackgroundPainter(hiPainter);
         
         // create a .3 sec anim
         final Animator anim = new Animator(300);
         anim.addTarget(new PropertySetter(hiPainter,"alpha",0f,1f));
         
         // make the container repaint properly
-        anim.addTarget(new AnimRepainter(dock.panel));
-        MouseTrigger.addTrigger(dock.panel,anim,MouseTriggerEvent.ENTER,true);
+        anim.addTarget(new AnimRepainter(dockCont.panel));
+        MouseTrigger.addTrigger(dockCont.panel,anim,MouseTriggerEvent.ENTER,true);
         //dock.panel.setOpaque(true);
     }
     

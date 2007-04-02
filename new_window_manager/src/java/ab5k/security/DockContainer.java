@@ -9,6 +9,7 @@ import ab5k.desklet.DeskletContainer;
 import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
+import org.jdesktop.swingx.JXBoxPanel;
 
 import org.jdesktop.swingx.JXPanel;
 
@@ -26,7 +27,9 @@ import javax.swing.JPanel;
  */
 public class DockContainer extends DeskletContainer {
     JComponent content;
-    JXPanel panel = new JXPanel(); /*{
+    JXBoxPanel panel = new JXBoxPanel();
+    //JXPanel panel = new JXPanel();
+    /*{
     protected void paintComponent(Graphics g) {
     if( !shaped ){
     super.paintComponent( g );
