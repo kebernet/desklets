@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0-dp" class="java.beans.XMLDecoder"> 
+ <object class="org.jdesktop.swingx.painter.CompoundPainter"> 
+  <void property="renderingHints"> 
+   <object class="java.awt.RenderingHints"> 
+    <null/> 
+   </object> 
+  </void> 
+  <void id="EffectArray0" property="effects"/> 
+  <void property="effects"> 
+   <object idref="EffectArray0"/> 
+  </void> 
+  <void property="painters"> 
+   <array class="org.jdesktop.swingx.painter.Painter" length="2"> 
+    <void index="0"> 
+     <object class="org.jdesktop.swingx.painter.RectanglePainter"> 
+      <void property="renderingHints"> 
+       <object class="java.awt.RenderingHints"> 
+        <null/> 
+       </object> 
+      </void> 
+      <void id="EffectArray1" property="effects"/> 
+      <void property="effects"> 
+       <object idref="EffectArray1"/> 
+      </void> 
+      <void id="Color0" property="borderPaint"/> 
+      <void property="fillPaint"> 
+       <object class="org.apache.batik.ext.awt.LinearGradientPaint"> 
+        <object class="java.awt.geom.Point2D$Double"> 
+         <double>130.0</double> 
+         <double>148.0</double> 
+        </object> 
+        <object class="java.awt.geom.Point2D$Double"> 
+         <double>132.0</double> 
+         <double>7.0</double> 
+        </object> 
+        <array class="float" length="3"> 
+         <void index="1"> 
+          <float>0.5</float> 
+         </void> 
+         <void index="2"> 
+          <float>1.0</float> 
+         </void> 
+        </array> 
+        <array class="java.awt.Color" length="3"> 
+         <void index="0"> 
+          <object idref="Color0"/> 
+         </void> 
+         <void index="1"> 
+          <object class="java.awt.Color"> 
+           <int>255</int> 
+           <int>0</int> 
+           <int>0</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+         <void index="2"> 
+          <object class="java.awt.Color"> 
+           <int>240</int> 
+           <int>122</int> 
+           <int>122</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+        </array> 
+       </object> 
+      </void> 
+      <void property="insets"> 
+       <object class="java.awt.Insets"> 
+        <int>3</int> 
+        <int>3</int> 
+        <int>3</int> 
+        <int>3</int> 
+       </object> 
+      </void> 
+      <void property="roundHeight"> 
+       <int>30</int> 
+      </void> 
+      <void property="roundWidth"> 
+       <int>30</int> 
+      </void> 
+      <void property="rounded"> 
+       <boolean>true</boolean> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="1"> 
+     <object class="org.jdesktop.swingx.painter.TextPainter"> 
+      <void property="renderingHints"> 
+       <object class="java.awt.RenderingHints"> 
+        <null/> 
+       </object> 
+      </void> 
+      <void id="EffectArray2" property="effects"/> 
+      <void property="effects"> 
+       <object idref="EffectArray2"/> 
+      </void> 
+      <void property="font"> 
+       <object class="java.awt.Font"> 
+        <string>Arial</string> 
+        <int>2</int> 
+        <int>14</int> 
+       </object> 
+      </void> 
+      <void property="horizontal"> 
+       <object class="org.jdesktop.swingx.painter.PositionedPainter$HorizontalAlignment" method="valueOf"> 
+        <string>LEFT</string> 
+       </object> 
+      </void> 
+      <void property="insets"> 
+       <object class="java.awt.Insets"> 
+        <int>15</int> 
+        <int>15</int> 
+        <int>0</int> 
+        <int>0</int> 
+       </object> 
+      </void> 
+      <void property="paint"> 
+       <object class="org.apache.batik.ext.awt.LinearGradientPaint"> 
+        <object class="java.awt.geom.Point2D$Double"> 
+         <double>10.0</double> 
+         <double>10.0</double> 
+        </object> 
+        <object class="java.awt.geom.Point2D$Double"> 
+         <double>9.0</double> 
+         <double>19.0</double> 
+        </object> 
+        <array class="float" length="3"> 
+         <void index="1"> 
+          <float>0.87108016</float> 
+         </void> 
+         <void index="2"> 
+          <float>1.0</float> 
+         </void> 
+        </array> 
+        <array class="java.awt.Color" length="3"> 
+         <void index="0"> 
+          <object idref="Color0"/> 
+         </void> 
+         <void index="1"> 
+          <object class="java.awt.Color"> 
+           <int>77</int> 
+           <int>77</int> 
+           <int>77</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+         <void index="2"> 
+          <object class="java.awt.Color"> 
+           <int>153</int> 
+           <int>153</int> 
+           <int>153</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+        </array> 
+       </object> 
+      </void> 
+      <void property="text"> 
+       <string>Weather Watcher</string> 
+      </void> 
+      <void property="vertical"> 
+       <object class="org.jdesktop.swingx.painter.PositionedPainter$VerticalAlignment" method="valueOf"> 
+        <string>TOP</string> 
+       </object> 
+      </void> 
+     </object> 
+    </void> 
+   </array> 
+  </void> 
+ </object> 
+</java> 
