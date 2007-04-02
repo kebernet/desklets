@@ -49,9 +49,15 @@ public class EyeballDesklet extends AbstractDesklet {
         panel.setOpaque(false);
         panel.setPreferredSize(new Dimension(300,300));
         pupil = new PupilPainter();
-        panel.setBackgroundPainter(new CompoundPainter(
-                new CompoundPainter(true, new EyeballPainter()),
-                pupil));
+        
+        
+        CompoundPainter c1 = new CompoundPainter(new EyeballPainter());
+        
+        pupil.setCacheable(false);
+        CompoundPainter c2 = new CompoundPainter(c1,pupil);
+        c2.setCacheable(false);
+        panel.setBackgroundPainter(c2);
+        
         context.getContainer().setContent(panel);
         context.getContainer().setVisible(true);
     }
