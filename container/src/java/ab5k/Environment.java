@@ -18,10 +18,11 @@ import org.joshy.util.u;
  * @author joshy
  */
 public final class Environment {
+    // set justCreated before all other initialization might modify it.
+    private static boolean justCreated = false;
     public static final File HOME = getUserPreferredHome();
     public static final File REPO = new File(HOME, "repository");
     private static final String AB5K_HOME = ".ab5k";
-    private static boolean justCreated = false;
     
     private static String AB5K_HOME_ENVNAME = "AB5K_HOME";
     private static File getUserPreferredHome() {
