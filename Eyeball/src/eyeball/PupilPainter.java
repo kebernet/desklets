@@ -17,6 +17,7 @@ class PupilPainter extends AbstractPainter<JPanel> {
     }
     public void setMouseLocation(Point pt) {
         this.mouse = pt;
+        setDirty(true);
     }
 
     protected void doPaint(Graphics2D gfx, JPanel component, int width, int height) {
