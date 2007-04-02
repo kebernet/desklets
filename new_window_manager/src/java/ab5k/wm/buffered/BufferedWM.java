@@ -489,7 +489,7 @@ public class BufferedWM extends WindowManager {
         
         JPanel intExtGlasspane = new JPanel() {
             public void paintComponent(Graphics g) {
-                u.p("painting");
+                //u.p("painting");
                 if(selectedDesklet != null) {
                     if(selectedDesklet instanceof BufferedDeskletContainer) {
                         BufferedDeskletContainer bdc = (BufferedDeskletContainer) selectedDesklet;
