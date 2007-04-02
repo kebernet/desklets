@@ -8,9 +8,13 @@ package weatherdesklet;
 
 import ab5k.desklet.DeskletContainer;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -18,6 +22,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.ImagePainter;
 import org.jdesktop.swingx.painter.RectanglePainter;
 import org.joshy.util.u;
 import org.joshy.weather.Weather;
@@ -28,11 +33,21 @@ import org.joshy.weather.WeatherFactory;
  * @author  joshy
  */
 public class WeatherWatcher extends JXPanel {
+    private boolean useDummyData = false;
+    
     private WeatherFactory fact = null;
     private Weather weather;
     public Map<Integer,Icon> icons16;
     private Map<Integer,Icon> icons32;
+    private Map<Integer, BufferedImage> iconsLarge;
     private Desklet desklet;
+    
+    
+    
+    private ImagePainter picture;
+    private ImagePainter digit10;
+    private ImagePainter digit1;
+    private BufferedImage[] digits;
     
     
     /** Creates new form WeatherWatcher */
@@ -49,7 +64,7 @@ public class WeatherWatcher extends JXPanel {
         icons16.put(Weather.SNOW,new ImageIcon(getClass().getResource("images/weather-snow.16.png")));
         icons16.put(Weather.SUNNY,new ImageIcon(getClass().getResource("images/weather-clear.16.png")));
         icons16.put(Weather.UNKNOWN,new ImageIcon(getClass().getResource("images/weather-severe-alert.16.png")));
-        
+        /*
         icons32.put(Weather.CLEAR,new ImageIcon(getClass().getResource("images/weather-clear.32.png")));
         icons32.put(Weather.CLOUDY,new ImageIcon(getClass().getResource("images/weather-overcast.32.png")));
         icons32.put(Weather.LIGHTNING,new ImageIcon(getClass().getResource("images/weather-storm.32.png")));
@@ -62,24 +77,67 @@ public class WeatherWatcher extends JXPanel {
         rp.setBorderWidth(5f);
         rp.setInsets(new Insets(1,1,1,1));
         this.setBackgroundPainter(new CompoundPainter(rp));
-        /*
-        URL painter = this.getClass().getResource("WeatherWatcher.painter");
-        URL painter2 = this.getClass().getResource("WeatherWatcher.temp.painter");
+         */
         try {
-            this.setBackgroundPainter(PainterUtil.loadPainter(painter));
-            ((JXLabel)temp).setForegroundPainter(PainterUtil.loadPainter(painter2));
+            ImagePainter base = loadImagePainter("widget_base/widget_base.png");
+            base.setInsets(new Insets(0,0,0,0));
+            picture = loadImagePainter("forecasts/cloudy.png");
+            digit10 = loadImagePainter("temperature/numbers_0.png");
+            digit10.setInsets(new Insets(87,160,0,0));
+            digit1 = loadImagePainter("temperature/numbers_0.png");
+            digit1.setInsets(new Insets(87,195,0,0));
+            digit1.setCacheable(false);
+            ImagePainter degree = loadImagePainter("temperature/degree_symbol_big.png");
+            degree.setInsets(new Insets(87,235,0,0));
+            ImagePainter unit = loadImagePainter("temperature/farenheit.png");
+            unit.setInsets(new Insets(112,233,0,0));
+            
+            
+            digits = new BufferedImage[10];
+            for(int i=0; i<10; i++) {
+                digits[i] = ImageIO.read(getClass().getResource("dcimages/temperature/numbers_"+i+".png"));
+            }
+            this.setBackgroundPainter(new CompoundPainter(base, picture,
+                    digit10, digit1, degree, unit));
+            
+            iconsLarge = new HashMap<Integer, BufferedImage>();
+            iconsLarge.put(Weather.CLOUDY, loadImage("forecasts/cloudy.png"));
+            iconsLarge.put(Weather.CLEAR, loadImage("forecasts/sunny.png"));
+            iconsLarge.put(Weather.HAIL, loadImage("forecasts/stormy.png"));
+            iconsLarge.put(Weather.LIGHTNING, loadImage("forecasts/stormy.png"));
+            iconsLarge.put(Weather.RAIN, loadImage("forecasts/rain.png"));
+            iconsLarge.put(Weather.SLEET, loadImage("forecasts/stormy.png"));
+            iconsLarge.put(Weather.SNOW, loadImage("forecasts/snow.png"));
+            iconsLarge.put(Weather.SUNNY, loadImage("forecasts/sunny.png"));
+            
+            
+            setupButton.setIcon(loadIcon("config_button/config_mouseout.png"));
+            setupButton.setRolloverIcon(loadIcon("config_button/config_mouseover.png"));
+            setupButton.setText("");
+            setupButton.setBorder(BorderFactory.createEmptyBorder());
+            
+            this.setPreferredSize(new Dimension(300,150));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-         */
-        //this.setBackgroundPainter(new URLPainter(WeatherWatcher.class,"WeatherWatcher.painter"));
-        /*
-        try{
-            setWeather(fact.getWeather("KATL"));
-        }catch(Exception e){
-            e.printStackTrace();
-        }*/
+        
     }
+    
+    public ImagePainter loadImagePainter(String path) throws IOException {
+        ImagePainter base = new ImagePainter(getClass().getResource("dcimages/"+path));
+        base.setHorizontalAlignment(ImagePainter.HorizontalAlignment.LEFT);
+        base.setVerticalAlignment(ImagePainter.VerticalAlignment.TOP);
+        return base;
+    }
+    
+    private BufferedImage loadImage(String path) throws IOException {
+        return ImageIO.read(getClass().getResource("dcimages/"+path));
+    }
+    
+    private Icon loadIcon(String path) throws IOException {
+        return new ImageIcon(loadImage(path));
+    }
+    
     
     public Weather getWeather() {
         return weather;
@@ -87,22 +145,33 @@ public class WeatherWatcher extends JXPanel {
     
     public void setWeather(Weather weather) {
         this.weather = weather;
-        weatherIcon.setText("");
-        if(weather == null) {
-            description.setText("unknown");
-            temp.setText("-99");
-            type.setText("Unknown");
-            weatherIcon.setIcon(icons32.get(Weather.UNKNOWN));
-            desklet.dockLabel.setText("-99 unknown");
-            desklet.dockLabel.setIcon(icons16.get(Weather.UNKNOWN));
-        } else {
-            description.setText(getWeather().getLocation());
-            temp.setText(getWeather().getTempF()+"");
-            type.setText(getWeather().getWeather());
-            weatherIcon.setIcon(icons32.get(getWeather().getType()));
-            desklet.dockLabel.setText(weather.getTempF()+" " + weather.getWeather());
-            desklet.dockLabel.setIcon(icons16.get(weather.getType()));
+        
+        
+        if(useDummyData) {
+            type.setText("CLOUDY");
+            digit1.setImage(digits[3]);
+            digit10.setImage(digits[5]);
+            desklet.dockLabel.setText("35F cloudy KEUG");
+            desklet.dockLabel.setIcon(icons16.get(Weather.CLOUDY));
+            picture.setImage(iconsLarge.get(Weather.CLOUDY));
+            this.repaint();
+            return;
         }
+        if(weather == null) {
+            digit1.setImage(digits[9]);
+            digit10.setImage(digits[9]);
+            this.repaint();
+            return;
+        }
+        
+        
+        digit10.setImage(digits[(int)weather.getTempF()/10]);
+        digit1.setImage(digits[((int)weather.getTempF())%10]);
+        picture.setImage(iconsLarge.get(weather.getType()));
+        type.setText(weather.getWeather());
+        description.setText(getWeather().getStationID());
+        desklet.dockLabel.setText(weather.getTempF()+" " + weather.getWeather() + " " + weather.getStationID());
+        desklet.dockLabel.setIcon(icons16.get(weather.getType()));
     }
     
     
@@ -117,15 +186,15 @@ public class WeatherWatcher extends JXPanel {
         description = new javax.swing.JLabel();
         type = new javax.swing.JLabel();
         setupButton = new javax.swing.JButton();
-        temp = new org.jdesktop.swingx.JXLabel();
-        weatherIcon = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(153, 255, 255));
-        description.setForeground(new java.awt.Color(51, 51, 51));
-        description.setText("this is a really long description of the location");
+        description.setFont(new java.awt.Font("Arial", 2, 14));
+        description.setForeground(new java.awt.Color(255, 255, 255));
+        description.setText("WEUG");
 
-        type.setForeground(new java.awt.Color(51, 51, 51));
-        type.setText("jLabel4");
+        type.setFont(new java.awt.Font("Arial", 0, 14));
+        type.setForeground(new java.awt.Color(255, 255, 255));
+        type.setText("SHOWERS");
 
         setupButton.setText("Setup");
         setupButton.setContentAreaFilled(false);
@@ -135,46 +204,30 @@ public class WeatherWatcher extends JXPanel {
             }
         });
 
-        temp.setBackgroundPainter(null);
-        temp.setText("i");
-        temp.setFont(new java.awt.Font("Lucida Grande", 0, 60));
-
-        weatherIcon.setText("Weather Icon");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE, 215, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(setupButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(weatherIcon)
-                            .addComponent(type))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(temp, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGap(180, 180, 180)
+                .addComponent(type))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(description, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(89, 89, 89)
+                .addComponent(setupButton))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(60, 60, 60)
+                .addComponent(type)
+                .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(weatherIcon)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(type))
-                    .addComponent(temp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(setupButton)
-                    .addComponent(description))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(7, 7, 7)
+                        .addComponent(description))
+                    .addComponent(setupButton)))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -210,12 +263,11 @@ public class WeatherWatcher extends JXPanel {
     }
     
     
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel description;
     private javax.swing.JButton setupButton;
-    private org.jdesktop.swingx.JXLabel temp;
     private javax.swing.JLabel type;
-    private javax.swing.JLabel weatherIcon;
     // End of variables declaration//GEN-END:variables
     
 }
