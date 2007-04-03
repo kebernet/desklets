@@ -65,6 +65,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.swingx.JXBoxPanel;
 import org.jdesktop.swingx.JXPanel;
@@ -93,6 +94,8 @@ public class BufferedWM extends WindowManager {
     
     Core core;
     GlobalMouse globalMouseService = GlobalMouse.getInstance();
+    
+    private boolean oldAnim = false;
     
     /** Creates a new instance of BufferedWM */
     public BufferedWM(final Core core) {
@@ -319,31 +322,98 @@ public class BufferedWM extends WindowManager {
     }
     
     public void animateDestruction(final DeskletContainer dc) {
-        BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
-        Animator anim = new Animator(500);
-        //anim.addTarget(new PropertySetter(dc,"location",new Point(0,0), new Point(200,200)));
-        anim.addTarget(new PropertySetter(dc,"alpha",bdc.getAlpha(),0f));
-        //anim.addTarget(new PropertySetter(dc,"rotation",0f,(float)Math.PI*2f*5f));
-        anim.addTarget(new PropertySetter(dc,"scale",bdc.getScale(),0.3));
-        anim.addTarget(new AnimRepainter(panel));
-        /*josh: dead code? new TimingTarget() {
-            public void begin() {            }
-            public void end() {            }
-            public void repeat() {            }
-            public void timingEvent(float f) {                panel.repaint();            }
-        });*/
-        anim.addTarget(new TimingTarget() {
-            public void begin() {
+        final BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+        if(oldAnim) {
+            Animator anim = new Animator(500);
+            //anim.addTarget(new PropertySetter(dc,"location",new Point(0,0), new Point(200,200)));
+            anim.addTarget(new PropertySetter(dc,"alpha",bdc.getAlpha(),0f));
+            //anim.addTarget(new PropertySetter(dc,"rotation",0f,(float)Math.PI*2f*5f));
+            anim.addTarget(new PropertySetter(dc,"scale",bdc.getScale(),0.3));
+            anim.addTarget(new AnimRepainter(panel));
+            anim.addTarget(new TimingTargetAdapter() {
+                public void end() {
+                    destroyContainer(dc);
+                }
+            });
+            anim.start();
+        } else {
+            
+            Animator anim = new Animator(1000);
+            anim.addTarget(new AnimRepainter(panel));
+            anim.addTarget(new TimingTargetAdapter() {
+                public void end() {
+                    destroyContainer(dc);
+                }
+            });
+            int num = 5;
+            BSurface[][] surfaces = new BSurface[num][num];
+            int w = (int)dc.getSize().getWidth()/num;
+            int h = (int)dc.getSize().getHeight()/num;
+            
+            Point2D pt = bdc.getLocation();
+            for(int i=0; i<num; i++) {
+                surfaces[i] = new BSurface[num];
+                for(int j = 0; j<num; j++) {
+                    BSurface s  = new BSurface();
+                    /*
+                    BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+                    Graphics2D g = img.createGraphics();
+                    g.drawImage(bdc.getBuffer(),0,0,w,h, 
+                            0+i*w, 0+j*h, 0+i*w+w, 0+j*h+h, null);
+                    g.setColor(Color.GREEN);
+                    g.drawRect(0,0,w-1,h-1);
+                    g.dispose();
+                    //s.setImg(img);*/
+                    s.setSize(new Dimension(w,h));//img.getWidth(), img.getHeight()));
+                    
+                    s.subRect = new Rectangle(0+i*w, 0+j*h, w, h);
+                    
+                    surfaces[i][j] = s;
+                    bdc.surfaces.add(s);
+                    int distx = i-num/2;
+                    int disty = j-num/2;
+                    anim.addTarget(new PropertySetter(s,"location",
+                            new Point2D.Double(
+                                pt.getX()+i*w, 
+                                pt.getY()+j*h), 
+                            new Point2D.Double(
+                                pt.getX()+i*w + 100*distx,
+                                pt.getY()+j*h + 100*disty))); 
+                    anim.addTarget(new PropertySetter(s,"alpha",1f,0.7f,0f));
+                    anim.addTarget(new PropertySetter(s,"rotation",0.0,
+                            ((Math.random()*2)-1)*
+                            Math.PI*2));
+                }
             }
-            public void end() {
-                destroyContainer(dc);
-            }
-            public void repeat() {
-            }
-            public void timingEvent(float f) {
-            }
-        });
-        anim.start();
+            
+            anim.addTarget(new TimingTarget() {
+                public void begin() {
+                    bdc.setVisible(false);
+                    bdc.showSurfaces = true;
+                }
+                public void end() {
+                }
+                public void repeat() {
+                }
+                public void timingEvent(float f) {
+                }
+            });
+            Animator astart = new Animator(250);
+            astart.addTarget(new AnimRepainter(panel));
+            astart.addTarget(new PropertySetter(bdc,"scale",bdc.getScale(), 1.0));
+            astart.addTarget(new StartAnimAfter(anim));
+            astart.addTarget(new TimingTarget() {
+                public void begin() {
+                }
+                public void end() {
+                }
+                public void repeat() {
+                }
+                public void timingEvent(float f) {
+                }
+            });
+            astart.start();
+        }
     }
     
     public void destroyContainer(DeskletContainer dc) {

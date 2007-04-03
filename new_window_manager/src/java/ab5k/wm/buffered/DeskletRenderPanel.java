@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import javax.swing.CellRendererPane;
@@ -66,6 +67,11 @@ class DeskletRenderPanel extends JPanel {
                 for(BufferedPopup popup : bdc.popups) {
                     u.p("drawing popup");
                     drawPopup(g2, popup, bdc);
+                }
+                if(bdc.showSurfaces) {
+                    for(BSurface s : bdc.surfaces) {
+                        drawSurface(g2, s, bdc);
+                    }
                 }
             }
         }
@@ -137,7 +143,7 @@ class DeskletRenderPanel extends JPanel {
             g3.dispose();
         }
     }
-
+    
     private BufferedImage drawToBuffer(final JComponent comp, final Dimension size) {
         BufferedImage img = new BufferedImage((int)size.getWidth(), (int)size.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics gx = img.getGraphics();
@@ -150,8 +156,8 @@ class DeskletRenderPanel extends JPanel {
             gx.drawLine(0,0,size.width,size.height);
             gx.drawLine(size.width,0,0,size.height);
         }
-        gx.setColor(Color.RED);
-        gx.drawString("comps: "+ comp.getComponentCount(),2,15);
+        //gx.setColor(Color.RED);
+        //gx.drawString("comps: "+ comp.getComponentCount(),2,15);
         gx.dispose();
         return img;
     }
@@ -163,5 +169,35 @@ class DeskletRenderPanel extends JPanel {
     public void setAnimating(boolean animating) {
         this.animating = animating;
     }
-
+    
+    private void drawSurface(Graphics2D g, BSurface s, BufferedDeskletContainer bdc) {
+        Point2D pt = s.getLocation();
+        Dimension2D size = s.getSize();
+        
+        Graphics2D g3 = (Graphics2D) g.create();
+        g3.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,s.getAlpha()));
+        //u.p("size = " + size);
+        g3.translate(pt.getX(),pt.getY());
+        g3.translate( size.getWidth()/2, size.getHeight()/2);
+        g3.rotate(s.getRotation(),0,0);
+        g3.translate(-size.getWidth()/2,-size.getHeight()/2);
+        
+        if(s.getImg() != null) {
+            g3.drawImage(s.getImg(),0,0,null);
+        }
+        
+        if(s.subRect != null) {
+            int w = (int)size.getWidth();
+            int h = (int)size.getHeight();
+            g3.drawImage(bdc.getBuffer(),0,0,w,h, 
+                    s.subRect.x, s.subRect.y, 
+                    s.subRect.x+ s.subRect.width,
+                    s.subRect.y + s.subRect.height, 
+                    null);
+        }
+        //g3.scale(bdc.getScale(),bdc.getScale());
+        g3.dispose();
+        
+    }
+    
 }

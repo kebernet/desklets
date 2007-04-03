@@ -174,8 +174,11 @@ public class ManagePanelAnimations {
     void moveDeskletsToColumns(final AbstractButton button) {
         Animator anim = new Animator(500);
         anim.addTarget(new AnimButtonDisabler(button));
-        for(int i=0; i<wm.getDesklets().size(); i++) {
-            DeskletContainer dc = wm.getDesklets().get(i);
+        int i = 0;
+        for(DeskletContainer dc : wm.getDesklets()) {
+        //for(int i=0; i<wm.getDesklets().size(); i++) {
+            //DeskletContainer dc = wm.getDesklets().get(i);
+            if(dc instanceof BufferedDialogContainer) continue;
             final int scaledWidth = 200;
             final int scaledHeight = 100;
             final int rowGap = 10;
@@ -259,6 +262,7 @@ public class ManagePanelAnimations {
                     }
                 });
             }
+            i++;
         }
         anim.addTarget(new AnimRepainter(wm.panel));
         anim.addTarget(new ToggleAnimatingProperty());
