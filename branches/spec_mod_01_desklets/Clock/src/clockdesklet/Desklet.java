@@ -57,7 +57,7 @@ public class Desklet extends AbstractDesklet{
                         });
                         Thread.currentThread().sleep(1000);
                     } catch (InterruptedException ex) {
-                        ex.printStackTrace();
+                        //ex.printStackTrace();
                     }
                 }
                 context.notifyStopped();
