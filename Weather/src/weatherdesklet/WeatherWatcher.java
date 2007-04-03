@@ -33,7 +33,7 @@ import org.joshy.weather.WeatherFactory;
  * @author  joshy
  */
 public class WeatherWatcher extends JXPanel {
-    private boolean useDummyData = false;
+    private boolean useDummyData = true;
     
     private WeatherFactory fact = null;
     private Weather weather;
