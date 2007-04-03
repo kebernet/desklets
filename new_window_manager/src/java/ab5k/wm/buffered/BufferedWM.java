@@ -81,6 +81,7 @@ public class BufferedWM extends WindowManager {
     
     static final boolean DEBUG_BORDERS = false;
     static final boolean DEBUG_REPAINT_AREA = false;
+    static final boolean SHOW_FRAME_TITLE_BAR = false;
     
     private List<BaseDC> desklets;
     private Map<BaseDC,List<BaseDC>> dialogMap;
@@ -110,6 +111,9 @@ public class BufferedWM extends WindowManager {
         
         panel = new DeskletRenderPanel(this);
         frame = new JFrame("AB5k");
+        if(!SHOW_FRAME_TITLE_BAR) {
+            frame.setUndecorated(true);
+        }
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(panel,"Center");
         MouseRedispatcher mouse = new MouseRedispatcher(this);

@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import org.jdesktop.swingx.painter.Painter;
 import org.joshy.util.u;
 
 
@@ -29,6 +30,8 @@ class DeskletRenderPanel extends JPanel {
     private CellRendererPane rendererPane;
     private boolean animating = false;
     
+    private Painter painter;
+    
     
     public DeskletRenderPanel(BufferedWM bufferedWM) {
         super();
@@ -39,12 +42,20 @@ class DeskletRenderPanel extends JPanel {
     }
     
     
+    public void setBackgroundPainter(Painter painter) {
+        this.painter = painter;
+    }
+    
     
     protected void paintComponent(Graphics g) {
-        //u.p("repainting main panel");
-        g.setColor(Color.BLUE);
-        g.fillRect(0, 0, getWidth(), getHeight());
         Graphics2D g2 = (Graphics2D) g;
+        //u.p("repainting main panel");
+        if(painter != null) {
+            painter.paint(g2,this,getWidth(),getHeight());
+        } else {
+            g.setColor(Color.BLUE);
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
         
         g.setColor(Color.YELLOW);
         if(isAnimating()) {
@@ -189,10 +200,10 @@ class DeskletRenderPanel extends JPanel {
         if(s.subRect != null) {
             int w = (int)size.getWidth();
             int h = (int)size.getHeight();
-            g3.drawImage(bdc.getBuffer(),0,0,w,h, 
-                    s.subRect.x, s.subRect.y, 
+            g3.drawImage(bdc.getBuffer(),0,0,w,h,
+                    s.subRect.x, s.subRect.y,
                     s.subRect.x+ s.subRect.width,
-                    s.subRect.y + s.subRect.height, 
+                    s.subRect.y + s.subRect.height,
                     null);
         }
         //g3.scale(bdc.getScale(),bdc.getScale());

@@ -41,13 +41,17 @@ import javax.swing.JPanel;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.animation.timing.triggers.MouseTrigger;
+import org.jdesktop.animation.timing.triggers.MouseTriggerEvent;
 import org.jdesktop.swingx.JXInsets;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.color.ColorUtil;
+import org.jdesktop.swingx.painter.AlphaPainter;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.painter.RectanglePainter;
 import org.jdesktop.swingx.painter.TextPainter;
+import org.joshy.util.u;
 
 /**
  *
@@ -67,14 +71,14 @@ public class ManagePanelAnimations {
     }
     
     private List<JPanel> manageButtons;
-
+    
     private BufferedWM wm;
     private final int transitionLength = 500;
     private final int manageButtonGap = 60;
     private final int manageButtonSpacing = 10;
     private final int manageButtonWidth = 200;
     private final int firstColumnX = 100;
-    private Icon closeIcon, closeOverIcon; 
+    private Icon closeIcon, closeOverIcon;
     
     void showManagePanel() {
         manageButtons = new ArrayList<JPanel>();
@@ -100,9 +104,9 @@ public class ManagePanelAnimations {
             panel.setPadding(new JXInsets(3));
             RectanglePainter rect = new RectanglePainter(2,2,2,2, 10,10, true,
                     new GradientPaint(
-                        new Point(0,0), Color.ORANGE,
-                        new Point(0,1), ColorUtil.setSaturation(Color.ORANGE,0.5f)),
-                        3, Color.BLACK);
+                    new Point(0,0), Color.ORANGE,
+                    new Point(0,1), ColorUtil.setSaturation(Color.ORANGE,0.5f)),
+                    3, Color.BLACK);
             rect.setPaintStretched(true);
             panel.setBackgroundPainter(rect);
             manageButtons.add(panel);
@@ -138,12 +142,12 @@ public class ManagePanelAnimations {
         }
         firstAnim.start();
     }
-
+    
     void hideManagePanel() {
         Animator startAnim = new Animator(1);
         Animator prevAnim = startAnim;
         int animlen = transitionLength / manageButtons.size();
-        // create the animators in reverse order 
+        // create the animators in reverse order
         for(int i=manageButtons.size()-1; i>=0; i--) {
             final JPanel panel = manageButtons.get(i);
             final Animator propAnim = PropertySetter.createAnimator(animlen,panel,"location", panel.getLocation(),
@@ -166,7 +170,7 @@ public class ManagePanelAnimations {
         manageButtons = null;
     }
     
-
+    
     Map<BufferedDeskletContainer, Point2D> originalLocations = new HashMap<BufferedDeskletContainer, Point2D>();
     Map<BufferedDeskletContainer, JButton> stopButtons = new HashMap<BufferedDeskletContainer, JButton>();
     Map<BufferedDeskletContainer, JXPanel> rolloverPanels = new HashMap<BufferedDeskletContainer, JXPanel>();
@@ -176,12 +180,12 @@ public class ManagePanelAnimations {
         anim.addTarget(new AnimButtonDisabler(button));
         int i = 0;
         for(DeskletContainer dc : wm.getDesklets()) {
-        //for(int i=0; i<wm.getDesklets().size(); i++) {
+            //for(int i=0; i<wm.getDesklets().size(); i++) {
             //DeskletContainer dc = wm.getDesklets().get(i);
             if(dc instanceof BufferedDialogContainer) continue;
             final int scaledWidth = 200;
             final int scaledHeight = 100;
-            final int rowGap = 10;
+            final int rowGap = 20;
             final int columnGap = 70;
             if(dc instanceof BufferedDeskletContainer) {
                 final BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
@@ -240,14 +244,46 @@ public class ManagePanelAnimations {
                         String text = bdc.getContext().getConfig().getName();
                         Font font = new Font(Font.SANS_SERIF,Font.BOLD,20);
                         // set a rollover painter
-                        panel.addMouseListener(new AnimPanelRollover(panel,
-                                null,
-                                new CompoundPainter(
-                                    new RectanglePainter(5, 5, 5, 5, 20, 20, true, new Color(0, 0, 0, 160), 3.0f, Color.WHITE),
-                                    //new RectanglePainter(35, 35, 35, 35, 20, 20, true, new Color(0, 0, 0, 200), 0.0f, Color.WHITE),
-                                    new TextPainter(text,font,Color.WHITE)
-                                )
-                                ));
+                        AlphaPainter alpha = new AlphaPainter();
+                        alpha.setAlpha(0f);
+                        alpha.setCacheable(false);
+                        alpha.setPainters(
+                                new RectanglePainter(5, 5, 5, 5, 20, 20, true, new Color(0, 0, 0, 160), 3.0f, Color.WHITE),
+                                //new RectanglePainter(35, 35, 35, 35, 20, 20, true, new Color(0, 0, 0, 200), 0.0f, Color.WHITE),
+                                new TextPainter(text,font,Color.WHITE));
+                        panel.setBackgroundPainter(alpha);
+                        final Animator anim = new Animator(500);
+                        anim.addTarget(new PropertySetter(alpha,"alpha",0f,1f));
+                        anim.addTarget(new AnimRepainter(panel));
+                        panel.addMouseListener(new MouseListener() {
+                            public void mouseClicked(MouseEvent e) {
+                            }
+                            public void mouseEntered(MouseEvent e) {
+                                float fract = 0f;
+                                if(anim.isRunning()) {
+                                    fract = anim.getTimingFraction();
+                                    anim.stop();
+                                }
+                                anim.setDirection(Animator.Direction.FORWARD);
+                                anim.setInitialFraction(fract);
+                                anim.start();
+                            }
+                            public void mouseExited(MouseEvent e) {
+                                float fract = 1f;
+                                if(anim.isRunning()) {
+                                    fract = anim.getTimingFraction();
+                                    anim.stop();
+                                }
+                                anim.setDirection(Animator.Direction.BACKWARD);
+                                anim.setInitialFraction(fract);
+                                anim.start();
+                            }
+                            public void mousePressed(MouseEvent e) {
+                            }
+                            public void mouseReleased(MouseEvent e) {
+                            }
+                        });
+                        //MouseTrigger.addTrigger(panel,anim,MouseTriggerEvent.ENTER,true);
                         close.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 wm.stop(bdc);
@@ -268,7 +304,7 @@ public class ManagePanelAnimations {
         anim.addTarget(new ToggleAnimatingProperty());
         anim.start();
     }
-
+    
     void moveDeskletsToOriginalPositions(final AbstractButton button) {
         Animator anim = new Animator(500);
         anim.addTarget(new AnimButtonDisabler(button));
@@ -307,81 +343,81 @@ public class ManagePanelAnimations {
         anim.start();
         originalLocations.clear();
     }
-
+    
     private class ToggleAnimatingProperty implements TimingTarget {
-
+        
         public void begin() {
             wm.panel.setAnimating(true);
         }
-
+        
         public void end() {
             wm.panel.setAnimating(false);
         }
-
+        
         public void repeat() {
         }
-
+        
         public void timingEvent(float f) {
         }
     }
-
+    
     private class AnimButtonDisabler implements TimingTarget {
-
+        
         private AbstractButton button;
-
+        
         public AnimButtonDisabler(AbstractButton button) {
             super();
             this.button = button;
         }
-
+        
         public void begin() {
             button.setEnabled(false);
         }
-
+        
         public void end() {
             button.setEnabled(true);
         }
-
+        
         public void repeat() {
         }
-
+        
         public void timingEvent(float f) {
         }
     }
-
+    
     private class AnimPanelRollover implements MouseListener {
-
+        
         private JXPanel panel;
         private Painter normal;
         private Painter rollover;
-
+        
         public AnimPanelRollover(JXPanel panel, Painter normal, Painter rollover) {
             super();
             this.panel = panel;
             this.normal = normal;
             this.rollover = rollover;
         }
-
+        
         public void mouseClicked(MouseEvent e) {
         }
-
+        
         public void mouseEntered(MouseEvent e) {
             panel.setBackgroundPainter(rollover);
         }
-
+        
         public void mouseExited(MouseEvent e) {
             panel.setBackgroundPainter(normal);
         }
-
+        
         public void mousePressed(MouseEvent e) {
         }
-
+        
         public void mouseReleased(MouseEvent e) {
         }
     }
-
-
-
-
+    
+    
+    
+    
     
 }
