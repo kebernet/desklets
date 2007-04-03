@@ -8,11 +8,15 @@ package calendar;
 
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.LinearGradientPaint;
+import java.awt.Point;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.PinstripePainter;
 import org.jdesktop.swingx.painter.RectanglePainter;
+import org.jdesktop.swingx.painter.effects.GlowPathEffect;
 import org.joda.time.DateTime;
 
 /**
@@ -35,8 +39,31 @@ public class CalendarForm extends javax.swing.JPanel {
         rect.setInsets(new Insets(3,3,3,3));
         rect.setStyle(RectanglePainter.Style.FILLED);
         
-        ((JXPanel)leftPanel).setBackgroundPainter(rect);
-        ((JXPanel)rightPanel).setBackgroundPainter(rect);
+        
+        rect = new RectanglePainter();
+        rect.setBorderPaint(new Color(51,51,51));
+        rect.setBorderWidth(3f);
+        rect.setAreaEffects(new GlowPathEffect());
+        rect.setRounded(true);
+        rect.setRoundHeight(40);
+        rect.setRoundWidth(40);
+        
+        LinearGradientPaint grad = new LinearGradientPaint(
+                new Point(61,13), new Point(62,160),
+                new float[] {0f, 0.33f, 0.88f, 1.0f},
+                new Color[] { new Color(0,0,0), new Color(153,0,0), new Color(255,0,0), new Color(251,177,177) });
+        rect.setFillPaint(grad);
+        rect.setInsets(new Insets(3,3,3,3));
+        rect.setPaintStretched(true);
+        
+        PinstripePainter pin = new PinstripePainter(new Color(204,0,0,36),45, 8, 8);
+        
+        CompoundPainter comp = new CompoundPainter(rect,pin);
+        comp.setClipPreserved(true);
+        
+        
+        ((JXPanel)leftPanel).setBackgroundPainter(comp);
+        ((JXPanel)rightPanel).setBackgroundPainter(comp);
         
         JXPanel panel = (JXPanel)jPanel1;
         panel.setBackgroundPainter(new CompoundPainter(
@@ -152,24 +179,24 @@ public class CalendarForm extends javax.swing.JPanel {
         add(rightPanel);
 
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         setDate(getDate().plusMonths(1));
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setDate(getDate().minusMonths(1));
         
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    
     public void updateDate() {
         setDate(new DateTime(new Date()));
     }
-
+    
     public DateTime getDate() {
         return date;
     }
-
+    
     public void setDate(DateTime date) {
         this.date = date;
         month.setText(date.monthOfYear().getAsText() + " " +
@@ -190,7 +217,7 @@ public class CalendarForm extends javax.swing.JPanel {
     private javax.swing.JLabel month;
     private javax.swing.JPanel rightPanel;
     // End of variables declaration//GEN-END:variables
-
-
+    
+    
     
 }
