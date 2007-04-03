@@ -10,6 +10,7 @@ import ab5k.Environment;
 import ab5k.prefs.ConfigurationImportExport;
 
 import com.totsp.util.BeanArrayList;
+import java.awt.Window;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,8 @@ import java.util.StringTokenizer;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 
 /**
@@ -229,6 +232,13 @@ public class DeskletManager {
         checkSecurity();
 
         ArrayList<String> uuids = this.getRunningDeskletIds();
+        if( uuids.contains(uuid) ){
+            Window win = SwingUtilities.windowForComponent(DeskletManager.main.getDesktop());
+            int value = JOptionPane.showConfirmDialog(win, "That Desklet is already running!",
+                    "Error", JOptionPane.OK_OPTION,
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         this.startDeskletRunner(uuid);
         uuids.add(uuid);
         this.setRunningDeskletIds(uuids);
