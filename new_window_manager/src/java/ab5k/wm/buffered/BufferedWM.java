@@ -13,6 +13,7 @@ import ab5k.Core;
 import ab5k.DesktopBackground;
 import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
+import ab5k.security.ContainerFactory;
 import ab5k.security.DefaultContext;
 import ab5k.security.DeskletConfig;
 import ab5k.security.DeskletManager;
@@ -176,7 +177,7 @@ public class BufferedWM extends WindowManager {
             DeskletManager manager = DeskletManager.getInstance();
             BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
             DeskletRunner runner = manager.getDeskletRunner(bdc.getContext());
-            manager.shutdownRunner(runner);
+            manager.stopRunner(runner);
         }
     }
     void stop(final DeskletRunner d) {
@@ -259,7 +260,9 @@ public class BufferedWM extends WindowManager {
     /* ====== the desklet container lifecycle ===== */
     public DeskletContainer createInternalContainer(DefaultContext context) {
         BufferedDeskletContainer cont = new BufferedDeskletContainer(this,context);
-        cont.setLocation(new Point(0,0));
+        int x = Integer.parseInt(context.getPreference(ContainerFactory.LOCATION_X,"300"));
+        int y = Integer.parseInt(context.getPreference(ContainerFactory.LOCATION_Y,"300"));
+        cont.setLocation(new Point(x,y));
         context.services.put(ab5k.desklet.services.GlobalMouse.class, globalMouseService);
         return cont;
     }
@@ -315,9 +318,9 @@ public class BufferedWM extends WindowManager {
         if(bdc instanceof BufferedDeskletContainer) {
             hidden.add(((BufferedDeskletContainer)dc).comp);
         }
-        bdc.setLocation(new Point(100,100));
+        //bdc.setLocation(new Point(100,100));
         Animator anim = new Animator(750);
-        anim.addTarget(new PropertySetter(dc,"location",new Point(100,100), new Point(100,100)));
+        anim.addTarget(new PropertySetter(dc,"location",bdc.getLocation(), bdc.getLocation()));
         anim.addTarget(new PropertySetter(dc,"alpha",0f,1f));
         anim.addTarget(new PropertySetter(dc,"rotation",Math.PI,Math.PI*2.0));
         anim.addTarget(new PropertySetter(dc,"scale",0.1,1.0));

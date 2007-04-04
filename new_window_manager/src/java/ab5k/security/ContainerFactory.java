@@ -31,8 +31,8 @@ import javax.swing.JPanel;
  */
 public class ContainerFactory {
     private static final Logger LOG = Logger.getLogger("AB5K");
-    static final String LOCATION_X = "ab5k.location.x";
-    static final String LOCATION_Y = "ab5k.location.y";
+    public static final String LOCATION_X = "ab5k.location.x";
+    public static final String LOCATION_Y = "ab5k.location.y";
     private static final ContainerFactory instance = new ContainerFactory();
     private Container dock;
     private WindowManager wm;

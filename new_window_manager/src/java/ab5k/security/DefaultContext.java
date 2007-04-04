@@ -69,6 +69,8 @@ public class DefaultContext extends DeskletContext {
 
                 try {
                     prefs.load(fis);
+                    u.p("x = " + prefs.getProperty(ContainerFactory.LOCATION_X));
+                    u.p("y = " + prefs.getProperty(ContainerFactory.LOCATION_Y));
                 } finally {
                     fis.close();
                 }
@@ -84,14 +86,14 @@ public class DefaultContext extends DeskletContext {
     }
 
     void flushPreferences() throws IOException {
-        FileOutputStream fos = new FileOutputStream(props);
         u.p("saving to props: " + props.getAbsolutePath());
         //InternalFrameContainer ifc = (InternalFrameContainer) this.container;
-        //u.p("container = " + container);
+        u.p("container = " + this.container);
         Point2D pt = core.getWindowManager().getLocation(container);
-        //u.p("pt = " + pt);
+        u.p("pt = " + pt);
         prefs.setProperty(ContainerFactory.LOCATION_X, Integer.toString( (int) pt.getX() ) );
         prefs.setProperty(ContainerFactory.LOCATION_Y, Integer.toString( (int) pt.getY()) );
+        FileOutputStream fos = new FileOutputStream(props);
         try {
             prefs.store(fos, null);
             fos.flush();

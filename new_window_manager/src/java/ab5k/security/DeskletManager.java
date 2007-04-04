@@ -217,6 +217,10 @@ public class DeskletManager {
     public void shutdownDesklet(String uuid) {
         checkSecurity();
 
+        System.out.println("num uids = " + this.getRunningDeskletIds().size());
+        for(String s : this.getRunningDeskletIds()) {
+            System.out.println("id = " + s);
+        }
         for(DeskletRunner runner : runners) {
             if(runner.getConfig().getUUID().equals(uuid)) {
                 ArrayList<String> uuids = this.getRunningDeskletIds();
@@ -229,12 +233,27 @@ public class DeskletManager {
         }
     }
 
+    // shuts down a runner. called when ab5k shuts down
     public void shutdownRunner(DeskletRunner runner) {
         runner.stopDesklet();
         runner.destroyDesklet();
         runners.remove(runner);
     }
 
+    // stops a runner. this removes it from the list so it won't
+    // come back the next time ab5k is restarted
+    public void stopRunner(DeskletRunner runner) {
+        String id = runner.getConfig().getUUID();
+        ArrayList<String> uuids = this.getRunningDeskletIds();
+        if(uuids.contains(id)) {
+            uuids.remove(id);
+            this.setRunningDeskletIds(uuids);
+        }
+        runner.stopDesklet();
+        runner.destroyDesklet();
+        runners.remove(runner);
+    }
+    
     public void startDesklet(String uuid) throws LifeCycleException {
         checkSecurity();
 
