@@ -20,6 +20,7 @@ import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.timing.triggers.MouseTrigger;
 import org.jdesktop.animation.timing.triggers.MouseTriggerEvent;
+import org.jdesktop.swingx.JXBoxPanel;
 
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXInsets;
@@ -86,7 +87,7 @@ public class DockSkinner {
         }
         if(theme == Theme.DARK) {
             //dockCont.panel.setMargins(new Insets(2,35,1,4));
-            dockCont.panel.setMargins(new Insets(2,8,1,4));
+            dockCont.panel.setMargins(new Insets(2,8,1,8));
             dockCont.panel.setPadding(new Insets(5,8,5,5));
             RectanglePainter rp = new RectanglePainter(new Color(0xffaa90aa), new Color(0xff4E515F));
             rp.setInsets(new Insets(6,6,6,6));
@@ -134,7 +135,8 @@ public class DockSkinner {
             logo.setText("");
             logo.setOpaque(false);
             
-            JXPanel dockPanel = (JXPanel) main.dockPanel;
+            JXBoxPanel dockPanel = (JXBoxPanel) main.dockPanel;
+            dockPanel.setOpaque(true);
             
             if(theme == Theme.ORANGE) {
                 logo.setIcon(new ImageIcon(
@@ -171,8 +173,16 @@ public class DockSkinner {
                 matteOverlay.setPaintStretched(true);
                 CompoundPainter comp = new CompoundPainter(rp,ptr2,matteOverlay);
                 comp.setClipPreserved(true);
+                
+                ImagePainter im2 = new ImagePainter(DockSkinner.class.getResource("/backgrounds/di-sails-blue-left.png"));
+                im2.setHorizontalAlignment(ImagePainter.HorizontalAlignment.LEFT);
+                RectanglePainter overlay = new RectanglePainter(new Color(255,255,255,80),Color.DARK_GRAY);
+                overlay.setInsets(new JXInsets(5));
+                comp.setPainters(im2,overlay);
                 dockPanel.setBackgroundPainter(comp);
                 dockPanel.setSize(300,dockPanel.getHeight());
+                //dockPanel.setMargins(new JXInsets(5));
+                
                 configDarkButton((JXButton) main.manageButton);
                 configDarkButton((JXButton) main.quitButton);
             }

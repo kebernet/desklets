@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingUtilities;
 import javax.xml.stream.events.StartDocument;
+import org.jdesktop.swingx.JXBoxPanel;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
@@ -121,7 +122,7 @@ public class MainPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         collapseButton = new javax.swing.JButton();
-        dockPanel = new JXPanel();
+        dockPanel = new JXBoxPanel();
         manageButton = new JXButton();
         logoButton = new JXButton();
         quitButton = new JXButton();

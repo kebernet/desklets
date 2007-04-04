@@ -74,6 +74,7 @@ import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.swingx.JXBoxPanel;
+import org.jdesktop.swingx.JXInsets;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CheckerboardPainter;
 import org.jdesktop.swingx.painter.CompoundPainter;
@@ -155,10 +156,14 @@ public class BufferedWM extends WindowManager {
             Color transparent = new Color(0x00000000);
             panel.setBackgroundPainter(new CompoundPainter(
                     new MattePainter(new GradientPaint(new Point(0,0), blue1, new Point(1,1), blue2), true),
-                    new PinstripePainter(blue1,0.0,20.0,10.0)));
+                    new PinstripePainter(blue1,0.0,5.0,20.0)));
             //new CheckerboardPainter(transparent, transparent, 50)));
             //panel.setBackgroundPainter(new MattePainter(Color.YELLOW));
             //panel.setBackgroundPainter(null);
+            ImagePainter im2 = new ImagePainter(getClass().getResource("/backgrounds/di-sails-blue.png"));
+            im2.setHorizontalAlignment(ImagePainter.HorizontalAlignment.LEFT);
+            im2.setInsets(new JXInsets(0,-180,0,0));
+            panel.setBackgroundPainter(new CompoundPainter(im2));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
