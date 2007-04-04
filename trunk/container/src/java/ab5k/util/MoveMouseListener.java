@@ -33,6 +33,9 @@ public class MoveMouseListener implements MouseListener, MouseMotionListener {
     public void mousePressed(MouseEvent e) {
         this.start_drag = this.getScreenLocation(e);
         this.start_loc = this.getFrame(this.target).getLocation();
+        if( target.getComponents() != null && target.getComponents().length >0 ){
+            target.getComponents()[0].requestFocus();
+        }
     }
 
     public void mouseReleased(MouseEvent e) {}
