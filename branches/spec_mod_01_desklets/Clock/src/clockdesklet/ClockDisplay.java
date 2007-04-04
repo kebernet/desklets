@@ -101,6 +101,7 @@ public class ClockDisplay extends JXPanel {
         currentTime.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         amLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,1));
         pmLabel.setBorder(BorderFactory.createEmptyBorder(5,1,5,5));
+        repaint();
     }
     
     void setHex() {
@@ -120,6 +121,7 @@ public class ClockDisplay extends JXPanel {
         CompoundPainter cp = new CompoundPainter(hface,hbackground,hands);
         this.setBackgroundPainter(cp);
         this.repaint();
+        repaint();
     }
     
     void setAnalog() {
@@ -154,6 +156,7 @@ public class ClockDisplay extends JXPanel {
         
         this.setBackgroundPainter(cp3);
         this.repaint();
+        repaint();
     }
     
     
