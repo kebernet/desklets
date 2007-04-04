@@ -29,7 +29,7 @@ import javax.swing.event.MouseInputListener;
 public class GlobalMouse extends ab5k.desklet.services.GlobalMouse{
     
     private static GlobalMouse globalMouse;
-
+    
     
     public static GlobalMouse getInstance() {
         if(globalMouse == null) {
@@ -64,7 +64,7 @@ public class GlobalMouse extends ab5k.desklet.services.GlobalMouse{
         long now = new Date().getTime();
         for(JComponent comp : listeners.keySet()) {
             Point localPoint = convertPointToComponent(comp,pt);
-            MouseEvent evt = new MouseEvent(comp,-1,now,0,localPoint.x, localPoint.y, pt.x, pt.y, 
+            MouseEvent evt = new MouseEvent(comp,-1,now,0,localPoint.x, localPoint.y, pt.x, pt.y,
                     0, false, 0);
             for(MouseInputListener l : listeners.get(comp)) {
                 l.mouseMoved(evt);
@@ -76,30 +76,35 @@ public class GlobalMouse extends ab5k.desklet.services.GlobalMouse{
     private void startThread() {
         thread = new Thread(new Runnable() {
             public void run() {
-                Point pt = MouseInfo.getPointerInfo().getLocation();
+                Point pt = null;//MouseInfo.getPointerInfo().getLocation();
                 while(go) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
                     }
-                    Point pt2 = MouseInfo.getPointerInfo().getLocation();
-                    if(!pt.equals(pt2)) {
-                        fireMouseListeners(pt2);
+                    try {
+                        
+                        Point pt2 = MouseInfo.getPointerInfo().getLocation();
+                        if(!pt2.equals(pt)) {
+                            fireMouseListeners(pt2);
+                        }
+                        pt = pt2;
+                    } catch (Throwable ex) {
+                        ex.printStackTrace();
                     }
-                    pt = pt2;
                 }
             }
         });
         go = true;
         thread.start();
     }
-
+    
     protected Point convertPointToComponent(JComponent comp, Point pt) {
         Point pt2 = new Point(pt);
         SwingUtilities.convertPointFromScreen(pt2,comp);
         return pt2;
     }
-
+    
     
 }
