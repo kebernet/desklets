@@ -82,7 +82,7 @@ public class BufferedWM extends WindowManager {
     
     static final boolean DEBUG_BORDERS = false;
     static final boolean DEBUG_REPAINT_AREA = false;
-    static final boolean SHOW_FRAME_TITLE_BAR = false;
+    static final boolean SHOW_FRAME_TITLE_BAR = true;
     
     private List<BaseDC> desklets;
     private Map<BaseDC,List<BaseDC>> dialogMap;
@@ -538,13 +538,11 @@ public class BufferedWM extends WindowManager {
         
         public void mouseDragged(MouseEvent e) {
             wasDragging = true;
-            showDeskletInGlasspane();
             if (e.getPoint().getX() < 20) {
                 if(!core.getCloser().isWindowClosed()) {
                     core.getCollapseWindowAction().doCollapse();
                     selectedDesklet = convertInternalToExternalContainer(selectedDesklet);
                 }
-                //selectedDeskletOffset = new Point(100,100);
             }
             
             if(core.getCloser().isWindowClosed() &&
@@ -554,6 +552,12 @@ public class BufferedWM extends WindowManager {
                 selectedDesklet.setLocation(new Point(pt.x - selectedDeskletOffset.x,
                         pt.y - selectedDeskletOffset.y));
                 
+            }
+            
+            if(selectedDesklet != null && selectedDesklet.getLocation().getX() < 0) {
+                showDeskletInGlasspane();
+            } else {
+                hideDeskletInGlasspane();
             }
         }
         
@@ -588,7 +592,6 @@ public class BufferedWM extends WindowManager {
                 intExtGlasspane.setOpaque(false);
                 frame.setGlassPane(intExtGlasspane);
                 intExtGlasspane.setVisible(true);
-                u.p("turned on glasspane");
             }
             intExtGlasspane.setVisible(true);
             intExtGlasspane.repaint();

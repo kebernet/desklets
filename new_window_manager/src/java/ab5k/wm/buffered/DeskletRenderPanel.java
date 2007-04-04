@@ -1,6 +1,7 @@
 package ab5k.wm.buffered;
 
 import ab5k.desklet.DeskletContainer;
+import ab5k.util.GraphicsUtil;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,6 +16,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.painter.Painter;
 import org.joshy.util.u;
 
@@ -92,7 +94,7 @@ class DeskletRenderPanel extends JPanel {
         Dimension size = new Dimension(100,200);
         Point2D pt = new Point(20,20);
         
-        BufferedImage img = drawToBuffer(popup.panel, size);
+        BufferedImage img = drawToBuffer(popup.panel, size, bdc.getBuffer());
         
         Graphics2D g3 = (Graphics2D) g2.create();
         g3.translate(bdc.getLocation().getX(), bdc.getLocation().getX());
@@ -106,7 +108,7 @@ class DeskletRenderPanel extends JPanel {
         Point2D pt = bdc.getLocation();
         boolean wasDirty = false;
         if (bdc.getBuffer() == null || bdc.isDirty()) {
-            BufferedImage img = drawToBuffer(bdc.comp, size);
+            BufferedImage img = drawToBuffer(bdc.comp, size, bdc.getBuffer());
             bdc.setBuffer(img);
             rendererPane.removeAll();
             bdc.setDirty(false);
@@ -155,13 +157,23 @@ class DeskletRenderPanel extends JPanel {
         }
     }
     
-    private BufferedImage drawToBuffer(final JComponent comp, final Dimension size) {
-        BufferedImage img = new BufferedImage((int)size.getWidth(), (int)size.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage drawToBuffer(final JComponent comp, final Dimension size, BufferedImage img) {
+        // decide if we need to create a new image
+        if(img == null ||
+                img.getWidth() != (int)size.getWidth() ||
+                img.getHeight() != (int)size.getHeight()) {
+            img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth(), (int)size.getHeight());
+            //, BufferedImage.TYPE_INT_ARGB);
+        }
+        
+        // draw the component into the image
         Graphics gx = img.getGraphics();
         rendererPane.add(comp);
         rendererPane.paintComponent(gx, comp, this,
                 0,0,  size.width, size.height,
                 true);
+        
+        // draw debugging info
         if (this.bufferedWM.DEBUG_BORDERS) {
             gx.setColor(Color.GREEN);
             gx.drawLine(0,0,size.width,size.height);
@@ -169,6 +181,8 @@ class DeskletRenderPanel extends JPanel {
         }
         //gx.setColor(Color.RED);
         //gx.drawString("comps: "+ comp.getComponentCount(),2,15);
+        
+        // dispose and return
         gx.dispose();
         return img;
     }
