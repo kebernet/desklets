@@ -77,7 +77,11 @@ public class ManagePanelAnimations {
     private final int manageButtonGap = 60;
     private final int manageButtonSpacing = 10;
     private final int manageButtonWidth = 200;
-    private final int firstColumnX = 100;
+    private static final int firstColumnX = 100;
+    final static int scaledWidth = 200;
+    final static int scaledHeight = 100;
+    final static int rowGap = 20;
+    final static int columnGap = 70;
     private Icon closeIcon, closeOverIcon;
     
     void showManagePanel() {
@@ -183,10 +187,6 @@ public class ManagePanelAnimations {
             //for(int i=0; i<wm.getDesklets().size(); i++) {
             //DeskletContainer dc = wm.getDesklets().get(i);
             if(dc instanceof BufferedDialogContainer) continue;
-            final int scaledWidth = 200;
-            final int scaledHeight = 100;
-            final int rowGap = 20;
-            final int columnGap = 70;
             if(dc instanceof BufferedDeskletContainer) {
                 final BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
                 
@@ -194,27 +194,10 @@ public class ManagePanelAnimations {
                 originalLocations.put(bdc,bdc.getLocation());
                 
                 // constrain to 200x100 if needed
-                if(bdc.getSize().getWidth() > scaledWidth || bdc.getSize().getHeight() > scaledHeight) {
-                    double targetScale = scaledWidth/bdc.getSize().getWidth();
-                    // if still too big
-                    if(targetScale*bdc.getSize().getHeight() > scaledHeight) {
-                        targetScale = scaledHeight/bdc.getSize().getHeight();
-                    }
-                    anim.addTarget(new PropertySetter(bdc, "scale", 1.0, targetScale));
-                }
-                
-                int x = firstColumnX;
-                int y = i*(scaledHeight + rowGap) + 50;
-                
-                // wrap to new columns
-                while(y > wm.panel.getHeight()-scaledHeight-rowGap) {
-                    x+=scaledWidth+columnGap;
-                    y-=(wm.panel.getHeight()-scaledHeight-rowGap);
-                }
-                
-                anim.addTarget(new PropertySetter(bdc,"location",
-                        originalLocations.get(bdc),
-                        new Point(x,y)));
+                double targetScale = calculateScale(bdc);
+                anim.addTarget(new PropertySetter(bdc, "scale", 1.0, targetScale));
+                Point2D pt = calculateLocation(wm.panel,i);
+                anim.addTarget(new PropertySetter(bdc,"location", originalLocations.get(bdc), pt));
                 anim.addTarget(new TimingTarget() {
                     public void begin() {
                     }
@@ -303,6 +286,30 @@ public class ManagePanelAnimations {
         anim.addTarget(new AnimRepainter(wm.panel));
         anim.addTarget(new ToggleAnimatingProperty());
         anim.start();
+    }
+    
+    
+    public static Point2D calculateLocation(JComponent panel, int i) {
+        int x = firstColumnX;
+        int y = i*(scaledHeight + rowGap) + 50;
+        
+        // wrap to new columns
+        while(y > panel.getHeight()-scaledHeight-rowGap) {
+            x+=scaledWidth+columnGap;
+            y-=(panel.getHeight()-scaledHeight-rowGap);
+        }
+        return new Point(x,y);
+    }
+    
+    public static double calculateScale(BufferedDeskletContainer bdc) {
+        double targetScale = scaledWidth/bdc.getSize().getWidth();
+        if(bdc.getSize().getWidth() > scaledWidth || bdc.getSize().getHeight() > scaledHeight) {
+            // if still too big
+            if(targetScale*bdc.getSize().getHeight() > scaledHeight) {
+                targetScale = scaledHeight/bdc.getSize().getHeight();
+            }
+        }
+        return targetScale;
     }
     
     void moveDeskletsToOriginalPositions(final AbstractButton button) {

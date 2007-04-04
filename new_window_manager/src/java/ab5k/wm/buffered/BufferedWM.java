@@ -24,6 +24,9 @@ import ab5k.util.AnimRepainter;
 import ab5k.util.GlobalMouse;
 import ab5k.util.GraphicsUtil;
 import ab5k.wm.WindowManager;
+import ab5k.wm.buffered.animations.BouncerEquation;
+import ab5k.wm.buffered.animations.DampingOscillatorEquation;
+import ab5k.wm.buffered.animations.Equation;
 import com.totsp.util.BeanArrayList;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
@@ -101,12 +104,13 @@ public class BufferedWM extends WindowManager {
     Container hidden;
     private DeskletContainer selectedDesklet = null;
     private Point selectedDeskletOffset;
+    private boolean isManageMode = false;
     
     Core core;
     GlobalMouse globalMouseService = GlobalMouse.getInstance();
     
     private boolean oldAnim = false;
-
+    
     
     /** Creates a new instance of BufferedWM */
     public BufferedWM(final Core core) {
@@ -152,7 +156,9 @@ public class BufferedWM extends WindowManager {
             panel.setBackgroundPainter(new CompoundPainter(
                     new MattePainter(new GradientPaint(new Point(0,0), blue1, new Point(1,1), blue2), true),
                     new PinstripePainter(blue1,0.0,20.0,10.0)));
-     //               new CheckerboardPainter(transparent, transparent, 50)));
+            //new CheckerboardPainter(transparent, transparent, 50)));
+            //panel.setBackgroundPainter(new MattePainter(Color.YELLOW));
+            //panel.setBackgroundPainter(null);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -173,9 +179,11 @@ public class BufferedWM extends WindowManager {
                 if(manageButton.isSelected()) {
                     mpa.showManagePanel();
                     mpa.moveDeskletsToColumns(manageButton);
+                    isManageMode = true;
                 } else {
                     mpa.hideManagePanel();
                     mpa.moveDeskletsToOriginalPositions(manageButton);
+                    isManageMode = false;
                 }
             }
         });
@@ -340,19 +348,92 @@ public class BufferedWM extends WindowManager {
     }
     
     public void animateCreation(DeskletContainer dc) {
-        BaseDC bdc = (BaseDC) dc;
+        final BaseDC bdc = (BaseDC) dc;
+        final Point2D initialLocation = bdc.getLocation();
         getDesklets().add(bdc);
         if(bdc instanceof BufferedDeskletContainer) {
             hidden.add(((BufferedDeskletContainer)dc).comp);
         }
         //bdc.setLocation(new Point(100,100));
-        Animator anim = new Animator(750);
-        anim.addTarget(new PropertySetter(dc,"location",bdc.getLocation(), bdc.getLocation()));
-        anim.addTarget(new PropertySetter(dc,"alpha",0f,1f));
-        anim.addTarget(new PropertySetter(dc,"rotation",Math.PI,Math.PI*2.0));
-        anim.addTarget(new PropertySetter(dc,"scale",0.1,1.0));
-        anim.addTarget(new AnimRepainter(panel));
-        anim.start();
+        
+        if(oldAnim){
+            Animator anim = new Animator(750);
+            anim.addTarget(new PropertySetter(dc,"location",bdc.getLocation(), bdc.getLocation()));
+            anim.addTarget(new PropertySetter(dc,"alpha",0f,1f));
+            anim.addTarget(new PropertySetter(dc,"rotation",Math.PI,Math.PI*2.0));
+            anim.addTarget(new PropertySetter(dc,"scale",0.1,1.0));
+            anim.addTarget(new AnimRepainter(panel));
+            anim.start();
+        } else {
+            Animator anim = new Animator(1500);
+            double startScale = 3.0;
+            double endScale = 1.0;
+            Dimension2D size = bdc.getSize();
+            size = new Dimension(250,150); // hard code it to get around some bugs
+            
+            final Point2D center = new Point2D.Double(300,300);
+            //u.p("size = " + size);
+            Point2D start = new Point2D.Double(center.getX() - startScale*size.getWidth()/2.0,
+                    center.getY() - startScale*size.getHeight()/2.0);
+            start = center;
+            //u.p("start = " + start);
+            Point2D end = new Point2D.Double(center.getX() - endScale*size.getWidth()/2.0,
+                    center.getY() - endScale*size.getHeight()/2.0);
+            end = center;
+            //u.p("end = " + end);
+            //bdc.setLocation(start);
+            
+            final Equation bouncer = new BouncerEquation(1.0, 0.3, 0.058, 12.0, 0.0);
+            
+            final BufferedDeskletContainer bdc2 = (BufferedDeskletContainer) bdc;
+            calc(0.11f,bdc2,bouncer,center);
+            
+            //anim.addTarget(new PropertySetter(bdc,"location",start, end));
+            anim.addTarget(new PropertySetter(bdc,"alpha", 0f, 1f));
+            //anim.addTarget(new PropertySetter(bdc,"scale",startScale, endScale, endScale));
+            //anim.addTarget(new AnimRepainter(panel));
+            anim.addTarget(new TimingTarget() {
+                public void begin() {
+                    panel.setAnimating(true);
+                }
+                public void end() {
+                    
+                    
+                    Animator a2 = new Animator(300);
+                    double targetScale = ManagePanelAnimations.calculateScale(bdc2);
+                    int count = getDesklets().size();
+                    Point2D pt = ManagePanelAnimations.calculateLocation(panel,count-1);
+                    if(!isManageMode) {
+                        targetScale = 1.0;
+                        pt = initialLocation;
+                    }
+                    a2.addTarget(new PropertySetter(bdc2, "scale", bdc2.getScale(), targetScale));
+                    a2.addTarget(new PropertySetter(bdc2,"location", bdc2.getLocation(), pt));
+                    a2.addTarget(new AnimRepainter(panel));
+                    a2.addTarget(new TimingTargetAdapter() {
+                        public void end() {
+                            panel.setAnimating(false);
+                        }
+                    });
+                    a2.start();
+                    
+                }
+                public void repeat() {
+                }
+                public void timingEvent(float f) {
+                    calc(f,bdc2,bouncer,center);
+                    panel.repaint();//0,0,400,400);
+                }
+            });
+            anim.start();
+        }
+        
+    }
+    private void calc(float f, BufferedDeskletContainer bdc2, Equation bouncer, Point2D center) {
+        bdc2.setScale(1.0+ 2.0*bouncer.compute(f));
+        bdc2.setLocation(new Point2D.Double(
+                center.getX() - bdc2.getScale()*bdc2.getSize().getWidth()/2,
+                center.getY() - bdc2.getScale()*bdc2.getSize().getHeight()/2));
     }
     
     public void animateDestruction(final DeskletContainer dc) {
