@@ -371,7 +371,7 @@ public class BufferedWM extends WindowManager {
             Dimension2D size = bdc.getSize();
             size = new Dimension(250,150); // hard code it to get around some bugs
             
-            final Point2D center = new Point2D.Double(300,300);
+            final Point2D center = new Point2D.Double(500,300);
             //u.p("size = " + size);
             Point2D start = new Point2D.Double(center.getX() - startScale*size.getWidth()/2.0,
                     center.getY() - startScale*size.getHeight()/2.0);
