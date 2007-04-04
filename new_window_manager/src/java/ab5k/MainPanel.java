@@ -122,9 +122,9 @@ public class MainPanel extends javax.swing.JPanel {
 
         collapseButton = new javax.swing.JButton();
         dockPanel = new JXPanel();
-        manageButton = new javax.swing.JButton();
+        manageButton = new JXButton();
         logoButton = new JXButton();
-        quitButton = new javax.swing.JButton();
+        quitButton = new JXButton();
         miniModePanel = new javax.swing.JPanel();
         loadingSpinner = new org.jdesktop.swingx.JXBusyLabel();
 
@@ -153,6 +153,7 @@ public class MainPanel extends javax.swing.JPanel {
         });
 
         manageButton.setAction(getShowManageDialogAction());
+        manageButton.setFont(new java.awt.Font("Helvetica", 0, 14));
         manageButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dock/orange/images/configure.png")));
         manageButton.setText("Setup");
         manageButton.setToolTipText("Manage Widgets and Preferences");
@@ -170,7 +171,6 @@ public class MainPanel extends javax.swing.JPanel {
         logoButton.setBorderPainted(false);
         logoButton.setContentAreaFilled(false);
         logoButton.setFocusable(false);
-        logoButton.setOpaque(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -179,6 +179,7 @@ public class MainPanel extends javax.swing.JPanel {
         dockPanel.add(logoButton, gridBagConstraints);
 
         quitButton.setAction(getQuitAction());
+        quitButton.setFont(new java.awt.Font("Helvetica", 0, 14));
         quitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dock/orange/images/close.png")));
         quitButton.setText("Quit");
         quitButton.setToolTipText("Quit");
@@ -247,9 +248,9 @@ public class MainPanel extends javax.swing.JPanel {
     public javax.swing.JPanel dockPanel;
     private org.jdesktop.swingx.JXBusyLabel loadingSpinner;
     public javax.swing.JButton logoButton;
-    private javax.swing.JButton manageButton;
+    public javax.swing.JButton manageButton;
     private javax.swing.JPanel miniModePanel;
-    private javax.swing.JButton quitButton;
+    public javax.swing.JButton quitButton;
     // End of variables declaration//GEN-END:variables
     
     

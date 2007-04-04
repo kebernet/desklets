@@ -10,6 +10,9 @@ package ab5k.security;
 
 import ab5k.MainPanel;
 import ab5k.util.AnimRepainter;
+import com.jhlabs.image.GlowFilter;
+import com.jhlabs.image.ShadowFilter;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import org.jdesktop.animation.timing.Animator;
@@ -21,9 +24,11 @@ import org.jdesktop.animation.timing.triggers.MouseTriggerEvent;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXInsets;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.AbstractPainter;
 import org.jdesktop.swingx.painter.AlphaPainter;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.ImagePainter;
+import org.jdesktop.swingx.painter.MattePainter;
 import org.jdesktop.swingx.painter.Painter;
 import org.jdesktop.swingx.painter.RectanglePainter;
 import org.jdesktop.swingx.painter.effects.GlowPathEffect;
@@ -47,8 +52,8 @@ import javax.swing.border.Border;
  */
 public class DockSkinner {
     /** Creates a new instance of DockSkinner */
-    private enum Theme { ORANGE, DARK };
-    private static Theme theme = Theme.DARK;
+    public enum Theme { ORANGE, DARK };
+    public static Theme theme = Theme.DARK;
     
     public DockSkinner() {
     }
@@ -80,7 +85,8 @@ public class DockSkinner {
             dockCont.panel.setBackgroundPainter(hiPainter);
         }
         if(theme == Theme.DARK) {
-            dockCont.panel.setMargins(new Insets(2,35,1,4));
+            //dockCont.panel.setMargins(new Insets(2,35,1,4));
+            dockCont.panel.setMargins(new Insets(2,8,1,4));
             dockCont.panel.setPadding(new Insets(5,8,5,5));
             RectanglePainter rp = new RectanglePainter(new Color(0xffaa90aa), new Color(0xff4E515F));
             rp.setInsets(new Insets(6,6,6,6));
@@ -103,6 +109,7 @@ public class DockSkinner {
             rp2.setRoundHeight(5);
             rp2.setRoundWidth(5);
             rp2.setBorderWidth(0f);
+            rp2.setFillPaint(new Color(255,255,255,80));;
             
             CompoundPainter cp = new CompoundPainter(rp2,hiPainter);
             cp.setCacheable(false);
@@ -142,15 +149,60 @@ public class DockSkinner {
                 logo.setIcon(new ImageIcon(
                         DockSkinner.class.getResource("/dock/dark/images/dock3.logo.png")));
                 BufferedImage bg = ImageIO.read(DockSkinner.class.getResource("/dock/dark/images/dock3b.bg.png"));
+                BufferedImage bg2 = ImageIO.read(DockSkinner.class.getResource("/dock/dark/images/dock4.bg.png"));
                 ImagePainter ptr = new ImagePainter(bg, ImagePainter.HorizontalAlignment.LEFT, ImagePainter.VerticalAlignment.TOP);
                 ptr.setVerticalRepeat(true);
-                dockPanel.setBackgroundPainter(ptr);
+                ImagePainter ptr2 = new ImagePainter(bg2, ImagePainter.HorizontalAlignment.LEFT, ImagePainter.VerticalAlignment.TOP);
+                ptr2.setScaleToFit(true);
+                ptr2.setScaleType(ImagePainter.ScaleType.Distort);
+                ptr2.setVerticalRepeat(false);
+                
+                RectanglePainter rp = new RectanglePainter();
+                rp.setStyle(RectanglePainter.Style.BOTH);
+                rp.setFillPaint(Color.RED);
+                rp.setBorderPaint(Color.GRAY);
+                rp.setRoundWidth(40);
+                rp.setRoundHeight(20);
+                rp.setRounded(false);
+                
+                
+                MattePainter matteOverlay = new MattePainter();
+                matteOverlay.setFillPaint(new GradientPaint(new Point(0,0), new Color(0,0,0,0), new Point(1,0), new Color(0,0,0,255)));
+                matteOverlay.setPaintStretched(true);
+                CompoundPainter comp = new CompoundPainter(rp,ptr2,matteOverlay);
+                comp.setClipPreserved(true);
+                dockPanel.setBackgroundPainter(comp);
                 dockPanel.setSize(300,dockPanel.getHeight());
+                configDarkButton((JXButton) main.manageButton);
+                configDarkButton((JXButton) main.quitButton);
             }
             
         } catch (Exception ex) {
             u.p(ex);
         }
+    }
+
+    private static void configDarkButton(final JXButton btn) {
+        btn.setIcon(null);
+        btn.setBorderPainted(false);
+        btn.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
+        btn.setMargin(new JXInsets(0));
+        btn.setToolTipText(null);
+        btn.setForeground(Color.LIGHT_GRAY);
+        Painter bg = new MattePainter(new GradientPaint(new Point(0,0), Color.BLACK, new Point(0,1), Color.DARK_GRAY),true);
+        btn.setBackgroundPainter(bg);
+        AbstractPainter fg = (AbstractPainter) btn.getForegroundPainter();
+        RectanglePainter rect = new RectanglePainter(new Color(0,0,0,0), new Color(0,0,0,0));;
+        rect.setInsets(new Insets(2,20,2,20));
+        CompoundPainter comp = new CompoundPainter(rect,fg);
+        comp.setCacheable(false);
+        btn.setForegroundPainter(comp);
+        
+        
+        Animator anim = PropertySetter.createAnimator(500,rect,"fillPaint",new Color(0,0,0,0), Color.DARK_GRAY);
+        anim.addTarget(new PropertySetter(rect,"borderPaint", new Color(0,0,0,0), Color.BLACK));
+        anim.addTarget(new AnimRepainter(btn));
+        MouseTrigger.addTrigger(btn,anim,MouseTriggerEvent.ENTER,true);
     }
     
 }

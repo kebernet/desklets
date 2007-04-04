@@ -31,6 +31,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -47,6 +48,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +72,11 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.swingx.JXBoxPanel;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.CheckerboardPainter;
+import org.jdesktop.swingx.painter.CompoundPainter;
+import org.jdesktop.swingx.painter.ImagePainter;
+import org.jdesktop.swingx.painter.MattePainter;
+import org.jdesktop.swingx.painter.PinstripePainter;
 import org.jdesktop.swingx.painter.RectanglePainter;
 import org.joshy.util.u;
 
@@ -82,7 +89,8 @@ public class BufferedWM extends WindowManager {
     
     static final boolean DEBUG_BORDERS = false;
     static final boolean DEBUG_REPAINT_AREA = false;
-    static final boolean SHOW_FRAME_TITLE_BAR = true;
+    static final boolean SHOW_FRAME_TITLE_BAR = false;
+    static final boolean TRANSPARENT_DOCK = false;
     
     private List<BaseDC> desklets;
     private Map<BaseDC,List<BaseDC>> dialogMap;
@@ -98,6 +106,7 @@ public class BufferedWM extends WindowManager {
     GlobalMouse globalMouseService = GlobalMouse.getInstance();
     
     private boolean oldAnim = false;
+
     
     /** Creates a new instance of BufferedWM */
     public BufferedWM(final Core core) {
@@ -115,6 +124,9 @@ public class BufferedWM extends WindowManager {
         if(!SHOW_FRAME_TITLE_BAR) {
             frame.setUndecorated(true);
         }
+        if(TRANSPARENT_DOCK) {
+            frame.setBackground(new Color(0,0,0,0));
+        }
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(panel,"Center");
         MouseRedispatcher mouse = new MouseRedispatcher(this);
@@ -129,6 +141,21 @@ public class BufferedWM extends WindowManager {
         setupManageButtons();
         globalMouseService = new CustomGlobalMouseService();
         //setupPopupHacking();
+        try {
+            ImagePainter ptr = new ImagePainter(getClass().getResource("/backgrounds/corn1.jpg"));
+            ptr.setScaleToFit(true);
+            ptr.setScaleType(ImagePainter.ScaleType.OutsideFit);
+            panel.setBackgroundPainter(ptr);
+            Color blue1 = new Color(0xff1a1188);
+            Color blue2 = new Color(0xff111188);
+            Color transparent = new Color(0x00000000);
+            panel.setBackgroundPainter(new CompoundPainter(
+                    new MattePainter(new GradientPaint(new Point(0,0), blue1, new Point(1,1), blue2), true),
+                    new PinstripePainter(blue1,0.0,20.0,10.0)));
+     //               new CheckerboardPainter(transparent, transparent, 50)));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public void setupManageButtons() {
@@ -365,7 +392,7 @@ public class BufferedWM extends WindowManager {
                     /*
                     BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
                     Graphics2D g = img.createGraphics();
-                    g.drawImage(bdc.getBuffer(),0,0,w,h, 
+                    g.drawImage(bdc.getBuffer(),0,0,w,h,
                             0+i*w, 0+j*h, 0+i*w+w, 0+j*h+h, null);
                     g.setColor(Color.GREEN);
                     g.drawRect(0,0,w-1,h-1);
@@ -381,11 +408,11 @@ public class BufferedWM extends WindowManager {
                     int disty = j-num/2;
                     anim.addTarget(new PropertySetter(s,"location",
                             new Point2D.Double(
-                                pt.getX()+i*w, 
-                                pt.getY()+j*h), 
+                            pt.getX()+i*w,
+                            pt.getY()+j*h),
                             new Point2D.Double(
-                                pt.getX()+i*w + 100*distx,
-                                pt.getY()+j*h + 100*disty))); 
+                            pt.getX()+i*w + 100*distx,
+                            pt.getY()+j*h + 100*disty)));
                     anim.addTarget(new PropertySetter(s,"alpha",1f,0.7f,0f));
                     anim.addTarget(new PropertySetter(s,"rotation",0.0,
                             ((Math.random()*2)-1)*
