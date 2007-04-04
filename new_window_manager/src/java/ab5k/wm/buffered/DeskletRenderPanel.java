@@ -158,19 +158,24 @@ class DeskletRenderPanel extends JPanel {
     }
     
     private BufferedImage drawToBuffer(final JComponent comp, final Dimension size, BufferedImage img) {
+        int pad = 0;
         // decide if we need to create a new image
         if(img == null ||
-                img.getWidth() != (int)size.getWidth() ||
-                img.getHeight() != (int)size.getHeight()) {
-            img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth(), (int)size.getHeight());
-            //, BufferedImage.TYPE_INT_ARGB);
+                img.getWidth()-pad != (int)size.getWidth() ||
+                img.getHeight()-pad != (int)size.getHeight()) {
+            //img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth()+pad, (int)size.getHeight()+pad);
         }
+        // josh: there's some bug I can't fix. always recreating instead
+        img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth()+pad, (int)size.getHeight()+pad);
         
         // draw the component into the image
-        Graphics gx = img.getGraphics();
+        Graphics2D gx = img.createGraphics();
+        gx.setColor(new Color(0,0,0,0));
+        gx.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+        gx.fillRect(0,0,img.getWidth(),img.getHeight());
         rendererPane.add(comp);
         rendererPane.paintComponent(gx, comp, this,
-                0,0,  size.width, size.height,
+                pad/2,pad/2,  size.width, size.height,
                 true);
         
         // draw debugging info

@@ -83,8 +83,10 @@ public class BufferedDialogContainer extends BufferedDeskletContainer {
      */
     
     private Animator startOpenAnimation() {
-        Animator anim = new Animator(600);
+        Animator anim = new Animator(400);
         final Rectangle clip = new Rectangle(0,0,0,0);
+        anim.addTarget(new PropertySetter(this,"alpha",0f,0.8f));
+        anim.addTarget(new PropertySetter(this,"rotation",Math.PI,0.0));
         anim.addTarget(new PropertySetter(clip,"location",
                 new Point((int)getSize().getWidth()/2,0),
                 new Point(0,0)));
