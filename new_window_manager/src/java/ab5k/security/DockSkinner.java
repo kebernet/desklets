@@ -177,6 +177,7 @@ public class DockSkinner {
                 configDarkButton((JXButton) main.quitButton);
             }
             
+            main.getSpinner().setVisible(false);
         } catch (Exception ex) {
             u.p(ex);
         }
