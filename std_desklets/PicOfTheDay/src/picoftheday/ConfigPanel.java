@@ -183,7 +183,13 @@ public class ConfigPanel extends javax.swing.JPanel {
     
     private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden
         if (PhotoFeed.getSelectedFeed() != oldSelected && PhotoFeed.getSelectedFeed() != null) {
+            try {
             Main.LoadImage();
+            }
+            catch(Exception ex)
+            {
+                ex.printStackTrace();
+            }
         }
         PhotoFeed.saveToXML();
     }//GEN-LAST:event_formComponentHidden
@@ -203,6 +209,7 @@ public class ConfigPanel extends javax.swing.JPanel {
     
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         this.setVisible(false);
+        Main.busyPanel.setVisible(true);
     }//GEN-LAST:event_btnCancelActionPerformed
     
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
@@ -228,6 +235,7 @@ public class ConfigPanel extends javax.swing.JPanel {
                 PhotoFeed.setSelectedFeed(f);
         }
         setVisible(false);
+        Main.busyPanel.setVisible(true);
     }//GEN-LAST:event_btnSaveActionPerformed
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

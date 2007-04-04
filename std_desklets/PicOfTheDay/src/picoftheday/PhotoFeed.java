@@ -5,6 +5,8 @@
  *
  * To change this template, choose Tools | Template Manager
  * and open the template in the editor.
+ *
+ * @author jwill
  */
 
 package picoftheday;
@@ -31,6 +33,7 @@ import org.jdom.*;
 import org.jdom.input.*;
 import org.jdom.output.*;
 import java.io.*;
+import javax.swing.*;
 /**
  *
  * @author joshy, jwill
@@ -45,59 +48,91 @@ public class PhotoFeed {
     private static PhotoFeed selectedFeed;
     List<URI> urls;
     static ArrayList<PhotoFeed> feeds;
+    boolean isDonePreparingURLS =false;
+    static Image img = null;
+    
     
     /** Creates a new instance of PhotoFeed */
     public PhotoFeed() {
         if (feeds == null) {
-            feeds = new ArrayList<PhotoFeed>();            
+            feeds = new ArrayList<PhotoFeed>();
         }
     }
     
     public void prepareURLS() {
         urls = new ArrayList<URI>();
-        try {
-            String query = url+webpage+queryString;
-            Reader reader = new InputStreamReader(new URL(query).openStream());
-            SyndFeed feed = new SyndFeedInput().build(reader);
-            if (sourceType == SourceType.RSSMEDIA) {
-                for(SyndEntry en : (List<SyndEntry>)feed.getEntries()) {
-                    MediaEntryModule media = (MediaEntryModule) en.getModule(MediaModule.URI);
-                    u.p("got media: " + media.getMetadata().getThumbnail()[0].getUrl());
-                    MediaContent cont = media.getMediaContents()[0];
-                    u.p("contents = " + cont);
-                    URL url = ((UrlReference)cont.getReference()).getUrl();
-                    urls.add(url.toURI());
-                }
-            } else {
-                for(SyndEntry en : (List<SyndEntry>)feed.getEntries()) {
-                    SyndEnclosure enclosure = (SyndEnclosure)en.getEnclosures().get(0);
-                    u.p("got enclosure: "+ enclosure.getUrl() );
-                    urls.add(new URI(enclosure.getUrl()));
+        isDonePreparingURLS = false;
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String query = url+webpage+queryString;
+                    Reader reader = new InputStreamReader(new URL(query).openStream());
+                    SyndFeed feed = new SyndFeedInput().build(reader);
+                    if (sourceType == SourceType.RSSMEDIA) {
+                        for(SyndEntry en : (List<SyndEntry>)feed.getEntries()) {
+                            MediaEntryModule media = (MediaEntryModule) en.getModule(MediaModule.URI);
+                            u.p("got media: " + media.getMetadata().getThumbnail()[0].getUrl());
+                            MediaContent cont = media.getMediaContents()[0];
+                            u.p("contents = " + cont);
+                            URL url = ((UrlReference)cont.getReference()).getUrl();
+                            urls.add(url.toURI());
+                        }
+                        u.p("Done");
+                        isDonePreparingURLS = true;
+                    } else {
+                        if(sourceType == SourceType.RSSENC) {
+                            for(SyndEntry en : (List<SyndEntry>)feed.getEntries()) {
+                                SyndEnclosure enclosure = (SyndEnclosure)en.getEnclosures().get(0);
+                                u.p("got enclosure: "+ enclosure.getUrl() );
+                                urls.add(new URI(enclosure.getUrl()));
+                            }
+                            u.p("Done");
+                            isDonePreparingURLS = true;
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        }).start();
+        
         
         
     }
     
-    public Image pickRandom() {
+    public Image pickRandom() throws Exception{
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Main.busyPanel.start();
+            }
+        });
         this.prepareURLS();
+        while (isDonePreparingURLS != true) {
+            u.p("Wait");
+            Thread.sleep(10);
+        }
         u.p(urls.size());
         int random = new Random(new java.util.Date().getTime()).nextInt(urls.size());
-        URI uri = urls.get(random);
+        final URI uri = urls.get(random);
         u.p(urls.get(random));
         
-        Image img = null;
-        try {
-            img = ImageIO.read(uri.toURL());
-            img = img.getScaledInstance(300,300,Image.SCALE_SMOOTH);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         
+        
+        u.p("getting photo");
+        img = ImageIO.read(uri.toURL());
+        img = img.getScaledInstance(300,300,Image.SCALE_SMOOTH);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Main.busyPanel.stop();
+                Main.busyPanel.setVisible(false);
+            }
+        });
+        
+        
+        
+        u.p("returning image");
         return img;
+        
     }
     
     public static ArrayList<PhotoFeed> convertToList(Element element) {
@@ -131,8 +166,8 @@ public class PhotoFeed {
          * directory
          */
         try {
-           // workingDir = dir;
-           // u.p("Working directory: "+ context.getWorkingDirectory());
+            // workingDir = dir;
+            // u.p("Working directory: "+ context.getWorkingDirectory());
             File file = new File(new File(".").getCanonicalPath()+File.separator+"pod.xml");
             if (file.exists() == true) {
                 //Load file
@@ -152,26 +187,25 @@ public class PhotoFeed {
     
     public static void saveToXML() {
         try {
-        Document doc = new Document();
-        Element root = new Element("sources");
-        doc.setRootElement(root);
-        for(PhotoFeed f : feeds) {
-            Element source = new Element("source");
-            source.addContent(new Element("name").setText(f.getName()));
-            source.addContent(new Element("url").setText(f.getBaseUrl()));
-            source.addContent(new Element("page").setText(f.getPageUrl()));
-            source.addContent(new Element("queryString").setText(f.getQueryString()));
-            source.addContent(new Element("type").setAttribute(new Attribute("id",f.getSourceType().toString())));
-            if (PhotoFeed.getSelectedFeed() == f)
-                source.addContent(new Element("selected").setAttribute(new Attribute("id","Y")));
-            root.addContent(source);
-        }
-        File file = new File(new File(".").getCanonicalPath()+File.separator+"pod.xml");
+            Document doc = new Document();
+            Element root = new Element("sources");
+            doc.setRootElement(root);
+            for(PhotoFeed f : feeds) {
+                Element source = new Element("source");
+                source.addContent(new Element("name").setText(f.getName()));
+                source.addContent(new Element("url").setText(f.getBaseUrl()));
+                source.addContent(new Element("page").setText(f.getPageUrl()));
+                source.addContent(new Element("queryString").setText(f.getQueryString()));
+                source.addContent(new Element("type").setAttribute(new Attribute("id",f.getSourceType().toString())));
+                if (PhotoFeed.getSelectedFeed() == f)
+                    source.addContent(new Element("selected").setAttribute(new Attribute("id","Y")));
+                root.addContent(source);
+            }
+            File file = new File(new File(".").getCanonicalPath()+File.separator+"pod.xml");
             u.p(file.toString());
             XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
             outputter.output(doc, new FileWriter(file.getAbsolutePath()));
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -270,7 +304,7 @@ public class PhotoFeed {
         if (selectedFeed == null && feeds.size() > 0) {
             int random = new Random(new java.util.Date().getTime()).nextInt(feeds.size());
             selectedFeed = feeds.get(random);
-        }        
+        }
         return selectedFeed;
     }
     
