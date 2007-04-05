@@ -46,11 +46,19 @@ public class WoWDesklet implements Desklet {
             }
         }
     };
+    
+    private boolean hardCoded = true;
     /** Creates a new instance of WoWDesklet */
     public WoWDesklet() {
     }
     
     private void update(){
+        if(hardCoded) {
+            form.serverStatus.setIcon( new ImageIcon( this.getClass().getResource("/com/totsp/desklet/wow/uparrow.gif")) );
+            dock.server.setIcon(new ImageIcon( this.getClass().getResource("/com/totsp/desklet/wow/uparrow.gif")) );
+            dock.server.setText( this.serverName );
+            return;
+        }
         Matcher m = p.matcher( statusPage );
         m.find();
         String status = m.group();
@@ -77,8 +85,9 @@ public class WoWDesklet implements Desklet {
     }
     
     public void start() throws Exception {
-        
-        t.schedule( task, 5 * 60 * 1000, 5 * 60 * 1000);
+        if(!hardCoded) {
+            t.schedule( task, 5 * 60 * 1000, 5 * 60 * 1000);
+        }
     }
     
     public boolean isResizable() {
@@ -102,16 +111,24 @@ public class WoWDesklet implements Desklet {
         dock.setVisible( true );
         
         serverName = context.getPreference( "serverName", "Blackhand");
-        p = Pattern.compile( "(up|down)arrow\\.gif\" [^>]+><\\/td>\\s+<td [^>]+><b [^>]+>[A-Za-z\\s]+", Pattern.MULTILINE);
-        statusPage = StreamUtility.readStreamAsString( new URL( "http://www.worldofwarcraft.com/realmstatus/compat.html").openStream());
-        Matcher m = p.matcher( statusPage );
-        form.serverName.removeAllItems();
-        for( int i=0; m.find(); i++ ){
-            String serverLine = m.group();
-            String name = serverLine.substring( serverLine.lastIndexOf(">") +1 , serverLine.length());
-            form.serverName.addItem( name );
-            if( name.equals(serverName)){
-                form.serverName.setSelectedIndex(i);
+        if(hardCoded) {
+            form.serverName.removeAllItems();
+            form.serverName.addItem("Blackhand");
+            form.serverName.addItem("Blackrock");
+            form.serverName.addItem("Blackwing Lair");
+            form.serverName.setSelectedIndex(0);
+        } else {
+            p = Pattern.compile( "(up|down)arrow\\.gif\" [^>]+><\\/td>\\s+<td [^>]+><b [^>]+>[A-Za-z\\s]+", Pattern.MULTILINE);
+            statusPage = StreamUtility.readStreamAsString( new URL( "http://www.worldofwarcraft.com/realmstatus/compat.html").openStream());
+            Matcher m = p.matcher( statusPage );
+            form.serverName.removeAllItems();
+            for( int i=0; m.find(); i++ ){
+                String serverLine = m.group();
+                String name = serverLine.substring( serverLine.lastIndexOf(">") +1 , serverLine.length());
+                form.serverName.addItem( name );
+                if( name.equals(serverName)){
+                    form.serverName.setSelectedIndex(i);
+                }
             }
         }
         form.serverName.addActionListener( new ActionListener(){
@@ -128,7 +145,7 @@ public class WoWDesklet implements Desklet {
     
     public void destroy() throws Exception {
     }
-
+    
     public boolean isDockable() {
         return false;
     }
