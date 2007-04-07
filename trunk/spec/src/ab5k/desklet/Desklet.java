@@ -14,17 +14,31 @@ import java.awt.Container;
 /**
  *
  * @author cooper
+ * @author joshua@marinacci.org
  */
-public interface Desklet {
+public abstract class Desklet {
     
+    private DeskletContext context;
     
-    public void init(DeskletContext context) throws Exception;
+    /**
+     * Set the DeskletContext. This method will be called before init().
+     * @param context 
+     */
+    public void setContext(DeskletContext context) {
+        this.context = context;
+    }
     
-    public void start() throws Exception;
+    public DeskletContext getContext() {
+        return this.context;
+    }
     
-    public void stop() throws Exception;
+    public abstract void init() throws Exception;
     
-    public void destroy() throws Exception;
+    public abstract void start() throws Exception;
+    
+    public abstract void stop() throws Exception;
+    
+    public abstract void destroy() throws Exception;
     
     
 

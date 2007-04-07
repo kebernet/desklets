@@ -17,31 +17,35 @@ import java.net.URI;
  *
  * @author cooper
  */
-public interface DeskletContext {
+public abstract class DeskletContext {
      
     
     /** the container that desklets should add their own components to*/
-    public DeskletContainer getContainer();
+    public abstract DeskletContainer getContainer();
     
     /** the container that desklets should put their docking versions in */
-    public DeskletContainer getDockingContainer();
+    public abstract  DeskletContainer getDockingContainer();
     
     
-    public Container getConfigurationContainer();
+    public abstract  DeskletContainer getConfigurationContainer();
     
-    public Container getDialog();
+    public abstract  DeskletContainer getDialog();
     
-    public String setPreference( String name, String value );
+    public abstract  String setPreference( String name, String value );
     
-    public String getPreference( String name, String defaultValue );
+    public abstract  String getPreference( String name, String defaultValue );
     
-    public void closeRequest();
+    public abstract  void closeRequest();
     
-    public void notifyStopped();
+    public abstract  void notifyStopped();
     
-    public void showURL(URI uri);
+    public abstract  void showURL(URI uri);
     
-    public void setShutdownWhenIdle(boolean shutdownWhenIdle);
+    public abstract  void setShutdownWhenIdle(boolean shutdownWhenIdle);
     
-    public File getWorkingDirectory();
+    public abstract  File getWorkingDirectory();
+    
+    // service support
+    public abstract Object getService(Class serviceClass);
+    public abstract boolean serviceAvailable(Class serviceClass);
 }

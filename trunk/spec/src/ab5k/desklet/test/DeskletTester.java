@@ -41,7 +41,8 @@ public class DeskletTester {
                         public void windowOpened(WindowEvent e) {
                         }
                     });
-                    desklet.init(ctx);
+                    desklet.setContext(ctx);
+                    desklet.init();
                     frame.pack();
                     frame.setVisible(true);
                     desklet.start();
