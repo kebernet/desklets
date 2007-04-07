@@ -16,7 +16,7 @@
     <class>clockdesklet.Desklet</class>
     
     <source>http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet</source>
-    
+
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
         <groupId>swingx</groupId>
