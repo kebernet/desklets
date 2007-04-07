@@ -25,12 +25,16 @@ import ab5k.security.ContainerFactory;
 import ab5k.security.DeskletManager;
 import ab5k.security.LifeCycleException;
 import ab5k.util.PlafUtil;
+import ab5k.wm.buffered.BufferedWM;
+import ab5k.wm.DesktopPaneWM;
+import ab5k.wm.WindowManager;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.logging.Level;
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -45,7 +49,6 @@ import org.joshy.util.u;
  */
 public class Core {
     
-    //unused? delete? public Map iframes = new HashMap();
     private DeskletManager deskletManager;
     private ContainerFactory containerFactory;
     private BackgroundManager backgroundManager;
@@ -53,9 +56,11 @@ public class Core {
     
     public MainPanel mainPanel;
     
-    public JFrame frame;
+    //public JFrame frame;
     
     private PrefsBean prefsBean;
+
+    private WindowManager windowManager;
     
     /** Creates a new instance of Main */
     public Core() {
@@ -64,12 +69,13 @@ public class Core {
     
     
     void init() {
+        setupWindowManager();
         setBackgroundManager(new BackgroundManager(this));
         setupBackgrounds();
         setupMacSupport();
         
         containerFactory = ContainerFactory.getInstance();
-        containerFactory.init( getDesktop(), mainPanel.getDockPanel() );
+        containerFactory.init( getWindowManager(), mainPanel.getDockPanel() );
         deskletManager = DeskletManager.getInstance();
         
         try{
@@ -83,7 +89,9 @@ public class Core {
     }
     
     private void preinstallStandardDesklets() {
+        u.p("checking for first run");
         if(Main.isFirstRun()) {
+            u.p("is first run");
             String[] options = { "Yes", "No" };
             int value = JOptionPane.showOptionDialog(this.mainPanel, "This seems to be your first run of AB5k. Would you like to install some default desklets from the web?",
                     "First Run", JOptionPane.YES_NO_CANCEL_OPTION,
@@ -179,10 +187,11 @@ public class Core {
     public DeskletManager getDeskletManager() {
         return deskletManager;
     }
-    
+
+/*    
     public JDesktopPane getDesktop() {
         return getMainPanel().desktop;
-    }
+    }*/
     
     public BackgroundManager getBackgroundManager() {
         return backgroundManager;
@@ -223,7 +232,8 @@ public class Core {
     }
     
     public JFrame getFrame() {
-        return frame;
+        if(getWindowManager() == null) return null;
+        return (JFrame) getWindowManager().getTopLevel();
     }
     
     
@@ -250,4 +260,14 @@ public class Core {
             ex.printStackTrace();
         }
     }
+
+    private void setupWindowManager() {
+        windowManager = new BufferedWM(this);
+        //windowManager = new DesktopPaneWM();
+    }
+
+    public WindowManager getWindowManager() {
+        return windowManager;
+    }
+
 }

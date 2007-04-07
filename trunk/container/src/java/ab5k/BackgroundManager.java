@@ -28,8 +28,8 @@ public class BackgroundManager {
     
     
     public void setDesktopBackground(DesktopBackground bg) {
-        u.p("desktop here = " + main.getDesktop());
-        ((CustomDesktopPane)main.getDesktop()).setDesktopBackground(bg);
+        main.getWindowManager().setDesktopBackground(bg);
+        //((CustomDesktopPane)main.getDesktop()).setDesktopBackground(bg);
     }
 
     public BeanArrayList getBackgrounds() {

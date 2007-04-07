@@ -347,7 +347,7 @@ public class ManagePanel extends javax.swing.JPanel {
             public void run() {
                 try{
                     busyPanel.start();
-                    main.getLoadDeskletAction().load(new File(file).toURL());
+                    main.getLoadDeskletAction().load(new File(file).toURI().toURL());
                     busyPanel.stop();
                 } catch(Exception e){
                     System.out.println("ending the maddness");

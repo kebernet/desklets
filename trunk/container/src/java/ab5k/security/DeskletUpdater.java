@@ -9,6 +9,7 @@
 package ab5k.security;
 
 import com.totsp.util.StreamUtility;
+import java.net.UnknownHostException;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -52,6 +53,8 @@ public class DeskletUpdater implements Runnable {
     private Registry registry = Registry.getInstance();
     private SAXBuilder builder = new SAXBuilder();
     private Properties prefs;
+
+    private boolean doUpdates = false;
     /** Creates a new instance of DeskletUpdater */
     public DeskletUpdater(DeskletManager manager, Properties prefs) {
         this.manager = manager;
@@ -62,6 +65,9 @@ public class DeskletUpdater implements Runnable {
         List<DeskletConfig> configs = registry.getDeskletConfigs();
         
         for(DeskletConfig config : configs) {
+            if(!doUpdates) {
+                continue;
+            }
             if( prefs.getProperty( config.getUUID()+"-noupgrade", "false").equals("true") ){
                 continue;
             }
@@ -110,12 +116,9 @@ public class DeskletUpdater implements Runnable {
                     if( d.getTime() > config.getHomeDir().lastModified() ){
                         update( config, config.getSource().toExternalForm() );
                     }
-                } catch(IOException ioe) {
+                } catch(Exception ioe) {
                     LOG.log(Level.WARNING,
                             "Exception getting headers for " + config.getName(), ioe);
-                }catch(ParseException pe) {
-                    LOG.log(Level.WARNING,
-                            "Exception getting headers for " + config.getName(), pe);
                 }
             }
         }
@@ -128,7 +131,7 @@ public class DeskletUpdater implements Runnable {
         sb.append("\" is out of date. Would you like to update now?");
         
         String[] options = { "Yes", "No", "Never" };
-        Window win = SwingUtilities.windowForComponent(DeskletManager.main.getDesktop());
+        Window win = DeskletManager.main.getFrame();
         int value = JOptionPane.showOptionDialog(win, sb.toString(),
                 "Update", JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, options, options[0]);

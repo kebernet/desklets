@@ -45,6 +45,8 @@ public class SecurityPolicy extends Policy {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final File SECURITY_PROPS = new File( Environment.HOME, "security.properties");
     private static final ArrayList<String> SAFE_RUNTIME = new ArrayList<String>();
+
+    
     static{
         SAFE_RUNTIME.add( "modifyThread");
         SAFE_RUNTIME.add( "modifyThreadGroup");
@@ -123,6 +125,8 @@ public class SecurityPolicy extends Policy {
     public boolean implies(ProtectionDomain protectionDomain,
             Permission permission) {
         
+        if(Environment.autoGrantAll) { return true; }
+        
         if(permission instanceof java.awt.AWTPermission ||
                 permission instanceof java.util.PropertyPermission ||
                 (permission instanceof java.lang.RuntimePermission && SAFE_RUNTIME.contains( permission.getName() )  ) ) {
@@ -191,7 +195,7 @@ public class SecurityPolicy extends Policy {
             sb.append(". \n Would you like to grant this permission?");
             
             String[] options = { "Yes", "No", "Always", "Never" };
-            Window win = SwingUtilities.windowForComponent(DeskletManager.main.getDesktop());
+            Window win = DeskletManager.main.getFrame();
             int value = JOptionPane.showOptionDialog(win, sb.toString(),
                     "Grant Permission", JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);

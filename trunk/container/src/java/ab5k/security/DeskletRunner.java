@@ -46,8 +46,8 @@ public class DeskletRunner extends Thread {
             this.desklet = (Desklet) config.getClassLoader()
             .loadClass(config.getClassName())
             .newInstance();
-            
-            desklet.init(context);
+            desklet.setContext(context);
+            desklet.init();
         } catch(Throwable e) {
             throw new LifeCycleException("Unable to init desklet: " +
                     config.getName(), e);
@@ -103,7 +103,7 @@ public class DeskletRunner extends Thread {
                 try {
                     Thread.sleep(1000);
                     
-                    if((System.currentTimeMillis() - begin) > (20 * 1000)) {
+                    if((System.currentTimeMillis() - begin) > (10 * 1000)) {
                         this.interrupt();
                         throw new RuntimeException(
                                 "20 Second timeout waiting for notifyStop expired.");

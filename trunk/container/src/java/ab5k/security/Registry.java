@@ -169,24 +169,31 @@ public class Registry {
                 !downloaded && (i < config.getRepositories().length);
                 i++) {
                     URL repo = config.getRepositories()[i];
+                    u.p("loading " + dep.getArtifactId() + "\n from " + repo.toString());
                     core.getMainPanel().getSpinner().setText("loading " + dep.getArtifactId());
                     core.getMainPanel().getSpinner().setBusy(true);
+                    core.getMainPanel().getSpinner().setVisible(true);
                     try {
                         URL source = new URL(repo,
                                 dep.getGroupId() + "/" +
                                 TYPE_TO_DIRECTORY.getProperty(dep.getType(), "") +
                                 dep.getArtifactId() + "-" + dep.getVersion() +
                                 "." + dep.getType());
+                        u.p("copying: " + source);
+                        u.p("to: " + artifact);
                         StreamUtility.copyStream(source.openStream(),
                                 new FileOutputStream(artifact));
                         downloaded = true;
                     } catch(Exception e) {
+                        u.p("failed to get: " + dep.getArtifactId() + " from " +
+                                repo);
                         LOG.log(Level.FINEST,
                                 "Unable to get " + dep.getArtifactId() + "-" +
                                 dep.getVersion() + " from " + repo, e);
                     }
                     core.getMainPanel().getSpinner().setBusy(false);
                     core.getMainPanel().getSpinner().setText("");
+                    core.getMainPanel().getSpinner().setVisible(false);
                 }
             }
             

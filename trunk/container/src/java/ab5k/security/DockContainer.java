@@ -6,6 +6,10 @@
 package ab5k.security;
 
 import ab5k.desklet.DeskletContainer;
+import java.awt.Point;
+import java.awt.Shape;
+import java.awt.geom.Point2D;
+import org.jdesktop.swingx.JXBoxPanel;
 
 import org.jdesktop.swingx.JXPanel;
 
@@ -21,9 +25,11 @@ import javax.swing.JPanel;
  *
  * @author cooper
  */
-public class DockContainer implements DeskletContainer {
+public class DockContainer extends DeskletContainer {
     JComponent content;
-    JXPanel panel = new JXPanel(); /*{
+    JXBoxPanel panel = new JXBoxPanel();
+    //JXPanel panel = new JXPanel();
+    /*{
     protected void paintComponent(Graphics g) {
     if( !shaped ){
     super.paintComponent( g );
@@ -62,6 +68,7 @@ public class DockContainer implements DeskletContainer {
         panel.add(content);
     }
 
+    //override to do nothing. you can't resize them
     public void setResizable(boolean resizable) {
         //ignored?
     }
@@ -78,5 +85,45 @@ public class DockContainer implements DeskletContainer {
 
     public void setVisible(boolean visible) {
         panel.setVisible(visible);
+    }
+
+    //override to do nothing. they are already shaped
+    public void setShape(Shape shape) {
+    }
+
+    // override to do nothing. you can't move widgets around in the dock.
+    public void setLocation(Point2D location) {
+    }
+
+    public void pack() {
+        // isn't this implicit? do we need this here?
+    }
+
+    public boolean isVisible() {
+        return panel.isVisible();
+    }
+
+    public Point2D getLocation() {
+        return new Point(0,0);
+    }
+
+    public JComponent getContent() {
+        return content;
+    }
+
+    public boolean isBackgroundDraggable() {
+        return false;
+    }
+
+    public boolean isShaped() {
+        return !panel.isOpaque();
+    }
+
+    public Shape getShape() {
+        return null;
+    }
+
+    public boolean isResizable() {
+        return false;
     }
 }

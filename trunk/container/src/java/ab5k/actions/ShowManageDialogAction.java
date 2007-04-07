@@ -64,7 +64,7 @@ public class ShowManageDialogAction extends BaseAction {
     private JXPanel gpanel;
     
     private JXPanel getDisablePanel(JLayeredPane layeredPane, Dimension desktopSize) {
-        Point desktopLocation = main.getMainPanel().desktop.getLocation();
+        Point desktopLocation = new Point(0,0);//main.getMainPanel().desktop.getLocation();
         gpanel = new JXPanel();
         gpanel.setOpaque(false);
         disablePainter = new MattePainter(new Color(255,255,255,0));
