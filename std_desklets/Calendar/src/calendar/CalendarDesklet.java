@@ -9,7 +9,7 @@
 
 package calendar;
 
-import ab5k.desklet.AbstractDesklet;
+import ab5k.desklet.Desklet;
 import ab5k.desklet.DeskletContext;
 import ab5k.desklet.test.DeskletTester;
 import javax.swing.JLabel;
@@ -19,7 +19,7 @@ import org.joda.time.DateTime;
  *
  * @author joshy
  */
-public class CalendarDesklet extends AbstractDesklet {
+public class CalendarDesklet extends Desklet {
     
     private CalendarForm form;
     private JLabel dockLabel;
@@ -28,11 +28,11 @@ public class CalendarDesklet extends AbstractDesklet {
     public CalendarDesklet() {
     }
     
-    public void init(DeskletContext context) throws Exception {
-        this.context = context;
+    public void init() throws Exception {
         form = new CalendarForm();
         dockLabel = new JLabel();
         
+        DeskletContext context = getContext();
         context.getContainer().setContent(form);
         
         context.getContainer().setBackgroundDraggable(true);
@@ -66,7 +66,7 @@ public class CalendarDesklet extends AbstractDesklet {
     }
     
     public void stop() throws Exception {
-        context.notifyStopped();
+        getContext().notifyStopped();
     }
     
     public void destroy() throws Exception {
