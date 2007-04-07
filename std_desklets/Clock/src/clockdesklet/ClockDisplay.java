@@ -59,14 +59,6 @@ public class ClockDisplay extends JXPanel {
         this.setPreferredSize(new Dimension(300,100));
         this.desklet.getContext().getContainer().pack();
         
-    }
-    void setDigital() {
-        this.pmLabel.setVisible(true);
-        this.currentTime.setVisible(true);
-        this.amLabel.setVisible(true);
-        this.setPreferredSize(new Dimension(300,100));
-        this.desklet.getContext().getContainer().pack();
-        
         try {
             currentTime.setFont(
                     Font.createFont(Font.TRUETYPE_FONT,
