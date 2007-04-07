@@ -9,11 +9,10 @@ import ab5k.desklet.DeskletContainer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GradientPaint;
+import java.awt.Graphics2D;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.LinearGradientPaint;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.RenderingHints;
@@ -27,8 +26,6 @@ import javax.swing.BorderFactory;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.RectanglePainter;
 import org.jdesktop.swingx.painter.*;
-import org.jdesktop.swingx.painter.effects.ShadowPathEffect;
-import org.jdesktop.swingx.util.PaintUtils;
 /**
  * @author  joshy
  */
@@ -41,12 +38,26 @@ public class ClockDisplay extends JXPanel {
     public ClockDisplay() {
         
     }
+    
+    
     public ClockDisplay(Desklet desklet) {
         this.desklet = desklet;
+        try {
+            initImages();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         initComponents();
+        System.out.println("current time = " + currentTime);
         setDigital();
-        //setHex();
-        //setAnalog();
+    }
+    
+    void setDigital() {
+        this.pmLabel.setVisible(true);
+        this.currentTime.setVisible(true);
+        this.amLabel.setVisible(true);
+        this.setPreferredSize(new Dimension(300,100));
+        this.desklet.getContext().getContainer().pack();
         
     }
     void setDigital() {
@@ -96,6 +107,7 @@ public class ClockDisplay extends JXPanel {
         currentTime.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         amLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,1));
         pmLabel.setBorder(BorderFactory.createEmptyBorder(5,1,5,5));
+        repaint();
     }
     
     void setHex() {
@@ -105,31 +117,17 @@ public class ClockDisplay extends JXPanel {
         this.currentTime.setVisible(false);
         this.amLabel.setVisible(false);
         
-        try {
-            desklet.getContext().getContainer().pack();
-            double scale = 0.4;
-            ImagePainter background = loadImagePainter("HexClock/Background.png",scale);
-            ImagePainter face = loadImagePainter("HexClock/Face.png",scale);
-            face.setInsets(new Insets((int)(32*scale),(int)(40*scale),0,0));
-            
-            final BufferedImage hourImg = ImageIO.read(getClass().getResource("images/HexClock/Hour.png"));
-            final BufferedImage hourShadImg = ImageIO.read(getClass().getResource("images/HexClock/Hour Shadow.png"));
-            final BufferedImage minImg = ImageIO.read(getClass().getResource("images/HexClock/Minute.png"));
-            final BufferedImage minShadImg = ImageIO.read(getClass().getResource("images/HexClock/Minute Shadow.png"));
-            final BufferedImage secImg = ImageIO.read(getClass().getResource("images/HexClock/Second.png"));
-            final BufferedImage secShadImg = ImageIO.read(getClass().getResource("images/HexClock/Second Shadow.png"));
-            final BufferedImage nubImg = ImageIO.read(getClass().getResource("images/HexClock/Nub.png"));
-            final BufferedImage nubShadImg = ImageIO.read(getClass().getResource("images/HexClock/Nub Shadow.png"));
-            
-            Painter hands = new HandsPainter(hourShadImg, hourImg, minShadImg, minImg,
-                    secShadImg, secImg, nubShadImg, nubImg,
-                    (int)(63*scale*3.5),(int)(62*scale*3.5),scale*3.5);
-            CompoundPainter cp = new CompoundPainter(face,background,hands);
-            this.setBackgroundPainter(cp);
-            this.repaint();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        desklet.getContext().getContainer().pack();
+        double scale = 0.4;
+        
+        
+        Painter hands = new HandsPainter(AhourShadImg, AhourImg, AminShadImg, AminImg,
+                AsecShadImg, AsecImg, AnubShadImg, AnubImg,
+                (int)(63*scale*3.5),(int)(62*scale*3.5),scale*3.5);
+        CompoundPainter cp = new CompoundPainter(hface,hbackground,hands);
+        this.setBackgroundPainter(cp);
+        this.repaint();
+        repaint();
     }
     
     void setAnalog() {
@@ -138,57 +136,33 @@ public class ClockDisplay extends JXPanel {
         this.currentTime.setVisible(false);
         this.amLabel.setVisible(false);
         desklet.getContext().getContainer().pack();
-        try {
-            double scale = 0.4;
-            
-            ImagePainter background = loadImagePainter("Analog/Base/Background.png",scale);
-            ImagePainter ticks = loadImagePainter("Analog/Base/Ticks.png",scale);
-            ImagePainter backgroundShadow = loadImagePainter("Analog/Base/BackgroundShadow.png",scale);
-            ImagePainter bevel = loadImagePainter("Analog/Base/Bevel.png",scale);
-            ImagePainter bevelShadow = loadImagePainter("Analog/Base/BevelShadow.png",scale);
-            
-            ImagePainter digits = loadImagePainter("Analog/Base/Digits.png",scale);
-            ImagePainter glassColor = loadImagePainter("Analog/Base/GlassColor.png",scale);
-            ImagePainter glassShadow = loadImagePainter("Analog/Base/GlassShadow.png",scale);
-            ImagePainter glassShine = loadImagePainter("Analog/Base/GlassShine.png",scale);
-            ImagePainter gradient = loadImagePainter("Analog/Base/Gradient.png",scale);
-            ImagePainter border = loadImagePainter("Analog/Base/Border.png",scale);
-            ImagePainter borderShadow = loadImagePainter("Analog/Base/BorderShadow.png",scale);
-            
-            final BufferedImage hourImg = ImageIO.read(getClass().getResource("images/Analog/Hands/HourHand.png"));
-            final BufferedImage hourShadImg = ImageIO.read(getClass().getResource("images/Analog/Hands/HourHandShadow.png"));
-            final BufferedImage minImg = ImageIO.read(getClass().getResource("images/Analog/Hands/MinuteHand.png"));
-            final BufferedImage minShadImg = ImageIO.read(getClass().getResource("images/Analog/Hands/MinuteHandShadow.png"));
-            final BufferedImage secImg = ImageIO.read(getClass().getResource("images/Analog/Hands/SecondHand.png"));
-            final BufferedImage secShadImg = ImageIO.read(getClass().getResource("images/Analog/Hands/SecondHandShadow.png"));
-            final BufferedImage nubImg = ImageIO.read(getClass().getResource("images/Analog/Hands/Cap.png"));
-            final BufferedImage nubShadImg = ImageIO.read(getClass().getResource("images/Analog/Hands/CapShadow.png"));
-            
-            Painter hands = new HandsPainter(
-                    hourShadImg, hourImg, minShadImg, minImg,
-                    secShadImg, secImg, nubShadImg, nubImg,
-                    (int)(236*scale),(int)(236*scale), 0.7*scale);
-            
-            CompoundPainter cp = new CompoundPainter(
-                    borderShadow,
-                    border,
-                    //bevelShadow,
-                    //backgroundShadow,
-                    //glassShadow,
-                    bevel,
-                    background,
-                    ticks,
-                    digits,
-                    hands,
-                    glassColor,
-                    glassShine
-                    //gradient,
-                    );
-            this.setBackgroundPainter(cp);
-            this.repaint();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        double scale = 0.4;
+        
+        
+        Painter hands = new HandsPainter(
+                anhourShadImg, anhourImg, anminShadImg, anminImg,
+                ansecShadImg, ansecImg, annubShadImg, annubImg,
+                (int)(236*scale),(int)(236*scale), 0.7*scale);
+        
+        CompoundPainter cp1 = new CompoundPainter(
+                aborderShadow,
+                aborder,
+                //abevelShadow,
+                //abackgroundShadow,
+                //aglassShadow,
+                abevel,
+                abackground,
+                aticks,
+                adigits);
+        CompoundPainter cp2 = new CompoundPainter(
+                aglassColor,
+                aglassShine);
+        CompoundPainter cp3 = new CompoundPainter(cp1,hands,cp2);
+        cp3.setCacheable(false);
+        
+        this.setBackgroundPainter(cp3);
+        this.repaint();
+        repaint();
     }
     
     
@@ -310,7 +284,80 @@ public class ClockDisplay extends JXPanel {
         return painter;
     }
     
-    private class HandsPainter implements Painter {
+    BufferedImage AhourImg;
+    BufferedImage AhourShadImg;
+    BufferedImage AminImg;
+    BufferedImage AminShadImg;
+    BufferedImage AsecImg;
+    BufferedImage AsecShadImg;
+    BufferedImage AnubImg;
+    BufferedImage AnubShadImg;
+    
+    BufferedImage anhourImg;
+    BufferedImage anhourShadImg;
+    BufferedImage anminImg;
+    BufferedImage anminShadImg;
+    BufferedImage ansecImg;
+    BufferedImage ansecShadImg;
+    BufferedImage annubImg;
+    BufferedImage annubShadImg;
+    ImagePainter abackground;
+    ImagePainter aticks;
+    ImagePainter abackgroundShadow;
+    ImagePainter abevel;
+    ImagePainter abevelShadow;
+    
+    ImagePainter adigits;
+    ImagePainter aglassColor;
+    ImagePainter aglassShadow;
+    ImagePainter aglassShine;
+    ImagePainter agradient;
+    ImagePainter aborder;
+    ImagePainter aborderShadow;
+    
+    ImagePainter hbackground;
+    ImagePainter hface;
+    
+    private void initImages() throws IOException {
+        AhourImg = ImageIO.read(getClass().getResource("images/HexClock/Hour.png"));
+        AhourShadImg = ImageIO.read(getClass().getResource("images/HexClock/Hour Shadow.png"));
+        AminImg = ImageIO.read(getClass().getResource("images/HexClock/Minute.png"));
+        AminShadImg = ImageIO.read(getClass().getResource("images/HexClock/Minute Shadow.png"));
+        AsecImg = ImageIO.read(getClass().getResource("images/HexClock/Second.png"));
+        AsecShadImg = ImageIO.read(getClass().getResource("images/HexClock/Second Shadow.png"));
+        AnubImg = ImageIO.read(getClass().getResource("images/HexClock/Nub.png"));
+        AnubShadImg = ImageIO.read(getClass().getResource("images/HexClock/Nub Shadow.png"));
+        anhourImg = ImageIO.read(getClass().getResource("images/Analog/Hands/HourHand.png"));
+        anhourShadImg = ImageIO.read(getClass().getResource("images/Analog/Hands/HourHandShadow.png"));
+        anminImg = ImageIO.read(getClass().getResource("images/Analog/Hands/MinuteHand.png"));
+        anminShadImg = ImageIO.read(getClass().getResource("images/Analog/Hands/MinuteHandShadow.png"));
+        ansecImg = ImageIO.read(getClass().getResource("images/Analog/Hands/SecondHand.png"));
+        ansecShadImg = ImageIO.read(getClass().getResource("images/Analog/Hands/SecondHandShadow.png"));
+        annubImg = ImageIO.read(getClass().getResource("images/Analog/Hands/Cap.png"));
+        annubShadImg = ImageIO.read(getClass().getResource("images/Analog/Hands/CapShadow.png"));
+        
+        double scale = 0.4;
+         abackground = loadImagePainter("Analog/Base/Background.png",scale);
+        aticks = loadImagePainter("Analog/Base/Ticks.png",scale);
+        abackgroundShadow = loadImagePainter("Analog/Base/BackgroundShadow.png",scale);
+        abevel = loadImagePainter("Analog/Base/Bevel.png",scale);
+        abevelShadow = loadImagePainter("Analog/Base/BevelShadow.png",scale);
+        
+        adigits = loadImagePainter("Analog/Base/Digits.png",scale);
+        aglassColor = loadImagePainter("Analog/Base/GlassColor.png",scale);
+        aglassShadow = loadImagePainter("Analog/Base/GlassShadow.png",scale);
+        aglassShine = loadImagePainter("Analog/Base/GlassShine.png",scale);
+        agradient = loadImagePainter("Analog/Base/Gradient.png",scale);
+        aborder = loadImagePainter("Analog/Base/Border.png",scale);
+        aborderShadow = loadImagePainter("Analog/Base/BorderShadow.png",scale);
+        
+        
+        hbackground = loadImagePainter("HexClock/Background.png",scale);
+        hface = loadImagePainter("HexClock/Face.png",scale);
+        hface.setInsets(new Insets((int)(32*scale),(int)(40*scale),0,0));
+    }
+    
+    private class HandsPainter extends AbstractPainter {
         
         private BufferedImage hourShadImg;
         private BufferedImage hourImg;
@@ -342,7 +389,7 @@ public class ClockDisplay extends JXPanel {
             this.scale = scale;
         }
         
-        public void paint(Graphics2D g, Object o, int w, int h) {
+        protected void doPaint(Graphics2D g, Object object, int w, int h) {
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             Calendar cal = Calendar.getInstance();
@@ -370,6 +417,7 @@ public class ClockDisplay extends JXPanel {
             g.drawImage(nubShadImg, -nubShadImg.getWidth() / 2 + 0, -nubShadImg.getHeight() / 2 + 0, null);
             g.drawImage(nubImg, -nubImg.getWidth() / 2, -nubImg.getHeight() / 2, null);
         }
+
     }
     
     

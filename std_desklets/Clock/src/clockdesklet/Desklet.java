@@ -9,7 +9,6 @@
 
 package clockdesklet;
 
-import ab5k.desklet.AbstractDesklet;
 import ab5k.desklet.DeskletContext;
 import ab5k.desklet.test.DeskletTester;
 import java.awt.Color;
@@ -23,7 +22,7 @@ import javax.swing.SwingUtilities;
  *
  * @author cooper
  */
-public class Desklet extends AbstractDesklet{
+public class Desklet extends ab5k.desklet.Desklet{
     public static void main(String[] args) {
         DeskletTester.start(clockdesklet.Desklet.class);
     }
@@ -57,10 +56,10 @@ public class Desklet extends AbstractDesklet{
                         });
                         Thread.currentThread().sleep(1000);
                     } catch (InterruptedException ex) {
-                        ex.printStackTrace();
+                        //ex.printStackTrace();
                     }
                 }
-                context.notifyStopped();
+                getContext().notifyStopped();
             }
         });
         thread.start();
@@ -74,12 +73,8 @@ public class Desklet extends AbstractDesklet{
     }
 
     
-    public DeskletContext getContext() {
-        return this.context;
-    }
-
-    public void init(DeskletContext context) throws Exception {
-        this.context = context;
+    public void init() throws Exception {
+        DeskletContext context = getContext();
         running = true;
         
         timeLabel = new JLabel("00:00 am");
