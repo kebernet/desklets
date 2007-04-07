@@ -13,12 +13,14 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 class TestDeskletContext extends DeskletContext {
     
     private DeskletContainer frame;
     private DeskletContainer dockingFrame;
+    private DeskletContainer config;
     private Map<String, String> prefs;
     
     public TestDeskletContext(JFrame frame, JFrame dockingFrame) {
@@ -26,13 +28,14 @@ class TestDeskletContext extends DeskletContext {
         prefs = new HashMap<String,String>();
         this.frame = new TestContainer(frame);
         this.dockingFrame = new TestContainer( dockingFrame );
+        this.config = new TestContainer(new JFrame("Configuration"));
     }
     
     public void closeRequest() {
     }
     
     public DeskletContainer getConfigurationContainer() {
-        return null;
+        return config;
     }
     
     public DeskletContainer getContainer() {
@@ -103,6 +106,10 @@ class TestDeskletContext extends DeskletContext {
         }
         
         public void setVisible(boolean visible) {
+            if(visible && !packed) {
+                pack();
+            }
+            frame.setVisible(visible);
         }
         
         public void setShaped(boolean shaped) {
