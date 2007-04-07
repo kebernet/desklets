@@ -1,6 +1,6 @@
 package org.joshy.countdown;
 
-import ab5k.desklet.AbstractDesklet;
+import ab5k.desklet.Desklet;
 import ab5k.desklet.DeskletContext;
 import ab5k.desklet.test.DeskletTester;
 import java.awt.image.BufferedImage;
@@ -14,16 +14,16 @@ import java.net.URL;
 import java.awt.*;
 import org.joshy.util.u;
 
-public class CountdownMain extends AbstractDesklet {
+public class CountdownMain extends Desklet {
     JLabel daysleft;//, hoursleft, days_label, hours_label;
     //JLabel until_label;
     DateTime target;
     JLabel miniDaysLeft;
     JXPanel panel;
     
-    public void init(DeskletContext context) throws Exception {
-        this.context = context;
+    public void init() throws Exception {
         this.panel = new JXPanel();
+        DeskletContext context = getContext();
         context.getContainer().setBackgroundDraggable(true);
         context.getContainer().setShaped(true);
         context.getContainer().setResizable(false);
@@ -116,7 +116,7 @@ public class CountdownMain extends AbstractDesklet {
     }
 
     public void stop() throws Exception {
-        context.notifyStopped();
+        getContext().notifyStopped();
     }
 
     public void destroy() throws Exception {
