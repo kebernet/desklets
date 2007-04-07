@@ -138,7 +138,7 @@ public class SingleLaunchSupport {
         u.p(args);
         for(String file : args) {
             try {
-                main.getLoadDeskletAction().load(new File(file).toURL());
+                main.getLoadDeskletAction().load(new File(file).toURI().toURL());
             } catch (Throwable th) {
                 u.p(th);
             }

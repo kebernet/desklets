@@ -59,14 +59,8 @@ public class MacSupport {
                         return;
                     }
                     try {
-                        main.getLoadDeskletAction().load(new File(filename).toURL());
-                    } catch (MalformedURLException ex) {
-                        ex.printStackTrace();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    } catch (JDOMException ex) {
-                        ex.printStackTrace();
-                    } catch (LifeCycleException ex) {
+                        main.getLoadDeskletAction().load(new File(filename).toURI().toURL());
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }

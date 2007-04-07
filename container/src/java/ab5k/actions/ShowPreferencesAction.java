@@ -30,7 +30,7 @@ public class ShowPreferencesAction extends AbstractAction {
     
     public void actionPerformed(ActionEvent e) {
         if(main.prefs == null) {
-            prefsDialog = new JDialog(SwingUtilities.windowForComponent(main.getDesktop()));
+            prefsDialog = new JDialog(main.getFrame());
             main.prefs = new PreferencesPanel(main);
             prefsDialog.add(main.prefs);
             prefsDialog.pack();

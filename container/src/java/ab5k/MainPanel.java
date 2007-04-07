@@ -14,9 +14,11 @@ import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import org.jdesktop.swingx.JXBoxPanel;
 import org.jdesktop.swingx.JXBusyLabel;
 import org.jdesktop.swingx.JXButton;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.PinstripePainter;
 import org.joshy.util.u;
 
@@ -58,19 +60,11 @@ public class MainPanel extends javax.swing.JPanel {
         //stripButtonRight.addActionListener(main.getCollapseWindowAction());
         logoButton.addActionListener(main.getCollapseWindowAction());
         
+        ((JXButton)logoButton).setBackgroundPainter(new CompoundPainter());
+        ((JXPanel)dockPanel).setBackgroundPainter(new CompoundPainter());
+        
         DockSkinner.skinDock(this);
-    }
-    
-    
-    public void showGlasspane() {
-        // first test of a glasspane
-        JXPanel panel = new JXPanel();
-        panel.setOpaque(false);
-        panel.setBackgroundPainter(new PinstripePainter(Color.RED,45));
-        Dimension size = new Dimension(500,500);
-        panel.setSize(size);
-        panel.setLocation(200,200);
-        desktop.add(panel);
+        
     }
     
     public void setMain(Core main) {
@@ -99,16 +93,7 @@ public class MainPanel extends javax.swing.JPanel {
     
     public void setDockingSide(DockingSide side) {
         this.side = side;
-        this.remove(dockPanel);
-        if(side == DockingSide.Left) {
-            this.add(dockPanel,"East");
-        }
-        if(side == DockingSide.Right) {
-            this.add(dockPanel,"West");
-        }
-        this.validate();
-        dockPanel.validate();
-        u.p("dock side set to : " + side);
+        main.getWindowManager().setDockingSide(side);
     }
     
     
@@ -122,11 +107,10 @@ public class MainPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         collapseButton = new javax.swing.JButton();
-        desktop = new CustomDesktopPane();
-        dockPanel = new JXPanel();
-        manageButton = new javax.swing.JButton();
+        dockPanel = new JXBoxPanel();
+        manageButton = new JXButton();
         logoButton = new JXButton();
-        quitButton = new javax.swing.JButton();
+        quitButton = new JXButton();
         miniModePanel = new javax.swing.JPanel();
         loadingSpinner = new org.jdesktop.swingx.JXBusyLabel();
 
@@ -143,11 +127,10 @@ public class MainPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        add(desktop, java.awt.BorderLayout.CENTER);
-
         dockPanel.setLayout(new java.awt.GridBagLayout());
 
         dockPanel.setBackground(new java.awt.Color(102, 255, 102));
+        dockPanel.setOpaque(false);
         dockPanel.setPreferredSize(new java.awt.Dimension(180, 500));
         dockPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -156,6 +139,7 @@ public class MainPanel extends javax.swing.JPanel {
         });
 
         manageButton.setAction(getShowManageDialogAction());
+        manageButton.setFont(new java.awt.Font("Helvetica", 0, 14));
         manageButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dock/orange/images/configure.png")));
         manageButton.setText("Setup");
         manageButton.setToolTipText("Manage Widgets and Preferences");
@@ -169,6 +153,7 @@ public class MainPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         dockPanel.add(manageButton, gridBagConstraints);
 
+        logoButton.setBackground(new java.awt.Color(255, 51, 51));
         logoButton.setBorderPainted(false);
         logoButton.setContentAreaFilled(false);
         logoButton.setFocusable(false);
@@ -180,6 +165,7 @@ public class MainPanel extends javax.swing.JPanel {
         dockPanel.add(logoButton, gridBagConstraints);
 
         quitButton.setAction(getQuitAction());
+        quitButton.setFont(new java.awt.Font("Helvetica", 0, 14));
         quitButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/dock/orange/images/close.png")));
         quitButton.setText("Quit");
         quitButton.setToolTipText("Quit");
@@ -245,13 +231,12 @@ public class MainPanel extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton collapseButton;
-    public javax.swing.JDesktopPane desktop;
     public javax.swing.JPanel dockPanel;
     private org.jdesktop.swingx.JXBusyLabel loadingSpinner;
     public javax.swing.JButton logoButton;
-    private javax.swing.JButton manageButton;
+    public javax.swing.JButton manageButton;
     private javax.swing.JPanel miniModePanel;
-    private javax.swing.JButton quitButton;
+    public javax.swing.JButton quitButton;
     // End of variables declaration//GEN-END:variables
     
     

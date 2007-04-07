@@ -5,6 +5,10 @@
  */
 package ab5k.security;
 
+import ab5k.desklet.DeskletContainer;
+import ab5k.wm.WindowManager;
+import java.awt.Dimension;
+import java.awt.geom.Point2D;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
@@ -27,12 +31,11 @@ import javax.swing.JPanel;
  */
 public class ContainerFactory {
     private static final Logger LOG = Logger.getLogger("AB5K");
-    static final String LOCATION_X = "ab5k.location.x";
-    static final String LOCATION_Y = "ab5k.location.y";
+    public static final String LOCATION_X = "ab5k.location.x";
+    public static final String LOCATION_Y = "ab5k.location.y";
     private static final ContainerFactory instance = new ContainerFactory();
     private Container dock;
-    private HashMap<JPanel, JInternalFrame> iframes = new HashMap<JPanel, JInternalFrame>();
-    private JDesktopPane desktop;
+    private WindowManager wm;
 
     /** Creates a new instance of ContainerFactory */
     private ContainerFactory() {
@@ -46,34 +49,17 @@ public class ContainerFactory {
         }
 
         if(context.hasContainer()) {
-            final InternalFrameContainer ifc = (InternalFrameContainer) context.getContainer();
-            Point location = ifc.iframe.getLocation();
+            // save the state
+            Point2D location = context.getContainer().getLocation();
+            
             context.setPreference(ContainerFactory.LOCATION_X,
                 Double.toString(location.getX()));
             context.setPreference(ContainerFactory.LOCATION_Y,
                 Double.toString(location.getY()));
             
-            Animator an = PropertySetter.createAnimator(500, ifc.iframe,
-                    "location", ifc.iframe.getLocation(),
-                    new Point(-desktop.getWidth(), desktop.getHeight()));
-
-            an.addTarget(new TimingTarget() {
-                    public void begin() {
-                    }
-
-                    public void end() {
-                        desktop.remove(ifc.iframe);
-                    }
-
-                    public void repeat() {
-                    }
-
-                    public void timingEvent(float fraction) {
-                    }
-                });
-
-            an.start();
-            iframes.remove(ifc.panel);
+            // destroy the container
+            wm.animateDestruction(context.getContainer());
+            //wm.destroyContainer(context.getContainer());
         }
     }
 
@@ -81,17 +67,14 @@ public class ContainerFactory {
         final DockContainer dock = new DockContainer();
         this.dock.add(dock.panel);
         DockSkinner.configureDockConatiner(dock);
-
         return dock;
     }
 
-    public InternalFrameContainer createInternalFrameContainer(
+    public DeskletContainer createInternalFrameContainer(
         DefaultContext context) {
-        InternalFrameContainer ifc = new InternalFrameContainer(context.getConfig()
-                                                                       .getName());
-        iframes.put(ifc.panel, ifc.iframe);
-
+        DeskletContainer ifc = wm.createInternalContainer(context);
         try {
+            // get the existing x/y location from the prefs
             Point point = new Point((int) Double.parseDouble(
                         context.getPreference(ContainerFactory.LOCATION_X, "50")),
                     (int) Double.parseDouble(context.getPreference(
@@ -111,24 +94,31 @@ public class ContainerFactory {
                 point = new Point(300,300);
             }
              */
-            ifc.iframe.setLocation(point);
+            ifc.setLocation(point);
         } catch(NumberFormatException nfe) {
             LOG.log(Level.WARNING,
                 "Excpetion reading screen position information.", nfe);
-            ifc.iframe.setLocation(50, 50);
+            ifc.setLocation(new Point(50,50));
         }
 
-        desktop.add(ifc.iframe);
-
+        //wm.addDesklet(ifc.iframe);
+        wm.animateCreation(ifc);
         return ifc;
     }
+    
+    DeskletContainer createConfigContainer(DefaultContext defaultContext) {
+        DeskletContainer dc = wm.createDialog(defaultContext.getContainer());
+        return dc;
+    }
+    
 
     public static ContainerFactory getInstance() {
         return instance;
     }
 
-    public void init(JDesktopPane desktop, Container dock) {
-        this.desktop = desktop;
+    public void init(WindowManager wm, Container dock) {
+        this.wm = wm;
         this.dock = dock;
     }
+
 }

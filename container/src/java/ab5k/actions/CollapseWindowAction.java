@@ -18,8 +18,9 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Point2D;
-
+import javax.swing.Action;
 import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
@@ -41,7 +42,9 @@ public class CollapseWindowAction extends BaseAction {
         Toolkit tk = Toolkit.getDefaultToolkit();
         GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
         Rectangle rect = gc.getBounds();
+        //System.out.println("gc bounds:" + rect);
         Insets insets = tk.getScreenInsets(gc);
+        //System.out.println("gc insets:" + insets);
         int top_edge = insets.top;
         int height = rect.height - insets.top - insets.bottom;
         
@@ -72,6 +75,7 @@ public class CollapseWindowAction extends BaseAction {
             }
             
         }
+        //System.out.println("Returning closed bounds: " + closedBounds);
         return closedBounds;
     }
     

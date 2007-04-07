@@ -82,6 +82,16 @@ public class DeskletManager {
 
         return runners;
     }
+    
+    public DeskletRunner getDeskletRunner(DefaultContext context) {
+        checkSecurity();
+        for(DeskletRunner r : runners) {
+            if(r.getContext() == context) {
+                return r;
+            }
+        }
+        return null;
+    }
 
     private ArrayList<String> getRunningDeskletIds() {
         ArrayList<String> results = new ArrayList<String>();
@@ -210,6 +220,10 @@ public class DeskletManager {
     public void shutdownDesklet(String uuid) {
         checkSecurity();
 
+        System.out.println("num uids = " + this.getRunningDeskletIds().size());
+        for(String s : this.getRunningDeskletIds()) {
+            System.out.println("id = " + s);
+        }
         for(DeskletRunner runner : runners) {
             if(runner.getConfig().getUUID().equals(uuid)) {
                 ArrayList<String> uuids = this.getRunningDeskletIds();
@@ -222,21 +236,33 @@ public class DeskletManager {
         }
     }
 
-    private void shutdownRunner(DeskletRunner runner) {
+    // shuts down a runner. called when ab5k shuts down
+    public void shutdownRunner(DeskletRunner runner) {
         runner.stopDesklet();
         runner.destroyDesklet();
         runners.remove(runner);
     }
 
+    // stops a runner. this removes it from the list so it won't
+    // come back the next time ab5k is restarted
+    public void stopRunner(DeskletRunner runner) {
+        String id = runner.getConfig().getUUID();
+        ArrayList<String> uuids = this.getRunningDeskletIds();
+        if(uuids.contains(id)) {
+            uuids.remove(id);
+            this.setRunningDeskletIds(uuids);
+        }
+        runner.stopDesklet();
+        runner.destroyDesklet();
+        runners.remove(runner);
+    }
+    
     public void startDesklet(String uuid) throws LifeCycleException {
         checkSecurity();
 
         ArrayList<String> uuids = this.getRunningDeskletIds();
         if( uuids.contains(uuid) ){
-            Window win = SwingUtilities.windowForComponent(DeskletManager.main.getDesktop());
-            int value = JOptionPane.showConfirmDialog(win, "That Desklet is already running!",
-                    "Error", JOptionPane.OK_OPTION,
-                    JOptionPane.ERROR_MESSAGE);
+            DeskletManager.main.handleError("Error","That desklet is already running",null);
             return;
         }
         this.startDeskletRunner(uuid);
@@ -255,7 +281,7 @@ public class DeskletManager {
 
         try {
             DeskletRunner runner = new DeskletRunner(main,
-                    new DefaultContext(config));
+                    new DefaultContext(main,config));
             runners.add(runner);
             runner.start();
 
