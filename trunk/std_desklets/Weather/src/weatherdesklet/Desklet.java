@@ -9,7 +9,6 @@
 
 package weatherdesklet;
 
-import ab5k.desklet.AbstractDesklet;
 import ab5k.desklet.DeskletContext;
 import javax.swing.JLabel;
 import org.joshy.util.u;
@@ -19,20 +18,21 @@ import org.joshy.weather.WeatherFactory;
  *
  * @author cooper
  */
-public class Desklet extends AbstractDesklet{
+public class Desklet extends ab5k.desklet.Desklet{
     
     private WeatherWatcher display;
     JLabel dockLabel;
     private boolean running = false;;
     private String stationID = null;
+    
     /** Creates a new instance of Desklet */
     public Desklet() {
         super();
     }
     
     
-    public void init(DeskletContext context) throws Exception {
-        this.context = context;
+    public void init() throws Exception {
+        DeskletContext context = getContext();
         dockLabel = new JLabel();
         context.getDockingContainer().setContent(dockLabel);
         display = new WeatherWatcher(this);
@@ -59,7 +59,7 @@ public class Desklet extends AbstractDesklet{
                         //ex.printStackTrace();
                     }
                 }
-                context.notifyStopped();
+                getContext().notifyStopped();
             }
             
         });
@@ -85,11 +85,6 @@ public class Desklet extends AbstractDesklet{
     }
     
     
-    public DeskletContext getContext() {
-        return this.context;
-    }
-    
-    
     public String getStationID() {
         return stationID;
     }
@@ -97,7 +92,7 @@ public class Desklet extends AbstractDesklet{
     public void setStationID(String stationID) {
         this.stationID = stationID;
         System.out.println("saved station ID"+ stationID);
-        context.setPreference("STATION_ID",stationID);
+        getContext().setPreference("STATION_ID",stationID);
     }
     
     
