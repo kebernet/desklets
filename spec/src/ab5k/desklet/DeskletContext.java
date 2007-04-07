@@ -16,6 +16,7 @@ import java.net.URI;
 /**
  *
  * @author cooper
+ * @author joshua@marinacci.org
  */
 public abstract class DeskletContext {
      
@@ -27,22 +28,24 @@ public abstract class DeskletContext {
     public abstract  DeskletContainer getDockingContainer();
     
     
+    /** The container that desklets should put their setup screen in.
+     returns the same container each time.*/
     public abstract  DeskletContainer getConfigurationContainer();
     
+    /** Get a new dialog container. Returns a new container each time. */
     public abstract  DeskletContainer getDialog();
     
     public abstract  String setPreference( String name, String value );
     
     public abstract  String getPreference( String name, String defaultValue );
     
+    // lifecycle support
+    public abstract  void notifyStopped();
+    public abstract  void setShutdownWhenIdle(boolean shutdownWhenIdle);
     public abstract  void closeRequest();
     
-    public abstract  void notifyStopped();
-    
+    // external stuff support. should this move to a service?
     public abstract  void showURL(URI uri);
-    
-    public abstract  void setShutdownWhenIdle(boolean shutdownWhenIdle);
-    
     public abstract  File getWorkingDirectory();
     
     // service support
