@@ -61,12 +61,12 @@ public class DesktopPaneWM extends WindowManager {
         return ifc;
     }
     
-    public void animateCreation(DeskletContainer dc) {
+    public void showContainer(DeskletContainer dc) {
         final InternalFrameContainer ifc = (InternalFrameContainer) dc;
         desktop.add(ifc.iframe);
     }
     
-    public void animateDestruction(DeskletContainer dc) {
+    public void destroyContainer(DeskletContainer dc) {
         Dimension dim = getContainerSize();
         final InternalFrameContainer ifc = (InternalFrameContainer) dc;
         Animator an = PropertySetter.createAnimator(500, ifc.iframe,
@@ -87,9 +87,6 @@ public class DesktopPaneWM extends WindowManager {
         an.start();
     }
     
-    public void destroyContainer(DeskletContainer dc) {
-        
-    }
     
     public void setLocation(DeskletContainer ifc, Point2D point) {
         ((InternalFrameContainer)ifc).iframe.setLocation(GraphicsUtil.toPoint(point));
@@ -137,5 +134,10 @@ public class DesktopPaneWM extends WindowManager {
         desktop.add(cont.dialog);
         return cont;
     }
+
+    public DeskletContainer createExternalContainer(DefaultContext context) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     
 }
