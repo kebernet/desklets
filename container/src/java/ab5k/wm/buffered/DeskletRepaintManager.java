@@ -26,7 +26,7 @@ class DeskletRepaintManager extends RepaintManager {
             }
             
             bdc.setDirty(true);
-            super.addDirtyRegion(wm.panel,
+            super.addDirtyRegion((JComponent)wm.panel,
                     (int)bdc.getLocation().getX(), (int)bdc.getLocation().getY(),
                     (int)bdc.getSize().getWidth(), (int)bdc.getSize().getHeight());
         }

@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import javax.swing.JComponent;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
@@ -93,7 +94,9 @@ public class BufferedDialogContainer extends BufferedDeskletContainer {
         anim.addTarget(new PropertySetter(clip,"size",
                 new Dimension(0,(int)getSize().getHeight()), getSize()));
         setClip(clip);
-        anim.addTarget(new AnimRepainter(wm.panel));
+        if(wm.panel instanceof JComponent) {
+            anim.addTarget(new AnimRepainter((JComponent)wm.panel));
+        }
         return anim;
     }
 }

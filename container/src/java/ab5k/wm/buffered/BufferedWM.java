@@ -19,24 +19,15 @@ import ab5k.security.DeskletConfig;
 import ab5k.security.DeskletManager;
 import ab5k.security.DeskletRunner;
 import ab5k.security.LifeCycleException;
-import ab5k.security.Registry;
 import ab5k.util.AnimRepainter;
 import ab5k.util.GlobalMouse;
 import ab5k.util.GraphicsUtil;
 import ab5k.wm.WindowManager;
-import ab5k.wm.buffered.animations.BouncerEquation;
-import ab5k.wm.buffered.animations.DampingOscillatorEquation;
-import ab5k.wm.buffered.animations.Equation;
-import com.totsp.util.BeanArrayList;
-import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -46,41 +37,27 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.Dimension2D;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.CellRendererPane;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
-import javax.swing.event.MouseInputListener;
 import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
-import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.swingx.JXBoxPanel;
 import org.jdesktop.swingx.JXInsets;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.CheckerboardPainter;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.ImagePainter;
-import org.jdesktop.swingx.painter.MattePainter;
-import org.jdesktop.swingx.painter.PinstripePainter;
 import org.jdesktop.swingx.painter.RectanglePainter;
 import org.joshy.util.u;
 
@@ -99,13 +76,13 @@ public class BufferedWM extends WindowManager {
     private List<BaseDC> desklets;
     private Map<BaseDC,List<BaseDC>> dialogMap;
     JFrame frame;
-    DeskletRenderPanel panel;
+    Component panel;
     
     private JComponent dock;
     Container hidden;
-    private DeskletContainer selectedDesklet = null;
-    private Point selectedDeskletOffset;
-    private boolean isManageMode = false;
+    DeskletContainer selectedDesklet = null;
+    Point selectedDeskletOffset;
+    boolean isManageMode = false;
     
     Core core;
     GlobalMouse globalMouseService = GlobalMouse.getInstance();
@@ -116,15 +93,14 @@ public class BufferedWM extends WindowManager {
     /** Creates a new instance of BufferedWM */
     public BufferedWM(final Core core) {
         this.core = core;
-        hidden = new JDialog();
-        //hidden.setVisible(true);
-        //hidden.setVisible(true);
-        RepaintManager.setCurrentManager(new DeskletRepaintManager(this));
         desklets = new ArrayList<BaseDC>();
         dialogMap = new HashMap<BaseDC,List<BaseDC>>();
-        
-        
-        panel = new DeskletRenderPanel(this);
+    }
+    
+    public void init() {
+        RepaintManager.setCurrentManager(new DeskletRepaintManager(this));
+        hidden = new JDialog();
+        panel = createRenderPanel();
         frame = new JFrame("AB5k");
         if(!SHOW_FRAME_TITLE_BAR) {
             frame.setUndecorated(true);
@@ -134,42 +110,41 @@ public class BufferedWM extends WindowManager {
         }
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(panel,"Center");
+        
         MouseRedispatcher mouse = new MouseRedispatcher(this);
         panel.addMouseListener(mouse);
         panel.addMouseMotionListener(mouse);
         
         // deal with converting internal to external desklets
-        MouseAdapter ma = new InternalToExternalMouseHandler(core);
+        MouseAdapter ma = new InternalToExternalMouseHandler(core,this);
         panel.addMouseListener(ma);
         panel.addMouseMotionListener(ma);
-        
         setupManageButtons();
-        globalMouseService = new CustomGlobalMouseService();
+        globalMouseService = new CustomGlobalMouseService(this);
         //setupPopupHacking();
+        
+        // set up the background
         try {
-            ImagePainter ptr = new ImagePainter(getClass().getResource("/backgrounds/corn1.jpg"));
-            ptr.setScaleToFit(true);
-            ptr.setScaleType(ImagePainter.ScaleType.OutsideFit);
-            panel.setBackgroundPainter(ptr);
-            Color blue1 = new Color(0xff1a1188);
-            Color blue2 = new Color(0xff111188);
-            Color transparent = new Color(0x00000000);
-            panel.setBackgroundPainter(new CompoundPainter(
-                    new MattePainter(new GradientPaint(new Point(0,0), blue1, new Point(1,1), blue2), true),
-                    new PinstripePainter(blue1,0.0,5.0,20.0)));
-            //new CheckerboardPainter(transparent, transparent, 50)));
-            //panel.setBackgroundPainter(new MattePainter(Color.YELLOW));
-            //panel.setBackgroundPainter(null);
             ImagePainter im2 = new ImagePainter(getClass().getResource("/backgrounds/di-sails-blue.png"));
             im2.setHorizontalAlignment(ImagePainter.HorizontalAlignment.LEFT);
             im2.setInsets(new JXInsets(0,-180,0,0));
-            panel.setBackgroundPainter(new CompoundPainter(im2));
+            if(panel instanceof JXPanel) {
+                ((JXPanel)panel).setBackgroundPainter(new CompoundPainter(im2));
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        
+        // setup the animations
+        setDeskletCreationTransition(new StdCreationAnimation());
+        setDeskletDestructionTransition(new StdDestructionAnimation());
     }
     
-    public void setupManageButtons() {
+    protected Component createRenderPanel() {
+        return new DeskletRenderPanel(this);
+    }
+    
+    void setupManageButtons() {
         final JXBoxPanel buttonPanel = new JXBoxPanel();
         buttonPanel.setBackgroundPainter(new RectanglePainter(3,3,3,3, 20,20, true,
                 Color.ORANGE, 3, Color.BLACK));
@@ -197,14 +172,15 @@ public class BufferedWM extends WindowManager {
         getMore.setOpaque(false);
         buttonPanel.add(getMore);
         
-        panel.add(buttonPanel);
+        if(panel instanceof Container) {
+            ((Container)panel).add(buttonPanel);
+        }
         panel.addComponentListener(new ComponentListener() {
             public void componentHidden(ComponentEvent e) {
             }
             public void componentMoved(ComponentEvent e) {
             }
             public void componentResized(ComponentEvent e) {
-                u.p("resized");
                 buttonPanel.setLocation(panel.getWidth()-buttonPanel.getWidth(),0);
             }
             public void componentShown(ComponentEvent e) {
@@ -307,8 +283,8 @@ public class BufferedWM extends WindowManager {
         return cont;
     }
     
-    public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
-        if(dc == null) return null;
+    public void convertInternalToExternalContainer(DeskletContainer dc) {
+        if(dc == null) return;
         BaseDC bdc = (BaseDC) dc;
         DefaultContext context = bdc.getContext();
         
@@ -329,11 +305,11 @@ public class BufferedWM extends WindowManager {
         newContainer.pack();
         newContainer.setVisible(true);
         context.setContainer(newContainer);
-        return newContainer;
+        newContainer.setVisible(true);
     }
     
-    public DeskletContainer convertExternalToInternalContainer(DeskletContainer dc) {
-        if(dc == null) return null;
+    public void convertExternalToInternalContainer(DeskletContainer dc) {
+        if(dc == null) return;
         BaseDC bdc = (BaseDC) dc;
         getDesklets().remove(bdc);
         JFrameDeskletContainer jdc = (JFrameDeskletContainer) dc;
@@ -349,210 +325,51 @@ public class BufferedWM extends WindowManager {
         jdc.setVisible(false);
         jdc.frame.dispose();
         core.getCollapseWindowAction().doExpand();
-        return cont;
     }
     
-    public void animateCreation(DeskletContainer dc) {
+    
+    public void setDeskletCreationTransition(TransitionAnimation anim) {
+        this.creationTransition = anim;
+    }
+    
+    public void showContainer(DeskletContainer dc) {
+        
         final BaseDC bdc = (BaseDC) dc;
-        final Point2D initialLocation = bdc.getLocation();
         getDesklets().add(bdc);
         if(bdc instanceof BufferedDeskletContainer) {
             hidden.add(((BufferedDeskletContainer)dc).comp);
         }
-        //bdc.setLocation(new Point(100,100));
-        
-        if(oldAnim){
-            Animator anim = new Animator(750);
-            anim.addTarget(new PropertySetter(dc,"location",bdc.getLocation(), bdc.getLocation()));
-            anim.addTarget(new PropertySetter(dc,"alpha",0f,1f));
-            anim.addTarget(new PropertySetter(dc,"rotation",Math.PI,Math.PI*2.0));
-            anim.addTarget(new PropertySetter(dc,"scale",0.1,1.0));
-            anim.addTarget(new AnimRepainter(panel));
-            anim.start();
-        } else {
-            Animator anim = new Animator(1500);
-            double startScale = 3.0;
-            double endScale = 1.0;
-            Dimension2D size = bdc.getSize();
-            size = new Dimension(250,150); // hard code it to get around some bugs
-            
-            final Point2D center = new Point2D.Double(500,300);
-            //u.p("size = " + size);
-            Point2D start = new Point2D.Double(center.getX() - startScale*size.getWidth()/2.0,
-                    center.getY() - startScale*size.getHeight()/2.0);
-            start = center;
-            //u.p("start = " + start);
-            Point2D end = new Point2D.Double(center.getX() - endScale*size.getWidth()/2.0,
-                    center.getY() - endScale*size.getHeight()/2.0);
-            end = center;
-            //u.p("end = " + end);
-            //bdc.setLocation(start);
-            
-            final Equation bouncer = new BouncerEquation(1.0, 0.3, 0.058, 12.0, 0.0);
-            
-            final BufferedDeskletContainer bdc2 = (BufferedDeskletContainer) bdc;
-            calc(0.11f,bdc2,bouncer,center);
-            
-            //anim.addTarget(new PropertySetter(bdc,"location",start, end));
-            anim.addTarget(new PropertySetter(bdc,"alpha", 0f, 1f));
-            //anim.addTarget(new PropertySetter(bdc,"scale",startScale, endScale, endScale));
-            //anim.addTarget(new AnimRepainter(panel));
-            anim.addTarget(new TimingTarget() {
-                public void begin() {
-                    panel.setAnimating(true);
-                }
-                public void end() {
-                    
-                    
-                    Animator a2 = new Animator(300);
-                    double targetScale = ManagePanelAnimations.calculateScale(bdc2);
-                    int count = getDesklets().size();
-                    Point2D pt = ManagePanelAnimations.calculateLocation(panel,count-1);
-                    if(!isManageMode) {
-                        targetScale = 1.0;
-                        pt = initialLocation;
-                    }
-                    a2.addTarget(new PropertySetter(bdc2, "scale", bdc2.getScale(), targetScale));
-                    a2.addTarget(new PropertySetter(bdc2,"location", bdc2.getLocation(), pt));
-                    a2.addTarget(new AnimRepainter(panel));
-                    a2.addTarget(new TimingTargetAdapter() {
-                        public void end() {
-                            panel.setAnimating(false);
-                        }
-                    });
-                    a2.start();
-                    
-                }
-                public void repeat() {
-                }
-                public void timingEvent(float f) {
-                    calc(f,bdc2,bouncer,center);
-                    panel.repaint();//0,0,400,400);
-                }
-            });
-            anim.start();
+        Animator anim = creationTransition.createAnimation(new TransitionEvent(this,null,(BufferedDeskletContainer)dc));
+        if(panel instanceof JComponent) {
+            anim.addTarget(new AnimRepainter((JComponent)panel));
         }
-        
-    }
-    private void calc(float f, BufferedDeskletContainer bdc2, Equation bouncer, Point2D center) {
-        bdc2.setScale(1.0+ 2.0*bouncer.compute(f));
-        bdc2.setLocation(new Point2D.Double(
-                center.getX() - bdc2.getScale()*bdc2.getSize().getWidth()/2,
-                center.getY() - bdc2.getScale()*bdc2.getSize().getHeight()/2));
+        anim.start();
     }
     
-    public void animateDestruction(final DeskletContainer dc) {
-        final BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
-        if(oldAnim) {
-            Animator anim = new Animator(500);
-            //anim.addTarget(new PropertySetter(dc,"location",new Point(0,0), new Point(200,200)));
-            anim.addTarget(new PropertySetter(dc,"alpha",bdc.getAlpha(),0f));
-            //anim.addTarget(new PropertySetter(dc,"rotation",0f,(float)Math.PI*2f*5f));
-            anim.addTarget(new PropertySetter(dc,"scale",bdc.getScale(),0.3));
-            anim.addTarget(new AnimRepainter(panel));
-            anim.addTarget(new TimingTargetAdapter() {
-                public void end() {
-                    destroyContainer(dc);
-                }
-            });
-            anim.start();
-        } else {
-            
-            Animator anim = new Animator(1000);
-            anim.addTarget(new AnimRepainter(panel));
-            anim.addTarget(new TimingTargetAdapter() {
-                public void end() {
-                    destroyContainer(dc);
-                }
-            });
-            int num = 5;
-            BSurface[][] surfaces = new BSurface[num][num];
-            int w = (int)dc.getSize().getWidth()/num;
-            int h = (int)dc.getSize().getHeight()/num;
-            
-            Point2D pt = bdc.getLocation();
-            for(int i=0; i<num; i++) {
-                surfaces[i] = new BSurface[num];
-                for(int j = 0; j<num; j++) {
-                    BSurface s  = new BSurface();
-                    /*
-                    BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-                    Graphics2D g = img.createGraphics();
-                    g.drawImage(bdc.getBuffer(),0,0,w,h,
-                            0+i*w, 0+j*h, 0+i*w+w, 0+j*h+h, null);
-                    g.setColor(Color.GREEN);
-                    g.drawRect(0,0,w-1,h-1);
-                    g.dispose();
-                    //s.setImg(img);*/
-                    s.setSize(new Dimension(w,h));//img.getWidth(), img.getHeight()));
-                    
-                    s.subRect = new Rectangle(0+i*w, 0+j*h, w, h);
-                    
-                    surfaces[i][j] = s;
-                    bdc.surfaces.add(s);
-                    int distx = i-num/2;
-                    int disty = j-num/2;
-                    anim.addTarget(new PropertySetter(s,"location",
-                            new Point2D.Double(
-                            pt.getX()+i*w,
-                            pt.getY()+j*h),
-                            new Point2D.Double(
-                            pt.getX()+i*w + 100*distx,
-                            pt.getY()+j*h + 100*disty)));
-                    anim.addTarget(new PropertySetter(s,"alpha",1f,0.7f,0f));
-                    anim.addTarget(new PropertySetter(s,"rotation",0.0,
-                            ((Math.random()*2)-1)*
-                            Math.PI*2));
-                }
+    public void setDeskletDestructionTransition(TransitionAnimation anim) {
+        this.destructionTransition = anim;
+    }
+    
+    public void destroyContainer(final DeskletContainer dc) {
+        Animator anim = destructionTransition.createAnimation(new TransitionEvent(this,null,(BufferedDeskletContainer)dc));
+        anim.addTarget(new TimingTargetAdapter() {
+            public void end() {
+                realdestroyContainer(dc);
             }
-            
-            anim.addTarget(new TimingTarget() {
-                public void begin() {
-                    bdc.setVisible(false);
-                    bdc.showSurfaces = true;
-                }
-                public void end() {
-                }
-                public void repeat() {
-                }
-                public void timingEvent(float f) {
-                }
-            });
-            Animator astart = new Animator(250);
-            astart.addTarget(new AnimRepainter(panel));
-            astart.addTarget(new PropertySetter(bdc,"scale",bdc.getScale(), 1.0));
-            astart.addTarget(new StartAnimAfter(anim));
-            astart.addTarget(new TimingTarget() {
-                public void begin() {
-                }
-                public void end() {
-                }
-                public void repeat() {
-                }
-                public void timingEvent(float f) {
-                }
-            });
-            astart.start();
+        });
+        if(panel instanceof JComponent) {
+            anim.addTarget(new AnimRepainter((JComponent)panel));
         }
+        anim.start();
     }
     
-    public void destroyContainer(DeskletContainer dc) {
+    private void realdestroyContainer(DeskletContainer dc) {
         //panel.remove(((BufferedDeskletContainer)dc).comp);
         getDesklets().remove(dc);
         panel.repaint();
     }
     
     /* === methods to manipulate desklet containers ===== */
-    public void setLocation(DeskletContainer container, Point2D point) {
-        BufferedDeskletContainer bdc = (BufferedDeskletContainer) container;
-        bdc.setLocation(point);
-        panel.repaint();
-    }
-    
-    public Point2D getLocation(DeskletContainer deskletContainer) {
-        BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
-        return bdc.getLocation();
-    }
     
     public DeskletContainer createDialog(DeskletContainer deskletContainer) {
         try {
@@ -625,129 +442,12 @@ public class BufferedWM extends WindowManager {
         return getTopParent(comp.getParent(),targetClass);
     }
     
-    private class InternalToExternalMouseHandler extends MouseAdapter {
-        boolean wasDragging = false;
-        
-        private Core core;
-        
-        public InternalToExternalMouseHandler(Core core) {
-            super();
-            this.core = core;
-        }
-        
-        public void mouseClicked(MouseEvent e) {
-        }
-        
-        public void mouseEntered(MouseEvent e) {
-        }
-        
-        public void mouseMoved(MouseEvent e) {
-        }
-        
-        public void mousePressed(MouseEvent e) {
-            wasDragging = false;
-        }
-        
-        
-        public void mouseDragged(MouseEvent e) {
-            wasDragging = true;
-            if (e.getPoint().getX() < 20) {
-                if(!core.getCloser().isWindowClosed()) {
-                    core.getCollapseWindowAction().doCollapse();
-                    selectedDesklet = convertInternalToExternalContainer(selectedDesklet);
-                }
-            }
-            
-            if(core.getCloser().isWindowClosed() &&
-                    selectedDesklet instanceof JFrameDeskletContainer) {
-                Point pt = e.getPoint();
-                SwingUtilities.convertPointToScreen(pt,panel);
-                selectedDesklet.setLocation(new Point(pt.x - selectedDeskletOffset.x,
-                        pt.y - selectedDeskletOffset.y));
-                
-            }
-            
-            if(selectedDesklet != null && selectedDesklet.getLocation().getX() < 0) {
-                showDeskletInGlasspane();
-            } else {
-                hideDeskletInGlasspane();
-            }
-        }
-        
-        public void mouseReleased(MouseEvent e) {
-            hideDeskletInGlasspane();
-            if (e.getPoint().getX() < 0 && wasDragging) {
-            }
-        }
-        
-        public void mouseExited(MouseEvent e) {
-        }
-        
-        JPanel intExtGlasspane = new JPanel() {
-            public void paintComponent(Graphics g) {
-                //u.p("painting");
-                if(selectedDesklet != null) {
-                    if(selectedDesklet instanceof BufferedDeskletContainer) {
-                        BufferedDeskletContainer bdc = (BufferedDeskletContainer) selectedDesklet;
-                        Point pt = panel.getLocation();
-                        pt.translate((int)bdc.getLocation().getX(),
-                                (int)bdc.getLocation().getY());
-                        g.drawImage(bdc.getBuffer(),
-                                (int)pt.getX(),
-                                (int)pt.getY(), null);
-                    }
-                }
-            }
-        };
-        
-        private void showDeskletInGlasspane() {
-            if(frame.getGlassPane() != intExtGlasspane) {
-                intExtGlasspane.setOpaque(false);
-                frame.setGlassPane(intExtGlasspane);
-                intExtGlasspane.setVisible(true);
-            }
-            intExtGlasspane.setVisible(true);
-            intExtGlasspane.repaint();
-        }
-        
-        private void hideDeskletInGlasspane() {
-            intExtGlasspane.setVisible(false);
-        }
-    }
     
-    private class CustomGlobalMouseService extends GlobalMouse {
-        
-        protected Point convertPointToComponent(JComponent comp, Point pt) {
-            Component topParent = getTopParent(comp);
-            
-            // if this is a component in a buffered desklet container.
-            if(topParent == hidden) {
-                DeskletToplevel top = (DeskletToplevel)BufferedWM.this.getTopParent(comp,DeskletToplevel.class);
-                BufferedDeskletContainer bdc = top.getContainer();
-                Point pt2 = new Point(pt);
-                SwingUtilities.convertPointFromScreen(pt2,BufferedWM.this.panel);
-                pt2.translate(-(int)bdc.getLocation().getX(), -(int)bdc.getLocation().getY());
-                Point pt3 = convertPointFromParentToChild(top,comp, pt2);
-                return pt3;
-            } else {
-                return super.convertPointToComponent(comp,pt);
-            }
-        }
-        
-        private Component getTopParent(Component comp) {
-            return SwingUtilities.getWindowAncestor(comp);
-        }
-        
-        
-        // convert from the child point to the parent point. the child must be a real child of this parent
-        private Point convertPointFromParentToChild(Component parent, Component child, Point pt) {
-            if(parent == child) {
-                return pt;
-            }
-            Point pt2 = new Point(pt);
-            pt2.translate(child.getLocation().x,child.getLocation().y);
-            return convertPointFromParentToChild(parent, child.getParent(), pt2);
-        }
+    private TransitionAnimation creationTransition;
+    private TransitionAnimation destructionTransition;
+    
+    public DeskletContainer createExternalContainer(DefaultContext context) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     
