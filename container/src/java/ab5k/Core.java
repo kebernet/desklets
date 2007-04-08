@@ -262,8 +262,9 @@ public class Core {
     }
 
     private void setupWindowManager() {
-        windowManager = new BufferedWM(this);
         //windowManager = new DesktopPaneWM();
+        windowManager = new BufferedWM(this);
+        windowManager.init();
     }
 
     public WindowManager getWindowManager() {
