@@ -5,44 +5,42 @@ import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.event.ComponentListener;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
 
 /** 
  * The currently registered WindowManager is in charge of managing the desklets
  * on screen components, creating the top level window for all of ab5k, handling
  * special effects and transitions. [more??]
  */
-public abstract class WindowManager {
-    
+public abstract class WindowManager<T> {
+
+    public void init() {
+        
+    }
+    /**
+     * Gets the real toplevel window. In some implementations this will be a 
+     * JFrame or java.awt.Window. In other implementations it may be something
+     * completely different or null if access to the top level is not allowed. Always
+     * check the return value before you cast it.
+     * @return 
+     */
     abstract public Object getTopLevel();
     
     abstract public DeskletContainer createInternalContainer(DefaultContext context);
-    /*
+    
     abstract public DeskletContainer createExternalContainer(DefaultContext context);
-    */
     
-    abstract public void animateCreation(DeskletContainer dc);
-    
-    // do we need both this and destroyContainer?
-    abstract public void animateDestruction(DeskletContainer dc);
-    
+    abstract public void showContainer(DeskletContainer dc);
     abstract public void destroyContainer(DeskletContainer dc);
+    
     
     abstract public DeskletContainer createDialog(DeskletContainer deskletContainer);
     
     
-    public DeskletContainer convertInternalToExternalContainer(DeskletContainer dc) {
-        return null;
+    public void convertInternalToExternalContainer(DeskletContainer dc) {
     }
     
-    public DeskletContainer convertExternalToInternalContainer(DeskletContainer dc) {
-        return null;
+    public void convertExternalToInternalContainer(DeskletContainer dc) {
     }
     
     /*
@@ -80,8 +78,9 @@ public abstract class WindowManager {
     }*/
     
     
-    
+    /*
     public abstract void setDesktopBackground(DesktopBackground bg);
+     */
 
     public abstract Dimension getContainerSize();
 
