@@ -10,7 +10,7 @@
 
 package picoftheday;
 
-import ab5k.desklet.AbstractDesklet;
+import ab5k.desklet.Desklet;
 import ab5k.desklet.DeskletContext;
 import ab5k.desklet.test.DeskletTester;
 import java.awt.*;
@@ -46,7 +46,7 @@ import java.awt.event.*;
  *
  * @author joshua@marinacci.org
  */
-public class Main extends AbstractDesklet {
+public class Main extends Desklet {
     private static JXImageView view = new JXImageView();
     public static BusyGlassPane busyPanel = new BusyGlassPane();
     private static ConfigPanel configPanel = new ConfigPanel();
@@ -59,8 +59,7 @@ public class Main extends AbstractDesklet {
     }
     
     
-    public void init(DeskletContext context) throws Exception {
-        this.context = context;
+    public void init() throws Exception {
         final JPopupMenu menu = new JPopupMenu();
         
         // Create and add a menu item
@@ -87,9 +86,9 @@ public class Main extends AbstractDesklet {
         view.add(busyPanel, StackLayout.TOP);
         
         view.setPreferredSize(new Dimension(300,300));
-        context.getContainer().setContent(view);
-        context.getContainer().setResizable(true);
-        context.getContainer().setVisible(true);
+        getContext().getContainer().setContent(view);
+        getContext().getContainer().setResizable(true);
+        getContext().getContainer().setVisible(true);
     }
     
     
@@ -111,7 +110,7 @@ public class Main extends AbstractDesklet {
         });*/
     }
     public void stop() throws Exception {
-        this.context.notifyStopped();
+        getContext().notifyStopped();
     }
     
     public void destroy() throws Exception {
