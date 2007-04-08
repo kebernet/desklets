@@ -28,7 +28,7 @@ public class BackgroundManager {
     
     
     public void setDesktopBackground(DesktopBackground bg) {
-        main.getWindowManager().setDesktopBackground(bg);
+        //main.getWindowManager().setDesktopBackground(bg);
         //((CustomDesktopPane)main.getDesktop()).setDesktopBackground(bg);
     }
 
