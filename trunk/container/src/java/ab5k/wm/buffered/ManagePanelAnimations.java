@@ -62,6 +62,7 @@ public class ManagePanelAnimations {
     /** Creates a new instance of ManagePanelAnimations */
     public ManagePanelAnimations(BufferedWM wm) {
         this.wm = wm;
+        rootPanel = (DeskletRenderPanel)wm.panel;
         try {
             closeIcon = new ImageIcon(ImageIO.read(getClass().getResource("close2.png")));
             closeOverIcon = new ImageIcon(ImageIO.read(getClass().getResource("close2_over.png")));
@@ -82,7 +83,9 @@ public class ManagePanelAnimations {
     final static int scaledHeight = 100;
     final static int rowGap = 20;
     final static int columnGap = 70;
-    private Icon closeIcon, closeOverIcon;
+    private Icon closeIcon;
+    private Icon closeOverIcon;
+    private DeskletRenderPanel rootPanel;
     
     void showManagePanel() {
         manageButtons = new ArrayList<JPanel>();
@@ -121,7 +124,7 @@ public class ManagePanelAnimations {
                     new Point(x,startY), new Point(x,endY));
             TimingTarget creator = new TimingTarget() {
                 public void begin() {
-                    wm.panel.add(panel);
+                    rootPanel.add(panel);
                     panel.setLocation(x,startY);
                     int manageButtonHeight = panel.getPreferredSize().height;
                     manageButtonHeight = 60;
@@ -160,7 +163,7 @@ public class ManagePanelAnimations {
                 public void begin() {
                 }
                 public void end() {
-                    wm.panel.remove(panel);
+                    ((JComponent)wm.panel).remove(panel);
                 }
                 public void repeat() {
                 }
@@ -196,7 +199,7 @@ public class ManagePanelAnimations {
                 // constrain to 200x100 if needed
                 double targetScale = calculateScale(bdc);
                 anim.addTarget(new PropertySetter(bdc, "scale", 1.0, targetScale));
-                Point2D pt = calculateLocation(wm.panel,i);
+                Point2D pt = calculateLocation((JComponent)wm.panel,i);
                 anim.addTarget(new PropertySetter(bdc,"location", originalLocations.get(bdc), pt));
                 anim.addTarget(new TimingTarget() {
                     public void begin() {
@@ -210,7 +213,7 @@ public class ManagePanelAnimations {
                         close.setOpaque(false);
                         close.setLocation((int)bdc.getLocation().getX()-44-10,
                                 (int)bdc.getLocation().getY());
-                        wm.panel.add(close);
+                        ((JComponent)wm.panel).add(close);
                         close.setPreferredSize(new Dimension(40,40));
                         close.setSize(new Dimension(40,40));
                         stopButtons.put(bdc,close);
@@ -222,7 +225,7 @@ public class ManagePanelAnimations {
                         panel.setSize(dim);
                         panel.setLocation((int)bdc.getLocation().getX()-10, (int)bdc.getLocation().getY()-10);
                         panel.setOpaque(false);
-                        wm.panel.add(panel);
+                        rootPanel.add(panel);
                         rolloverPanels.put(bdc,panel);
                         String text = bdc.getContext().getConfig().getName();
                         Font font = new Font(Font.SANS_SERIF,Font.BOLD,20);
@@ -270,8 +273,8 @@ public class ManagePanelAnimations {
                         close.addActionListener(new ActionListener() {
                             public void actionPerformed(ActionEvent e) {
                                 wm.stop(bdc);
-                                wm.panel.remove(close);
-                                wm.panel.remove(panel);
+                                rootPanel.remove(close);
+                                rootPanel.remove(panel);
                             }
                         });
                     }
@@ -283,7 +286,7 @@ public class ManagePanelAnimations {
             }
             i++;
         }
-        anim.addTarget(new AnimRepainter(wm.panel));
+        anim.addTarget(new AnimRepainter(rootPanel));
         anim.addTarget(new ToggleAnimatingProperty());
         anim.start();
     }
@@ -327,15 +330,15 @@ public class ManagePanelAnimations {
                 }
             }
         }
-        anim.addTarget(new AnimRepainter(wm.panel));
+        anim.addTarget(new AnimRepainter(rootPanel));
         anim.addTarget(new TimingTarget() {
             public void begin() {
                 for(JButton b : stopButtons.values()) {
-                    wm.panel.remove(b);
+                    rootPanel.remove(b);
                 }
                 stopButtons.clear();
                 for(JXPanel p : rolloverPanels.values()) {
-                    wm.panel.remove(p);
+                    rootPanel.remove(p);
                 }
                 rolloverPanels.clear();
             }
@@ -354,11 +357,11 @@ public class ManagePanelAnimations {
     private class ToggleAnimatingProperty implements TimingTarget {
         
         public void begin() {
-            wm.panel.setAnimating(true);
+            rootPanel.setAnimating(true);
         }
         
         public void end() {
-            wm.panel.setAnimating(false);
+            rootPanel.setAnimating(false);
         }
         
         public void repeat() {
