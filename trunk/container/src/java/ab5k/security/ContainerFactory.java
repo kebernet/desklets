@@ -58,8 +58,8 @@ public class ContainerFactory {
                 Double.toString(location.getY()));
             
             // destroy the container
-            wm.animateDestruction(context.getContainer());
-            //wm.destroyContainer(context.getContainer());
+            //wm.animateDestruction(context.getContainer());
+            wm.destroyContainer(context.getContainer());
         }
     }
 
@@ -102,7 +102,7 @@ public class ContainerFactory {
         }
 
         //wm.addDesklet(ifc.iframe);
-        wm.animateCreation(ifc);
+        wm.showContainer(ifc);
         return ifc;
     }
     
@@ -110,7 +110,6 @@ public class ContainerFactory {
         DeskletContainer dc = wm.createDialog(defaultContext.getContainer());
         return dc;
     }
-    
 
     public static ContainerFactory getInstance() {
         return instance;
