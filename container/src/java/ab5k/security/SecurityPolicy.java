@@ -45,7 +45,7 @@ public class SecurityPolicy extends Policy {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final File SECURITY_PROPS = new File( Environment.HOME, "security.properties");
     private static final ArrayList<String> SAFE_RUNTIME = new ArrayList<String>();
-
+    
     
     static{
         SAFE_RUNTIME.add( "modifyThread");
@@ -62,10 +62,14 @@ public class SecurityPolicy extends Policy {
     /** Creates a new instance of SecurityPolicy */
     public SecurityPolicy() {
         super();
-        try{
-            prefs.load( new FileInputStream(SECURITY_PROPS));
-        } catch(Exception e){
-            e.printStackTrace();
+        if(!SECURITY_PROPS.exists()) {
+            System.out.println("security properties not created yet: " + SECURITY_PROPS.getAbsolutePath());
+        } else {
+            try{
+                prefs.load( new FileInputStream(SECURITY_PROPS));
+            } catch(Exception e){
+                e.printStackTrace();
+            }
         }
         always = this.deserializeRemembered("always");
         nevers = this.deserializeRemembered("never");
@@ -164,8 +168,8 @@ public class SecurityPolicy extends Policy {
             }
             
             ArrayList<String> grants = always.get(protectionDomain.getCodeSource()
-            .getLocation()
-            .toExternalForm());
+                    .getLocation()
+                    .toExternalForm());
             String permissionValue = permission instanceof java.net.SocketPermission ? "java.net.SocketPermission" : permission.getName();
             permissionValue = permission instanceof java.io.FilePermission ? "java.io.FilePermission" : permission.getName();
             
@@ -178,8 +182,8 @@ public class SecurityPolicy extends Policy {
             }
             
             ArrayList<String> denies = nevers.get(protectionDomain.getCodeSource()
-            .getLocation()
-            .toExternalForm());
+                    .getLocation()
+                    .toExternalForm());
             
             if(denies == null) {
                 denies = new ArrayList<String>();
@@ -201,51 +205,51 @@ public class SecurityPolicy extends Policy {
                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
             
             switch(value) {
-                case 0:
-                    perms.add(permission);
-                    permissions.put(protectionDomain.getCodeSource(), perms);
-                    
-                    return true;
-                    
-                case 2:
-                    perms.add(permission);
-                    permissions.put(protectionDomain.getCodeSource(), perms);
-                    if(!grants.contains(permissionValue)) {
-                        grants.add(permissionValue);
-                    }
-                    
-                    always.put(protectionDomain.getCodeSource().getLocation()
-                    .toExternalForm(), grants);
-                    this.storeRemembered(always, "always");
-                    
-                    try {
-                        prefs.store( new FileOutputStream( SecurityPolicy.SECURITY_PROPS ), "Security Settings" );
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                    
-                    return true;
-                    
-                case 3:
-                    
-                    if(!denies.contains(permissionValue)) {
-                        denies.add(permissionValue);
-                    }
-                    
-                    nevers.put(protectionDomain.getCodeSource().getLocation()
-                    .toExternalForm(), denies);
-                    storeRemembered(nevers, "never");
-                    
-                    try {
-                        prefs.store( new FileOutputStream( SecurityPolicy.SECURITY_PROPS ), "Security Settings" );
-                    } catch(Exception e) {
-                        e.printStackTrace();
-                    }
-                    
-                    return false;
-                    
-                default:
-                    return false;
+            case 0:
+                perms.add(permission);
+                permissions.put(protectionDomain.getCodeSource(), perms);
+                
+                return true;
+                
+            case 2:
+                perms.add(permission);
+                permissions.put(protectionDomain.getCodeSource(), perms);
+                if(!grants.contains(permissionValue)) {
+                    grants.add(permissionValue);
+                }
+                
+                always.put(protectionDomain.getCodeSource().getLocation()
+                        .toExternalForm(), grants);
+                this.storeRemembered(always, "always");
+                
+                try {
+                    prefs.store( new FileOutputStream( SecurityPolicy.SECURITY_PROPS ), "Security Settings" );
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                
+                return true;
+                
+            case 3:
+                
+                if(!denies.contains(permissionValue)) {
+                    denies.add(permissionValue);
+                }
+                
+                nevers.put(protectionDomain.getCodeSource().getLocation()
+                        .toExternalForm(), denies);
+                storeRemembered(nevers, "never");
+                
+                try {
+                    prefs.store( new FileOutputStream( SecurityPolicy.SECURITY_PROPS ), "Security Settings" );
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                
+                return false;
+                
+            default:
+                return false;
             }
         } else {
             return true;
