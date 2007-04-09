@@ -323,7 +323,6 @@ is divided into following sections:
     -->
     <target name="deps-jar" depends="init" unless="no.deps">
         <ant target="jar" inheritall="false" antfile="${project.DeskletSpecification}/build.xml"/>
-        <ant target="jar" inheritall="false" antfile="${project.joglplay}/build.xml"/>
         <ant target="jar" inheritall="false" antfile="${project.joshy-swingx-incubator}/build.xml"/>
         <ant target="jar" inheritall="false" antfile="${project.swingx}/build.xml"/>
     </target>
@@ -627,7 +626,6 @@ is divided into following sections:
     -->
     <target name="deps-clean" depends="init" unless="no.deps">
         <ant target="clean" inheritall="false" antfile="${project.DeskletSpecification}/build.xml"/>
-        <ant target="clean" inheritall="false" antfile="${project.joglplay}/build.xml"/>
         <ant target="clean" inheritall="false" antfile="${project.joshy-swingx-incubator}/build.xml"/>
         <ant target="clean" inheritall="false" antfile="${project.swingx}/build.xml"/>
     </target>
