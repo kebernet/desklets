@@ -6,7 +6,7 @@ Put animation back into Manager dialog when starting / stopping. At least fade i
 
 Dialogs on macosx don't repaint properly if there is animation underneath them.
 
-Picture of the day needs a 'loading...' indicator
+*done* Picture of the day needs a 'loading...' indicator
 
 You get a ton of dialogs on startup.  We must eliminate some of them. No warning when creating a thread, for example.
 
