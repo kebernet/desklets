@@ -87,7 +87,7 @@ public class DesktopPaneWM extends WindowManager {
         an.start();
     }
     
-    
+    /*
     public void setLocation(DeskletContainer ifc, Point2D point) {
         ((InternalFrameContainer)ifc).iframe.setLocation(GraphicsUtil.toPoint(point));
     }
@@ -96,7 +96,7 @@ public class DesktopPaneWM extends WindowManager {
         final InternalFrameContainer ifc = (InternalFrameContainer) deskletContainer;
         Point location = ifc.iframe.getLocation();
         return location;
-    }
+    }*/
 
     public void setDesktopBackground(DesktopBackground bg) {
         ((CustomDesktopPane)desktop).setDesktopBackground(bg);
