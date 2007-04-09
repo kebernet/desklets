@@ -41,8 +41,11 @@ public class PrefsBean {
     }
     
     public void loadFromPrefs() {
-        u.p("loading from prefs");
         props = new Properties();
+        if(!PREFS_FILE.exists()) {
+            System.out.println("prefs file not created yet: " + PREFS_FILE.getAbsolutePath());
+            return;
+        }
         try {
             props.load(new FileInputStream(PREFS_FILE));
         } catch (FileNotFoundException ex) {
