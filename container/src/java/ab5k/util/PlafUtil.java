@@ -19,6 +19,23 @@ public class PlafUtil {
     private PlafUtil() {
     }
     
+    /**
+     * Indicates if the VM is running on some version of Linux
+     * @return 
+     */
+    public static boolean isLinux() {
+        if(System.getProperty("os.name") != null &&
+                System.getProperty("os.name").toLowerCase().startsWith("linux")) {
+            return true;
+        }
+        return false;
+    }
+    
+    
+    /**
+     * Indicates if the VM is running on some version of Mac OS X
+     * @return 
+     */
     public static boolean isMacOSX() {
         if(System.getProperty("mrj.version") == null) {
             return false;

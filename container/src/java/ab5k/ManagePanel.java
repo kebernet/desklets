@@ -12,6 +12,7 @@ import ab5k.security.DeskletManager;
 import ab5k.security.DeskletRunner;
 import ab5k.security.Registry;
 import ab5k.util.BeanArrayListModel;
+import ab5k.util.Bugs;
 import ab5k.utils.BusyPainter;
 import java.awt.Color;
 import java.awt.Component;
@@ -26,9 +27,11 @@ import java.io.FilenameFilter;
 import java.net.URI;
 import java.util.logging.Level;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
@@ -282,21 +285,10 @@ public class ManagePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     
     private void importButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_importButtonMouseClicked
-        FileDialog d = getFileDialog( this );
-        d.setFilenameFilter( new FilenameFilter(){
-            public boolean accept(File file, String string) {
-                return string.endsWith(".ab5k");
-            }
-            
-        });
-        d.setVisible( true );
-        if( d.getFile() == null ){
-            return;
-        }
-        File importFile = new File( d.getDirectory() + File.separator + d.getFile());
+        File importFile = openFile(".ab5k");
         ConfigurationImportExport cie = new ConfigurationImportExport();
         try{
-            cie.importFromURL( importFile.toURI().toURL());
+            cie.importFromURL(importFile.toURI().toURL());
         } catch(Exception e){
             main.handleError("Problem Importing Configuration",
                     "There was a problem importing your AB5k configuration",
@@ -305,19 +297,7 @@ public class ManagePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_importButtonMouseClicked
     
     private void exportButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exportButtonMouseClicked
-        FileDialog d = getFileDialog( this );
-        d.setMode( d.SAVE );
-        d.setFilenameFilter( new FilenameFilter(){
-            public boolean accept(File file, String string) {
-                return string.endsWith(".ab5k");
-            }
-            
-        });
-        d.setVisible( true );
-        if( d.getFile() == null ){
-            return;
-        }
-        File export = new File( d.getDirectory() + File.separator + d.getFile());
+        File export = saveFile(".ab5k");
         ConfigurationImportExport cie = new ConfigurationImportExport();
         try{
             cie.exportToFile( export );
@@ -331,12 +311,8 @@ public class ManagePanel extends javax.swing.JPanel {
     
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         // add a new desklet from a file on disk
-        FileDialog fd = getFileDialog(this);
-        fd.setVisible(true);
-        if(fd.getFile() == null) {
-            return;
-        }
-        final String file = fd.getDirectory() + File.separator + fd.getFile();
+        final File file = openFile();
+        if(file == null) { return; }
         
         final BusyGlassPane busyPanel = new BusyGlassPane();
         busyPanel.setText("Loading");
@@ -347,7 +323,7 @@ public class ManagePanel extends javax.swing.JPanel {
             public void run() {
                 try{
                     busyPanel.start();
-                    main.getLoadDeskletAction().load(new File(file).toURI().toURL());
+                    main.getLoadDeskletAction().load(file.toURI().toURL());
                     busyPanel.stop();
                 } catch(Exception e){
                     System.out.println("ending the maddness");
@@ -361,6 +337,72 @@ public class ManagePanel extends javax.swing.JPanel {
         }).start();
         
     }//GEN-LAST:event_addButtonActionPerformed
+    
+    
+    private File openFile() {
+        return openFile(null);
+    }
+    
+    private File openFile(final String filter) {
+        if(Bugs.isFileDialogUgly()) {
+            JFileChooser jfc = new JFileChooser();
+            jfc.setMultiSelectionEnabled(false);
+            if(filter != null) {
+                jfc.setFileFilter(new FileFilter() {
+                    public boolean accept(File f) {
+                        if(f.getName().endsWith(filter)){
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+
+                    public String getDescription() {
+                        return filter + " files";
+                    }
+                });
+            }
+            jfc.showOpenDialog(this);
+            if(jfc.getSelectedFile() == null) {
+                return null;
+            }
+            return jfc.getSelectedFile();
+        }else {
+            FileDialog fd = getFileDialog(this);
+            if(filter != null) {
+                fd.setFilenameFilter( new FilenameFilter(){
+                    public boolean accept(File file, String string) {
+                        return string.endsWith(filter);
+                    }
+                });
+            }
+            fd.setVisible(true);
+            if(fd.getFile() == null) {
+                return null;
+            }
+            final String file = fd.getDirectory() + File.separator + fd.getFile();
+            return new File(file);
+        }
+    }
+    
+    private File saveFile(final String filter) {
+        FileDialog d = getFileDialog( this );
+        d.setMode( d.SAVE );
+        if(filter != null) {
+            d.setFilenameFilter( new FilenameFilter(){
+                public boolean accept(File file, String string) {
+                    return string.endsWith(filter);
+                }
+                
+            });
+        }
+        d.setVisible( true );
+        if( d.getFile() == null ){
+            return null;
+        }
+        File export = new File( d.getDirectory() + File.separator + d.getFile());
+        return export;
+    }
     
     class BusyGlassPane extends JXPanel {
         Animator anim;
@@ -450,8 +492,8 @@ public class ManagePanel extends javax.swing.JPanel {
                     } catch(Exception e){
                         e.printStackTrace();
                         main.handleError("Problem starting desklet",
-                            "There was a problem starting this desklet: " + config.getName(),
-                            e);
+                                "There was a problem starting this desklet: " + config.getName(),
+                                e);
                     }
                 }
                 busyPanel.stop();
