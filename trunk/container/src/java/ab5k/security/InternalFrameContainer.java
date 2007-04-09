@@ -6,6 +6,7 @@
 package ab5k.security;
 
 import ab5k.desklet.DeskletContainer;
+import ab5k.util.GraphicsUtil;
 
 import ab5k.util.MoveMouseListener;
 import ab5k.wm.WindowManager;
@@ -162,6 +163,7 @@ public class InternalFrameContainer extends DeskletContainer {
 
     // do nothing for now
     public void setLocation(Point2D location) {
+        iframe.setLocation(GraphicsUtil.toPoint(location));
     }
 
     public void pack() {
