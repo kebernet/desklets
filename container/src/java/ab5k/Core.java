@@ -59,7 +59,7 @@ public class Core {
     //public JFrame frame;
     
     private PrefsBean prefsBean;
-
+    
     private WindowManager windowManager;
     
     /** Creates a new instance of Main */
@@ -97,19 +97,19 @@ public class Core {
                     "First Run", JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
             switch(value){
-                case 0:
-                    
-                    new Thread(new Runnable() {
-                        public void run() {
-                            u.p("this is the first run so we must auto-install the standard desklets");
-                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/WeatherDesklet.desklet");
-                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/ROMEDesket.desklet");
-                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/ColorChooserDesklet.desklet");
-                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet");
-                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet");
-                            preinstall("http://www.ab5k.org/downloads/daily/pre-install/Eyeball.desklet");
-                        }
-                    }).start();
+            case 0:
+                
+                new Thread(new Runnable() {
+                    public void run() {
+                        u.p("this is the first run so we must auto-install the standard desklets");
+                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/WeatherDesklet.desklet");
+                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/ROMEDesket.desklet");
+                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/ColorChooserDesklet.desklet");
+                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet");
+                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet");
+                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/Eyeball.desklet");
+                    }
+                }).start();
             }
         }
     }
@@ -187,8 +187,8 @@ public class Core {
     public DeskletManager getDeskletManager() {
         return deskletManager;
     }
-
-/*    
+    
+/*
     public JDesktopPane getDesktop() {
         return getMainPanel().desktop;
     }*/
@@ -260,15 +260,18 @@ public class Core {
             ex.printStackTrace();
         }
     }
-
+    
     private void setupWindowManager() {
-        //windowManager = new DesktopPaneWM();
-        windowManager = new BufferedWM(this);
+        if(System.getProperty("org.ab5k.test.useDesktopPane") != null) {
+            windowManager = new DesktopPaneWM();
+        } else {
+            windowManager = new BufferedWM(this);
+        }
         windowManager.init();
     }
-
+    
     public WindowManager getWindowManager() {
         return windowManager;
     }
-
+    
 }
