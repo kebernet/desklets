@@ -80,22 +80,21 @@ public class BufferedWM extends WindowManager {
     static final boolean SHOW_FRAME_TITLE_BAR = false;
     static final boolean TRANSPARENT_DOCK = false;
     
-    //private List<BaseDC> desklets;
     private List<DeskletProxy> proxies;
-    //private Map<BaseDC,List<BaseDC>> dialogMap;
-    JFrame frame;
     private Component renderPanel;
-    
     private JComponent dock;
+    private boolean manageMode = false;
+    private TransitionAnimation creationTransition;
+    private TransitionAnimation destructionTransition;
+    private GlobalMouse globalMouseService = GlobalMouse.getInstance();
+    private boolean oldAnim = false;
+    
+    
+    JFrame frame;
+    Core core;
     Container hidden;
     BufferedDeskletContainer selectedDesklet = null;
     Point selectedDeskletOffset;
-    private boolean manageMode = false;
-    
-    Core core;
-    private GlobalMouse globalMouseService = GlobalMouse.getInstance();
-    
-    private boolean oldAnim = false;
     
     
     /** Creates a new instance of BufferedWM */
@@ -319,8 +318,6 @@ public class BufferedWM extends WindowManager {
         JFramePeer peer = new JFramePeer(bdc);
         peer.setContent(bdc.getContent());
         bdc.setPeer(peer);
-        
-        
         bdc.pack();
         bdc.setLocation(pt);
         bdc.setVisible(true);
@@ -400,7 +397,7 @@ public class BufferedWM extends WindowManager {
             BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
             DeskletProxy proxy = bdc.getProxy();
             if(bdc.getPeer() instanceof Buffered2DPeer) {
-                proxy.configContainer.setPeer(new Buffered2DPeer(proxy.configContainer));
+                proxy.configContainer.setPeer(new Buffered2DPeer(proxy.configContainer,true));
                 proxy.configContainer.getPeer().setVisible(true);
                 renderPanel.repaint();
                 return proxy.configContainer;
@@ -422,36 +419,11 @@ public class BufferedWM extends WindowManager {
                 + deskletContainer.getClass().getName());
     }
     /*
-    public List<BaseDC> getDesklets() {
-        return desklets;
-    }
-     
-    void setDesklets(List<BaseDC> desklets) {
-        this.desklets = desklets;
-    }
-     */
-    /*
     private void addDialog(BaseDC dc, BaseDC dialog) {
         if(!dialogMap.containsKey(dc)) {
             dialogMap.put(dc,new ArrayList<BaseDC>());
         }
         dialogMap.get(dc).add(dialog);
-    }*/
-    /*
-    List<BaseDC> getWindows() {
-        List<BaseDC> windows = new ArrayList<BaseDC>();
-        windows.addAll(desklets);
-        for(List<BaseDC> dcs : dialogMap.values()) {
-            windows.addAll(dcs);
-        }
-        return windows;
-    }
-     
-    List<BaseDC> getDialogs(BufferedDeskletContainer dc) {
-        if(!dialogMap.containsKey(dc)) {
-            dialogMap.put(dc,new ArrayList<BaseDC>());
-        }
-        return dialogMap.get(dc);
     }*/
     /*
     private void setupPopupHacking() {
@@ -470,8 +442,6 @@ public class BufferedWM extends WindowManager {
     }
     
     
-    private TransitionAnimation creationTransition;
-    private TransitionAnimation destructionTransition;
     
     public DeskletContainer createExternalContainer(DefaultContext context) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -496,7 +466,4 @@ public class BufferedWM extends WindowManager {
     public Component getRenderPanel() {
         return renderPanel;
     }
-    
-    
-    
 }
