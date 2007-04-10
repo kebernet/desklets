@@ -21,12 +21,12 @@ class DeskletRepaintManager extends RepaintManager {
         BufferedDeskletContainer bdc = findDesklet(comp);
         if(bdc != null) {
             // check that we don't add it twice
-            if(comp != bdc.comp) {
-                super.addDirtyRegion(bdc.comp, 0, 0, bdc.comp.getWidth(), bdc.comp.getHeight());
+            if(comp != bdc.getTopComponent()) {
+                super.addDirtyRegion(bdc.getTopComponent(), 0, 0, bdc.getTopComponent().getWidth(), bdc.getTopComponent().getHeight());
             }
             
-            bdc.setDirty(true);
-            super.addDirtyRegion((JComponent)wm.panel,
+            ((Buffered2DPeer)bdc.getPeer()).setDirty(true);
+            super.addDirtyRegion((JComponent)wm.getRenderPanel(),
                     (int)bdc.getLocation().getX(), (int)bdc.getLocation().getY(),
                     (int)bdc.getSize().getWidth(), (int)bdc.getSize().getHeight());
         }
@@ -37,11 +37,10 @@ class DeskletRepaintManager extends RepaintManager {
     private BufferedDeskletContainer findDesklet(Component invalidComponent) {
         // if at the top most comp
         if(invalidComponent instanceof DeskletToplevel) {
-            for(DeskletContainer dc : wm.getWindows()) {
-                if(dc instanceof BufferedDeskletContainer) {
-                    BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
-                    if(bdc.comp == invalidComponent) {
-                        return bdc;
+            for(DeskletProxy proxy : wm.getProxies()) {
+                if(proxy.contentContainer.getPeer() instanceof Buffered2DPeer) {
+                    if(proxy.contentContainer.getTopComponent() == invalidComponent) {
+                        return proxy.contentContainer;
                     }
                 }
             }

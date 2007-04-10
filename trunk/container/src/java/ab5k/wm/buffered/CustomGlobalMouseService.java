@@ -34,7 +34,7 @@ class CustomGlobalMouseService extends GlobalMouse {
             DeskletToplevel top = (DeskletToplevel)wm.getTopParent(comp,DeskletToplevel.class);
             BufferedDeskletContainer bdc = top.getContainer();
             Point pt2 = new Point(pt);
-            SwingUtilities.convertPointFromScreen(pt2, wm.panel);
+            SwingUtilities.convertPointFromScreen(pt2, wm.getRenderPanel());
             pt2.translate(-(int)bdc.getLocation().getX(), -(int)bdc.getLocation().getY());
             Point pt3 = convertPointFromParentToChild(top,comp, pt2);
             return pt3;

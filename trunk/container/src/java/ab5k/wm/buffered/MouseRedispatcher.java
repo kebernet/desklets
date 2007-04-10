@@ -57,7 +57,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     
     
     void redispatch(MouseEvent e) {
-        if(!bufferedWM.getDesklets().isEmpty()) {
+        if(!bufferedWM.getProxies().isEmpty()) {
             BufferedDeskletContainer bdc = bufferedWM.findContainer(e.getPoint());
             if(bdc != null) {
                 lastDC = bdc;
@@ -69,7 +69,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     // redispatches drag events to the desklet being dragged rather 
     // than to the desklet currently under the mouse
     private void redispatchDragged(MouseEvent e) {
-        if(bufferedWM.getDesklets().isEmpty()) {
+        if(bufferedWM.getProxies().isEmpty()) {
             redispatch(e);
             return;
         }
@@ -84,7 +84,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
         Point ept = e.getPoint();
         ept.translate((int)-pt.getX(),(int)-pt.getY());
         //e.translatePoint(-pt.x,-pt.y);
-        JComponent comp = bdc.comp;
+        JComponent comp = bdc.getTopComponent();
         comp.setSize(new Dimension((int)bdc.getSize().getWidth(),
                 (int)bdc.getSize().getHeight()));
         comp.setLocation(0,0);

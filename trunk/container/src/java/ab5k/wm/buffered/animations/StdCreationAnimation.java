@@ -7,11 +7,18 @@
  * and open the template in the editor.
  */
 
-package ab5k.wm.buffered;
+package ab5k.wm.buffered.animations;
 
 import ab5k.desklet.DeskletContainer;
 import ab5k.util.AnimRepainter;
 import ab5k.wm.WindowManager;
+import ab5k.wm.buffered.Buffered2DPeer;
+import ab5k.wm.buffered.BufferedDeskletContainer;
+import ab5k.wm.buffered.BufferedWM;
+import ab5k.wm.buffered.DeskletRenderPanel;
+import ab5k.wm.buffered.manage.ManagePanelAnimations;
+import ab5k.wm.buffered.animations.TransitionAnimation;
+import ab5k.wm.buffered.animations.TransitionEvent;
 import ab5k.wm.buffered.animations.BouncerEquation;
 import ab5k.wm.buffered.animations.Equation;
 import java.awt.Dimension;
@@ -40,8 +47,9 @@ public class StdCreationAnimation extends TransitionAnimation {
      */
     public Animator createAnimation(TransitionEvent evt) {
         final BufferedWM wm = evt.getWindowManager();
-        final JComponent panel = (JComponent) wm.panel;
-        BufferedDeskletContainer dc = evt.getContainer();
+        final JComponent panel = (JComponent) wm.getRenderPanel();
+        final BufferedDeskletContainer dc = evt.getContainer();
+        final Buffered2DPeer peer = (Buffered2DPeer) dc.getPeer();
         final Point2D initialLocation = dc.getLocation();
         
         if(oldAnim){
@@ -55,7 +63,7 @@ public class StdCreationAnimation extends TransitionAnimation {
             Animator anim = new Animator(1500);
             double startScale = 3.0;
             double endScale = 1.0;
-            Dimension2D size = dc.getSize();
+            Dimension2D size = peer.getSize();
             size = new Dimension(250,150); // hard code it to get around some bugs
             
             final Point2D center = new Point2D.Double(500,300);
@@ -68,10 +76,10 @@ public class StdCreationAnimation extends TransitionAnimation {
             
             final Equation bouncer = new BouncerEquation(1.0, 0.3, 0.058, 12.0, 0.0);
             
-            final BufferedDeskletContainer bdc2 = (BufferedDeskletContainer) dc;
-            calc(0.11f,bdc2,bouncer,center);
+            calc(0.11f,peer,bouncer,center);
             
-            anim.addTarget(new PropertySetter(dc,"alpha", 0f, 1f));
+            
+            anim.addTarget(new PropertySetter(peer,"alpha", 0f, 1f));
             anim.addTarget(new TimingTarget() {
                 public void begin() {
                     //turn on a speed optimization
@@ -83,15 +91,15 @@ public class StdCreationAnimation extends TransitionAnimation {
                     
                     
                     Animator a2 = new Animator(300);
-                    double targetScale = ManagePanelAnimations.calculateScale(bdc2);
-                    int count = wm.getDesklets().size();
+                    double targetScale = ManagePanelAnimations.calculateScale(peer);
+                    int count = wm.getProxies().size();
                     Point2D pt = ManagePanelAnimations.calculateLocation(panel,count-1);
-                    if(!wm.isManageMode) {
+                    if(!wm.isManageMode()) {
                         targetScale = 1.0;
                         pt = initialLocation;
                     }
-                    a2.addTarget(new PropertySetter(bdc2, "scale", bdc2.getScale(), targetScale));
-                    a2.addTarget(new PropertySetter(bdc2,"location", bdc2.getLocation(), pt));
+                    a2.addTarget(new PropertySetter(peer, "scale", peer.getScale(), targetScale));
+                    a2.addTarget(new PropertySetter(peer,"location", peer.getLocation(), pt));
                     a2.addTarget(new AnimRepainter(panel));
                     a2.addTarget(new TimingTargetAdapter() {
                         public void end() {
@@ -106,8 +114,8 @@ public class StdCreationAnimation extends TransitionAnimation {
                 public void repeat() {
                 }
                 public void timingEvent(float f) {
-                    calc(f,bdc2,bouncer,center);
-                    wm.panel.repaint();//0,0,400,400);
+                    calc(f,peer,bouncer,center);
+                    wm.getRenderPanel().repaint();//0,0,400,400);
                 }
             });
             
@@ -115,11 +123,11 @@ public class StdCreationAnimation extends TransitionAnimation {
         }
     }
     
-    private void calc(float f, BufferedDeskletContainer bdc2, Equation bouncer, Point2D center) {
-        bdc2.setScale(1.0+ 2.0*bouncer.compute(f));
-        bdc2.setLocation(new Point2D.Double(
-                center.getX() - bdc2.getScale()*bdc2.getSize().getWidth()/2,
-                center.getY() - bdc2.getScale()*bdc2.getSize().getHeight()/2));
+    private void calc(float f,Buffered2DPeer peer, Equation bouncer, Point2D center) {
+        peer.setScale(1.0 + 2.0 * bouncer.compute(f));
+    peer.setLocation(new Point2D.Double(
+                center.getX() - peer.getScale()*peer.getSize().getWidth()/2,
+                center.getY() - peer.getScale()*peer.getSize().getHeight()/2));
     }
     
     

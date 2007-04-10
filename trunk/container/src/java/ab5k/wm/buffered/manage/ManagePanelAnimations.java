@@ -7,12 +7,19 @@
  * and open the template in the editor.
  */
 
-package ab5k.wm.buffered;
+package ab5k.wm.buffered.manage;
 
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DeskletConfig;
 import ab5k.security.Registry;
 import ab5k.util.AnimRepainter;
+import ab5k.wm.buffered.Buffered2DPeer;
+import ab5k.wm.buffered.BufferedDeskletContainer;
+import ab5k.wm.buffered.BufferedWM;
+import ab5k.wm.buffered.DeskletProxy;
+import ab5k.wm.buffered.DeskletRenderPanel;
+import ab5k.wm.buffered.animations.StartAnimAfter;
+import ab5k.wm.buffered.manage.ManageDeskletPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -62,7 +69,7 @@ public class ManagePanelAnimations {
     /** Creates a new instance of ManagePanelAnimations */
     public ManagePanelAnimations(BufferedWM wm) {
         this.wm = wm;
-        rootPanel = (DeskletRenderPanel)wm.panel;
+        rootPanel = (DeskletRenderPanel)wm.getRenderPanel();
         try {
             closeIcon = new ImageIcon(ImageIO.read(getClass().getResource("close2.png")));
             closeOverIcon = new ImageIcon(ImageIO.read(getClass().getResource("close2_over.png")));
@@ -87,7 +94,7 @@ public class ManagePanelAnimations {
     private Icon closeOverIcon;
     private DeskletRenderPanel rootPanel;
     
-    void showManagePanel() {
+    public void showManagePanel() {
         manageButtons = new ArrayList<JPanel>();
         List<DeskletConfig> configs = Registry.getInstance().getDeskletConfigs();
         
@@ -95,7 +102,7 @@ public class ManagePanelAnimations {
         Animator prevAnim = firstAnim;
         Animator lastAnim = firstAnim;
         int y = 0;
-        final int x = wm.panel.getWidth()-manageButtonWidth-50;
+        final int x = wm.getRenderPanel().getWidth()-manageButtonWidth-50;
         int animlen = transitionLength / configs.size();
         for(DeskletConfig cfg : configs) {
             final DeskletConfig config = cfg;
@@ -150,7 +157,7 @@ public class ManagePanelAnimations {
         firstAnim.start();
     }
     
-    void hideManagePanel() {
+    public void hideManagePanel() {
         Animator startAnim = new Animator(1);
         Animator prevAnim = startAnim;
         int animlen = transitionLength / manageButtons.size();
@@ -163,7 +170,7 @@ public class ManagePanelAnimations {
                 public void begin() {
                 }
                 public void end() {
-                    ((JComponent)wm.panel).remove(panel);
+                    ((JComponent)wm.getRenderPanel()).remove(panel);
                 }
                 public void repeat() {
                 }
@@ -178,29 +185,29 @@ public class ManagePanelAnimations {
     }
     
     
-    Map<BufferedDeskletContainer, Point2D> originalLocations = new HashMap<BufferedDeskletContainer, Point2D>();
+    Map<Buffered2DPeer, Point2D> originalLocations = new HashMap<Buffered2DPeer, Point2D>();
     Map<BufferedDeskletContainer, JButton> stopButtons = new HashMap<BufferedDeskletContainer, JButton>();
     Map<BufferedDeskletContainer, JXPanel> rolloverPanels = new HashMap<BufferedDeskletContainer, JXPanel>();
     
-    void moveDeskletsToColumns(final AbstractButton button) {
+    public void moveDeskletsToColumns(final AbstractButton button) {
         Animator anim = new Animator(500);
         anim.addTarget(new AnimButtonDisabler(button));
         int i = 0;
-        for(DeskletContainer dc : wm.getDesklets()) {
+        for(DeskletProxy proxy : wm.getProxies()) {
             //for(int i=0; i<wm.getDesklets().size(); i++) {
             //DeskletContainer dc = wm.getDesklets().get(i);
-            if(dc instanceof BufferedDialogContainer) continue;
-            if(dc instanceof BufferedDeskletContainer) {
-                final BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+            if(proxy.contentContainer.getPeer() instanceof Buffered2DPeer) {
+                final Buffered2DPeer peer = (Buffered2DPeer) proxy.contentContainer.getPeer();
+                final BufferedDeskletContainer bdc = proxy.contentContainer;
                 
                 // save the original location
-                originalLocations.put(bdc,bdc.getLocation());
+                originalLocations.put(peer,peer.getLocation());
                 
                 // constrain to 200x100 if needed
-                double targetScale = calculateScale(bdc);
-                anim.addTarget(new PropertySetter(bdc, "scale", 1.0, targetScale));
-                Point2D pt = calculateLocation((JComponent)wm.panel,i);
-                anim.addTarget(new PropertySetter(bdc,"location", originalLocations.get(bdc), pt));
+                double targetScale = calculateScale(peer);
+                anim.addTarget(new PropertySetter(peer, "scale", 1.0, targetScale));
+                Point2D pt = calculateLocation((JComponent)wm.getRenderPanel(),i);
+                anim.addTarget(new PropertySetter(peer,"location", originalLocations.get(peer), pt));
                 anim.addTarget(new TimingTarget() {
                     public void begin() {
                     }
@@ -211,9 +218,9 @@ public class ManagePanelAnimations {
                         close.setRolloverIcon(closeOverIcon);
                         close.setBorderPainted(false);
                         close.setOpaque(false);
-                        close.setLocation((int)bdc.getLocation().getX()-44-10,
-                                (int)bdc.getLocation().getY());
-                        ((JComponent)wm.panel).add(close);
+                        close.setLocation((int)peer.getLocation().getX()-44-10,
+                                (int)peer.getLocation().getY());
+                        ((JComponent)wm.getRenderPanel()).add(close);
                         close.setPreferredSize(new Dimension(40,40));
                         close.setSize(new Dimension(40,40));
                         stopButtons.put(bdc,close);
@@ -223,7 +230,7 @@ public class ManagePanelAnimations {
                         Dimension dim = new Dimension(scaledWidth+10*2,scaledHeight+10*2);
                         panel.setPreferredSize(dim);
                         panel.setSize(dim);
-                        panel.setLocation((int)bdc.getLocation().getX()-10, (int)bdc.getLocation().getY()-10);
+                        panel.setLocation((int)peer.getLocation().getX()-10, (int)bdc.getLocation().getY()-10);
                         panel.setOpaque(false);
                         rootPanel.add(panel);
                         rolloverPanels.put(bdc,panel);
@@ -304,7 +311,7 @@ public class ManagePanelAnimations {
         return new Point(x,y);
     }
     
-    public static double calculateScale(BufferedDeskletContainer bdc) {
+    public static double calculateScale(Buffered2DPeer bdc) {
         double targetScale = scaledWidth/bdc.getSize().getWidth();
         if(bdc.getSize().getWidth() > scaledWidth || bdc.getSize().getHeight() > scaledHeight) {
             // if still too big
@@ -315,18 +322,18 @@ public class ManagePanelAnimations {
         return targetScale;
     }
     
-    void moveDeskletsToOriginalPositions(final AbstractButton button) {
+    public void moveDeskletsToOriginalPositions(final AbstractButton button) {
         Animator anim = new Animator(500);
         anim.addTarget(new AnimButtonDisabler(button));
-        for(DeskletContainer dc : wm.getDesklets()) {
-            if(dc instanceof BufferedDeskletContainer) {
-                BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
-                anim.addTarget(new PropertySetter(bdc,"location",
-                        bdc.getLocation(),
-                        originalLocations.get(bdc)));
+        for(DeskletProxy dc : wm.getProxies()) {
+            if(dc.contentContainer.getPeer() instanceof Buffered2DPeer) {
+                Buffered2DPeer peer = (Buffered2DPeer) dc.contentContainer.getPeer();
+                anim.addTarget(new PropertySetter(peer,"location",
+                        peer.getLocation(),
+                        originalLocations.get(peer)));
                 // restore the scale
-                if(bdc.getScale() != 1.0) {
-                    anim.addTarget(new PropertySetter(bdc,"scale",bdc.getScale(),1.0));
+                if(peer.getScale() != 1.0) {
+                    anim.addTarget(new PropertySetter(peer,"scale",peer.getScale(),1.0));
                 }
             }
         }

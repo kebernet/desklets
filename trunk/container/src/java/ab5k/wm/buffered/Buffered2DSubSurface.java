@@ -1,12 +1,3 @@
-/*
- * BSurface.java
- *
- * Created on April 2, 2007, 4:19 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
- */
-
 package ab5k.wm.buffered;
 
 import java.awt.Point;
@@ -19,10 +10,10 @@ import java.awt.image.BufferedImage;
  *
  * @author joshy
  */
-public class BSurface {
+public class Buffered2DSubSurface {
     
     /** Creates a new instance of BSurface */
-    public BSurface() {
+    public Buffered2DSubSurface() {
     }
     
     private boolean visible = true;
@@ -34,7 +25,7 @@ public class BSurface {
     
     private BufferedImage img;
 
-    Rectangle subRect;
+    public Rectangle subRect;
 
     public boolean isVisible() {
         return visible;
