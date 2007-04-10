@@ -398,21 +398,16 @@ public class BufferedWM extends WindowManager {
             DeskletProxy proxy = bdc.getProxy();
             if(bdc.getPeer() instanceof Buffered2DPeer) {
                 proxy.configContainer.setPeer(new Buffered2DPeer(proxy.configContainer,true));
-                proxy.configContainer.getPeer().setVisible(true);
-                renderPanel.repaint();
                 return proxy.configContainer;
             }
             if(bdc.getPeer() instanceof JFramePeer) {
-                /*
-                JFrameDeskletContainer dc = (JFrameDeskletContainer) deskletContainer;
-                JDialogDeskletContainer dialog = new JDialogDeskletContainer(this,dc.getContext(),dc);
-                addDialog(dc,dialog);
-                return dialog;*
-                 */
-                return null;
+                JFramePeer dialog = new JFramePeer(proxy.configContainer, true);
+                proxy.configContainer.setPeer(dialog);
+                dialog.setContent(proxy.configContainer.getTopComponent());
+                return proxy.configContainer;
             }
         } catch (Throwable thr) {
-            u.p(thr);
+            thr.printStackTrace();
         }
         throw new IllegalArgumentException(
                 "The Buffered Window Manager cannot accept DeskletContainer's of type: "

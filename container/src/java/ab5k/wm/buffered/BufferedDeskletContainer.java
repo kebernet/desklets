@@ -140,6 +140,10 @@ public class BufferedDeskletContainer extends DeskletContainer {
         return this.context;
     }
     
+    public void setContext(DefaultContext context) {
+        this.context = context;
+    }
+    
     public DeskletProxy getProxy() {
         return proxy;
     }
@@ -169,7 +173,4 @@ public class BufferedDeskletContainer extends DeskletContainer {
         return topComponent;
     }
     
-    public void setContext(DefaultContext context) {
-        this.context = context;
-    }
 }

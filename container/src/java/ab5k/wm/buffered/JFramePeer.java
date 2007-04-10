@@ -23,6 +23,7 @@ import java.awt.event.ComponentListener;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
@@ -34,45 +35,63 @@ import org.joshy.util.u;
  */
 public class JFramePeer extends DCPeer {
     JFrame frame;
+    JDialog dialog;
     RootPaneContainer root;
     Window window;
     
     private boolean packed = false;
-
+    
     private boolean shaped = false;
+    private boolean isDialog = false;
     private JComponent content;
     
     /** Creates a new instance of JFrameDeskletContainer */
     public JFramePeer(final BufferedDeskletContainer bdc) {
+        this(bdc,false);
+    }
+    public JFramePeer(final BufferedDeskletContainer bdc, boolean isDialog) {
         super(bdc);
-        this.frame = new JFrame();
-        this.root = this.frame;
-        this.window = frame;
-        this.frame.addComponentListener(new ComponentListener() {
-            public void componentHidden(ComponentEvent e) {
-            }
-            public void componentMoved(ComponentEvent e) {
-                u.p("frame moved! " + e);
-                if(frame.getLocation().getX() >
-                        bdc.wm.core.getCollapseWindowAction().getClosedBounds().getX()) {
-                    u.p("once more into the dock!");
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            //bdc.wm.convertExternalToInternalContainer(JFramePeer.this);
-                        }
-                    });
+        this.isDialog = isDialog;
+        if(isDialog) {
+            JFrame parent = ((JFramePeer)bdc.getProxy().contentContainer.getPeer()).frame;
+            this.dialog = new JDialog(parent);
+            this.root = this.dialog;
+            this.window = this.dialog;
+        } else {
+            this.frame = new JFrame();
+            this.root = this.frame;
+            this.window = frame;
+            this.frame.addComponentListener(new ComponentListener() {
+                public void componentHidden(ComponentEvent e) {
                 }
-            }
-            public void componentResized(ComponentEvent e) {
-            }
-            public void componentShown(ComponentEvent e) {
-            }
-        });
+                public void componentMoved(ComponentEvent e) {
+                    u.p("frame moved! " + e);
+                    if(frame.getLocation().getX() >
+                            bdc.wm.core.getCollapseWindowAction().getClosedBounds().getX()) {
+                        u.p("once more into the dock!");
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                //bdc.wm.convertExternalToInternalContainer(JFramePeer.this);
+                            }
+                        });
+                    }
+                }
+                public void componentResized(ComponentEvent e) {
+                }
+                public void componentShown(ComponentEvent e) {
+                }
+            });
+        }
     }
     
     public void setContent(JComponent content) {
+        if(this.content != null) {
+            root.getContentPane().remove(content);
+        }
         this.content = content;
-        root.getContentPane().add(content);
+        if(this.content != null) {
+            root.getContentPane().add(content);
+        }
     }
     
     public void setBackgroundDraggable(boolean b) {
@@ -84,11 +103,13 @@ public class JFramePeer extends DCPeer {
     
     public void setShaped(boolean shaped) {
         if(this.shaped != shaped) {
-            if(shaped) {
-                frame.setUndecorated(true);
-                frame.setBackground(new Color(0,0,0,0));
-            } else {
-                frame.setBackground(new Color(255,255,255,255));
+            if(isDialog) {
+                if(shaped) {
+                    frame.setUndecorated(true);
+                    frame.setBackground(new Color(0,0,0,0));
+                } else {
+                    frame.setBackground(new Color(255,255,255,255));
+                }
             }
         }
     }
