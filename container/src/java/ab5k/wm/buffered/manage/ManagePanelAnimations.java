@@ -103,7 +103,10 @@ public class ManagePanelAnimations {
         Animator lastAnim = firstAnim;
         int y = 0;
         final int x = wm.getRenderPanel().getWidth()-manageButtonWidth-50;
-        int animlen = transitionLength / configs.size();
+        int animlen = 20;
+        if(configs.size() > 0) {
+            animlen = transitionLength / configs.size();
+        }
         for(DeskletConfig cfg : configs) {
             final DeskletConfig config = cfg;
             final ManageDeskletPanel panel = new ManageDeskletPanel();
