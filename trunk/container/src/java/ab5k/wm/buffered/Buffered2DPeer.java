@@ -27,6 +27,8 @@ public class Buffered2DPeer extends DCPeer {
     private boolean dirty = true;
     Dimension2D size = new Dimension(50, 50);
     private Point2D location = new Point(-1, -1);
+
+    private boolean visible = true;
     
     /** Creates a new instance of Buffered2DPeer */
     public Buffered2DPeer(BufferedDeskletContainer bdc) {
@@ -96,6 +98,12 @@ public class Buffered2DPeer extends DCPeer {
     }
 
     public void setVisible(boolean b) {
+        this.visible = b;
+        this.bdc.wm.getRenderPanel().repaint();
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
     
     

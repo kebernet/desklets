@@ -48,6 +48,8 @@ public abstract class DCPeer {
     }
 
     public abstract void setVisible(boolean visible);
+    
+    public abstract boolean isVisible();
 
     public boolean isShaped() {
         return false;
@@ -55,5 +57,6 @@ public abstract class DCPeer {
     
     public void setShaped(boolean shaped) {
     }
+
     
 }

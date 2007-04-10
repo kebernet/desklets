@@ -38,10 +38,11 @@ class DeskletRepaintManager extends RepaintManager {
         // if at the top most comp
         if(invalidComponent instanceof DeskletToplevel) {
             for(DeskletProxy proxy : wm.getProxies()) {
-                if(proxy.contentContainer.getPeer() instanceof Buffered2DPeer) {
-                    if(proxy.contentContainer.getTopComponent() == invalidComponent) {
-                        return proxy.contentContainer;
-                    }
+                if(foundDesklet(proxy.contentContainer,invalidComponent)) {
+                    return proxy.contentContainer;
+                }
+                if(foundDesklet(proxy.configContainer,invalidComponent)) {
+                    return proxy.configContainer;
                 }
             }
             return null;
@@ -51,5 +52,15 @@ class DeskletRepaintManager extends RepaintManager {
         
         return findDesklet(invalidComponent.getParent());
     }
+    
+    private boolean foundDesklet(BufferedDeskletContainer c, Component invalidComponent) {
+        if(c.getPeer() instanceof Buffered2DPeer) {
+            if(c.getTopComponent() == invalidComponent) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
 }

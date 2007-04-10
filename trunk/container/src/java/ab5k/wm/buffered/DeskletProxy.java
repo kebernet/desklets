@@ -30,7 +30,6 @@ public class DeskletProxy {
         this.wm = wm;
         contentContainer = new BufferedDeskletContainer(wm, context, this);
         configContainer = new BufferedDeskletContainer(wm, context, this);
-
     }
     private BufferedWM wm;
     

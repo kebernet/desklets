@@ -70,28 +70,33 @@ public class DeskletRenderPanel extends JPanel {
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         }
         for(DeskletProxy proxy : bufferedWM.getProxies()) {
-            
-            // draw the main desklet content first
-            BufferedDeskletContainer bdc = proxy.contentContainer;
-            if(bdc.isBuffered) {
-                if(bdc.isVisible()) {
-                    drawWindow(g2, bdc, (Buffered2DPeer)bdc.getPeer());
+            drawContainer(g2, proxy, proxy.contentContainer);
+            drawContainer(g2, proxy, proxy.configContainer);
+        }
+    }
+
+    private void drawContainer(final Graphics2D g2, final DeskletProxy proxy, BufferedDeskletContainer bdc) {
+        if(bdc == null) return;
+        
+        // draw the main desklet content first
+        if(bdc.isBuffered) {
+            if(bdc.isVisible()) {
+                drawWindow(g2, bdc, (Buffered2DPeer)bdc.getPeer());
+            }
+            /*
+            for(BaseDC dialog : bufferedWM.getDialogs(bdc)) {
+                BufferedDeskletContainer bdcd = (BufferedDeskletContainer) dialog;
+                if(bdcd.isVisible()) {
+                    drawWindow(g2, bdcd);
                 }
-                /*
-                for(BaseDC dialog : bufferedWM.getDialogs(bdc)) {
-                    BufferedDeskletContainer bdcd = (BufferedDeskletContainer) dialog;
-                    if(bdcd.isVisible()) {
-                        drawWindow(g2, bdcd);
-                    }
-                }
-                for(BufferedPopup popup : bdc.popups) {
-                    u.p("drawing popup");
-                    drawPopup(g2, popup, bdc);
-                }*/
-                if(bdc.showSurfaces) {
-                    for(Buffered2DSubSurface s : bdc.surfaces) {
-                        drawSurface(g2, s, bdc);
-                    }
+            }
+            for(BufferedPopup popup : bdc.popups) {
+                u.p("drawing popup");
+                drawPopup(g2, popup, bdc);
+            }*/
+            if(bdc.showSurfaces) {
+                for(Buffered2DSubSurface s : bdc.surfaces) {
+                    drawSurface(g2, s, bdc);
                 }
             }
         }

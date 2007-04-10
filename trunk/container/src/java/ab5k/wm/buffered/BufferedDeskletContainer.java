@@ -22,7 +22,6 @@ public class BufferedDeskletContainer extends DeskletContainer {
     private DeskletProxy proxy;
     private DCPeer peer;
     private boolean draggable = false;
-    private boolean visible = false;
     private Shape clip = null;
     
     protected BufferedWM wm;
@@ -104,18 +103,17 @@ public class BufferedDeskletContainer extends DeskletContainer {
     
     
     public void setVisible(boolean b) {
-        this.visible = b;
         getPeer().setVisible(b);
     }
     
     public void pack() {
         getTopComponent().setSize(getTopComponent().getLayout().preferredLayoutSize(getTopComponent()));
         setSize(getTopComponent().getSize());
-        //setSize(new Dimension(100,100));
     }
     
     public boolean isVisible() {
-        return visible;
+        if(getPeer() == null) return false;
+        return getPeer().isVisible();
     }
     
     public void setClipShape(Shape shape) {
