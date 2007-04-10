@@ -59,6 +59,6 @@ Build a jar of your class files, including the _META-INF_ directory and the desk
 
 To aid in testing you can use these system properties.
 
-   * -Dorg.ab5k.test.useDesktopPane
-   * -Dorg.ab5k.test.autoGrantAll=true
-   * -Dorg.ab5k.test.althomedirname=.ab5k_windowmanager
+   * -Dorg.ab5k.test.useDesktopPane  to use the older desktop pane verison of the window manager
+   * -Dorg.ab5k.test.autoGrantAll=true  to turn off the permission request and just allow everything
+   * -Dorg.ab5k.test.althomedirname=.ab5k_windowmanager   to use a different home directory for ab5k
