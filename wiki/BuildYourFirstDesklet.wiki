@@ -54,3 +54,11 @@ Create a _desklet.xml_ file in the _META-INF_ directory. The contents of the des
 }}}
 
 Build a jar of your class files, including the _META-INF_ directory and the desklet.xml.   Rename your _.jar_ file as a _.desklet_ file. Now you are done!  You can run AB5k and add your desklet using the 'add' button in the manage dialog.
+
+= Testing =
+
+To aid in testing you can use these system properties.
+
+   * -Dorg.ab5k.test.useDesktopPane
+   * -Dorg.ab5k.test.autoGrantAll=true
+   * -Dorg.ab5k.test.althomedirname=.ab5k_windowmanager
