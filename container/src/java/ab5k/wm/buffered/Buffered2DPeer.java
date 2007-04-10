@@ -29,10 +29,16 @@ public class Buffered2DPeer extends DCPeer {
     private Point2D location = new Point(-1, -1);
 
     private boolean visible = true;
+    private boolean isDialog = false;
     
     /** Creates a new instance of Buffered2DPeer */
-    public Buffered2DPeer(BufferedDeskletContainer bdc) {
+    public Buffered2DPeer(BufferedDeskletContainer bdc, boolean dialog) {
         super(bdc);
+        this.isDialog = dialog;
+    }
+    
+    public Buffered2DPeer(BufferedDeskletContainer bdc) {
+        this(bdc,false);
     }
 
     public Dimension2D getSize() {
@@ -99,6 +105,17 @@ public class Buffered2DPeer extends DCPeer {
 
     public void setVisible(boolean b) {
         this.visible = b;
+        
+        // center it
+        if(isDialog && this.visible) {
+            BufferedDeskletContainer content = bdc.getProxy().contentContainer;
+            Point2D cloc = content.getLocation();
+            Dimension2D csize = content.getSize();
+            Dimension2D size = this.getSize();
+            Point2D loc = new Point2D.Double(cloc.getX() + (csize.getWidth()-size.getWidth())/2,
+                    cloc.getY() + (csize.getHeight() - size.getHeight())/2);
+            bdc.setLocation(loc);
+        }
         this.bdc.wm.getRenderPanel().repaint();
     }
 
