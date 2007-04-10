@@ -146,8 +146,8 @@ public class DeskletRenderPanel extends JPanel {
         if(g3.getClip().intersects(0,0,peer.getBuffer().getWidth(),
                 peer.getBuffer().getHeight())) {
             Graphics2D gimg = (Graphics2D) g3.create();
-            if(bdc.getClip() != null) {
-                gimg.setClip(bdc.getClip());
+            if(peer.getClip() != null) {
+                gimg.setClip(peer.getClip());
             }
             gimg.drawImage(peer.getBuffer(), 0, 0, null);
             gimg.dispose();
