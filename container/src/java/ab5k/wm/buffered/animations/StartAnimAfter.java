@@ -1,10 +1,10 @@
-package ab5k.wm.buffered;
+package ab5k.wm.buffered.animations;
 
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 
 
-class StartAnimAfter implements TimingTarget {
+public class StartAnimAfter implements TimingTarget {
     
     private Animator anim;
     

@@ -56,9 +56,9 @@ class InternalToExternalMouseHandler extends MouseAdapter {
         }
         
         if(core.getCloser().isWindowClosed() &&
-                wm.selectedDesklet instanceof JFrameDeskletContainer) {
+                wm.selectedDesklet.getPeer() instanceof JFramePeer) {
             Point pt = e.getPoint();
-            SwingUtilities.convertPointToScreen(pt,wm.panel);
+            SwingUtilities.convertPointToScreen(pt,wm.getRenderPanel());
             wm.selectedDesklet.setLocation(new Point(pt.x - wm.selectedDeskletOffset.x,
                     pt.y - wm.selectedDeskletOffset.y));
             
@@ -86,12 +86,13 @@ class InternalToExternalMouseHandler extends MouseAdapter {
             if(wm.selectedDesklet != null) {
                 if(wm.selectedDesklet instanceof BufferedDeskletContainer) {
                     BufferedDeskletContainer bdc = (BufferedDeskletContainer) wm.selectedDesklet;
-                    Point pt = wm.panel.getLocation();
+                    /*
+                    Point pt = wm.getRenderPanel().getLocation();
                     pt.translate((int)bdc.getLocation().getX(),
                             (int)bdc.getLocation().getY());
-                    g.drawImage(bdc.getBuffer(),
+                    g.drawImage(((Buffered2DPeer)bdc.getPeer()).getBuffer(),
                             (int)pt.getX(),
-                            (int)pt.getY(), null);
+                            (int)pt.getY(), null);*/
                 }
             }
         }

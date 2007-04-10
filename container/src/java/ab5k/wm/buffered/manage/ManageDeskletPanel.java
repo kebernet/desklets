@@ -4,7 +4,7 @@
  * Created on March 30, 2007, 8:27 AM
  */
 
-package ab5k.wm.buffered;
+package ab5k.wm.buffered.manage;
 
 import org.jdesktop.swingx.JXBoxPanel;
 

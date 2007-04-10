@@ -1,4 +1,4 @@
-package ab5k.wm.buffered;
+package ab5k.util;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -9,9 +9,13 @@ import org.joshy.util.u;
 
 
 // this just lays out components using their preferred size. it does not
+
+
+
+// this just lays out components using their preferred size. it does not
 // move them around at all.
 // it also leaves the parent at whatever size it was set at
-class AbsLayout implements LayoutManager {
+public class AbsLayout implements LayoutManager {
     
     public void addLayoutComponent(String name, Component comp) {
         u.p("adding: " + name);

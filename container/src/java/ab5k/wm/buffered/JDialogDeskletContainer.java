@@ -16,14 +16,13 @@ import javax.swing.JDialog;
  *
  * @author joshy
  */
-public class JDialogDeskletContainer extends JFrameDeskletContainer {
-    JFrameDeskletContainer parent;
+public class JDialogDeskletContainer extends JFramePeer {
+    JFramePeer parent;
     JDialog dialog;
     
     /** Creates a new instance of JDialogDeskletContainer */
-    public JDialogDeskletContainer(final BufferedWM wm, DefaultContext context,
-            JFrameDeskletContainer parent) {
-        super(wm,context);
+    public JDialogDeskletContainer(BufferedDeskletContainer bdc) {
+        super(bdc);
         this.parent = parent;
         this.frame = null;
         this.dialog = new JDialog(parent.frame);

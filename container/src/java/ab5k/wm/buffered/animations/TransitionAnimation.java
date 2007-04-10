@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package ab5k.wm.buffered;
+package ab5k.wm.buffered.animations;
 
 import ab5k.desklet.DeskletContainer;
 import ab5k.wm.WindowManager;

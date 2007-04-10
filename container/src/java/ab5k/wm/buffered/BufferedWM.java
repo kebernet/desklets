@@ -23,6 +23,11 @@ import ab5k.util.AnimRepainter;
 import ab5k.util.GlobalMouse;
 import ab5k.util.GraphicsUtil;
 import ab5k.wm.WindowManager;
+import ab5k.wm.buffered.animations.StdCreationAnimation;
+import ab5k.wm.buffered.animations.StdDestructionAnimation;
+import ab5k.wm.buffered.animations.TransitionAnimation;
+import ab5k.wm.buffered.animations.TransitionEvent;
+import ab5k.wm.buffered.manage.ManagePanelAnimations;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -51,7 +56,9 @@ import javax.swing.JToggleButton;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
 import org.jdesktop.animation.timing.Animator;
+import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.swingx.JXBoxPanel;
 import org.jdesktop.swingx.JXInsets;
@@ -73,19 +80,20 @@ public class BufferedWM extends WindowManager {
     static final boolean SHOW_FRAME_TITLE_BAR = false;
     static final boolean TRANSPARENT_DOCK = false;
     
-    private List<BaseDC> desklets;
-    private Map<BaseDC,List<BaseDC>> dialogMap;
+    //private List<BaseDC> desklets;
+    private List<DeskletProxy> proxies;
+    //private Map<BaseDC,List<BaseDC>> dialogMap;
     JFrame frame;
-    Component panel;
+    private Component renderPanel;
     
     private JComponent dock;
     Container hidden;
-    DeskletContainer selectedDesklet = null;
+    BufferedDeskletContainer selectedDesklet = null;
     Point selectedDeskletOffset;
-    boolean isManageMode = false;
+    private boolean manageMode = false;
     
     Core core;
-    GlobalMouse globalMouseService = GlobalMouse.getInstance();
+    private GlobalMouse globalMouseService = GlobalMouse.getInstance();
     
     private boolean oldAnim = false;
     
@@ -93,14 +101,14 @@ public class BufferedWM extends WindowManager {
     /** Creates a new instance of BufferedWM */
     public BufferedWM(final Core core) {
         this.core = core;
-        desklets = new ArrayList<BaseDC>();
-        dialogMap = new HashMap<BaseDC,List<BaseDC>>();
+        //dialogMap = new HashMap<BaseDC,List<BaseDC>>();
+        setProxies(new ArrayList<DeskletProxy>());
     }
     
     public void init() {
         RepaintManager.setCurrentManager(new DeskletRepaintManager(this));
         hidden = new JDialog();
-        panel = createRenderPanel();
+        renderPanel = createRenderPanel();
         frame = new JFrame("AB5k");
         if(!SHOW_FRAME_TITLE_BAR) {
             frame.setUndecorated(true);
@@ -109,16 +117,16 @@ public class BufferedWM extends WindowManager {
             frame.setBackground(new Color(0,0,0,0));
         }
         frame.getContentPane().setLayout(new BorderLayout());
-        frame.getContentPane().add(panel,"Center");
+        frame.getContentPane().add(getRenderPanel(), "Center");
         
         MouseRedispatcher mouse = new MouseRedispatcher(this);
-        panel.addMouseListener(mouse);
-        panel.addMouseMotionListener(mouse);
+        getRenderPanel().addMouseListener(mouse);
+        getRenderPanel().addMouseMotionListener(mouse);
         
         // deal with converting internal to external desklets
         MouseAdapter ma = new InternalToExternalMouseHandler(core,this);
-        panel.addMouseListener(ma);
-        panel.addMouseMotionListener(ma);
+        getRenderPanel().addMouseListener(ma);
+        getRenderPanel().addMouseMotionListener(ma);
         setupManageButtons();
         globalMouseService = new CustomGlobalMouseService(this);
         //setupPopupHacking();
@@ -128,8 +136,8 @@ public class BufferedWM extends WindowManager {
             ImagePainter im2 = new ImagePainter(getClass().getResource("/backgrounds/di-sails-blue.png"));
             im2.setHorizontalAlignment(ImagePainter.HorizontalAlignment.LEFT);
             im2.setInsets(new JXInsets(0,-180,0,0));
-            if(panel instanceof JXPanel) {
-                ((JXPanel)panel).setBackgroundPainter(new CompoundPainter(im2));
+            if(getRenderPanel() instanceof JXPanel) {
+                ((JXPanel)getRenderPanel()).setBackgroundPainter(new CompoundPainter(im2));
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -159,11 +167,11 @@ public class BufferedWM extends WindowManager {
                 if(manageButton.isSelected()) {
                     mpa.showManagePanel();
                     mpa.moveDeskletsToColumns(manageButton);
-                    isManageMode = true;
+                    setManageMode(true);
                 } else {
                     mpa.hideManagePanel();
                     mpa.moveDeskletsToOriginalPositions(manageButton);
-                    isManageMode = false;
+                    setManageMode(false);
                 }
             }
         });
@@ -172,23 +180,23 @@ public class BufferedWM extends WindowManager {
         getMore.setOpaque(false);
         buttonPanel.add(getMore);
         
-        if(panel instanceof Container) {
-            ((Container)panel).add(buttonPanel);
+        if(getRenderPanel() instanceof Container) {
+            ((Container)getRenderPanel()).add(buttonPanel);
         }
-        panel.addComponentListener(new ComponentListener() {
+        getRenderPanel().addComponentListener(new ComponentListener() {
             public void componentHidden(ComponentEvent e) {
             }
             public void componentMoved(ComponentEvent e) {
             }
             public void componentResized(ComponentEvent e) {
-                buttonPanel.setLocation(panel.getWidth()-buttonPanel.getWidth(),0);
+                buttonPanel.setLocation(getRenderPanel().getWidth()-buttonPanel.getWidth(),0);
             }
             public void componentShown(ComponentEvent e) {
             }
         });
     }
     
-    void stop(DeskletContainer dc) {
+    public void stop(DeskletContainer dc) {
         if(dc instanceof BufferedDeskletContainer) {
             DeskletManager manager = DeskletManager.getInstance();
             BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
@@ -205,7 +213,7 @@ public class BufferedWM extends WindowManager {
         }).start();
     }
     
-    void start(final DeskletConfig d) {
+    public void start(final DeskletConfig d) {
         new Thread(new Runnable() {
             public void run() {
                 DeskletManager manager = DeskletManager.getInstance();
@@ -219,17 +227,16 @@ public class BufferedWM extends WindowManager {
     }
     
     BufferedDeskletContainer findContainer(Point pt) {
-        for(int i=getWindows().size()-1; i>=0; i--) {
-            DeskletContainer dc = getWindows().get(i);
+        for(int i=getProxies().size() -1; i>=0; i--) {
+            DeskletProxy proxy = getProxies().get(i);
+            BufferedDeskletContainer dc = proxy.contentContainer;
             if(dc.isVisible()) {
-                if(dc instanceof BufferedDeskletContainer) {
-                    BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
-                    
-                    Point loc = GraphicsUtil.toPoint(bdc.getLocation());
-                    Dimension2D size = bdc.getSize();
+                if(dc.getPeer() instanceof Buffered2DPeer) {
+                    Point loc = GraphicsUtil.toPoint(dc.getLocation());
+                    Dimension2D size = dc.getSize();
                     Rectangle rect = new Rectangle(loc.x, loc.y, (int)size.getWidth(), (int)size.getHeight());
                     if(rect.contains(pt)) {
-                        return bdc;
+                        return dc;
                     }
                 }
             }
@@ -241,14 +248,14 @@ public class BufferedWM extends WindowManager {
         BufferedDeskletContainer bdc = findContainer(e.getPoint());
         if(bdc != null) {
             // raise the container
-            desklets.remove(bdc);
-            desklets.add(bdc);
+            proxies.remove(bdc.getProxy());
+            proxies.add(bdc.getProxy());
             // raise it's dialogs. josh: it's a map! how do we affect the order?
             selectedDesklet = bdc;
             selectedDeskletOffset = new Point(
                     (int)(e.getPoint().getX() - selectedDesklet.getLocation().getX()),
                     (int)(e.getPoint().getY() - selectedDesklet.getLocation().getY()));
-            panel.repaint();
+            getRenderPanel().repaint();
         }
     }
     
@@ -259,7 +266,7 @@ public class BufferedWM extends WindowManager {
     }
     
     public Dimension getContainerSize() {
-        return panel.getSize();
+        return getRenderPanel().getSize();
     }
     
     public void setDesktopBackground(DesktopBackground bg) {
@@ -275,40 +282,60 @@ public class BufferedWM extends WindowManager {
     
     /* ====== the desklet container lifecycle ===== */
     public DeskletContainer createInternalContainer(DefaultContext context) {
-        BufferedDeskletContainer cont = new BufferedDeskletContainer(this,context);
+        DeskletProxy proxy = new DeskletProxy(context, this);
+        proxy.contentContainer.setPeer(new Buffered2DPeer(proxy.contentContainer));
         int x = Integer.parseInt(context.getPreference(ContainerFactory.LOCATION_X,"300"));
         int y = Integer.parseInt(context.getPreference(ContainerFactory.LOCATION_Y,"300"));
-        cont.setLocation(new Point(x,y));
+        proxy.contentContainer.setLocation(new Point(x,y));
         context.services.put(ab5k.desklet.services.GlobalMouse.class, globalMouseService);
-        return cont;
+        getProxies().add(proxy);
+        return proxy.contentContainer;
     }
     
     public void convertInternalToExternalContainer(DeskletContainer dc) {
+        
         if(dc == null) return;
-        BaseDC bdc = (BaseDC) dc;
+        BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
         DefaultContext context = bdc.getContext();
+        Point pt = GraphicsUtil.toPoint(bdc.getLocation());
+        SwingUtilities.convertPointToScreen(pt,renderPanel);
         
         // remove all the old stuff
+        /*
         if(bdc instanceof BufferedDeskletContainer) {
             hidden.remove(((BufferedDeskletContainer)bdc).comp);
-        }
-        getDesklets().remove(bdc);
+        }*/
+        //getDesklets().remove(bdc);
         
         // create a new container
-        JFrameDeskletContainer newContainer = new JFrameDeskletContainer(this, context);
+        JFramePeer peer = new JFramePeer(bdc);
+        peer.setContent(bdc.getContent());
+        bdc.setPeer(peer);
+        
+        
+        //JFrameDeskletContainer newContainer = new JFrameDeskletContainer(this, context);
+        //DeskletProxy proxy = bdc.proxy;
+        //proxy.contentContainer.
         
         // copy the settings
-        newContainer.setContent(bdc.getContent());
-        newContainer.setShaped(bdc.isShaped());
+        //newContainer.setContent(bdc.getContent());
+        //newContainer.setShaped(bdc.isShaped());
         
-        getDesklets().add(newContainer);
-        newContainer.pack();
-        newContainer.setVisible(true);
-        context.setContainer(newContainer);
-        newContainer.setVisible(true);
+        //getDesklets().add(newContainer);
+        bdc.pack();
+        bdc.setLocation(pt);
+        //newContainer.pack();
+        bdc.setVisible(true);
+        //newContainer.setVisible(true);
+        //context.setContainer(bdc);
+        //context.setContainer(newContainer);
+        //newContainer.setVisible(true);
+        
+        u.p("moved internal to external");
     }
     
     public void convertExternalToInternalContainer(DeskletContainer dc) {
+        /*
         if(dc == null) return;
         BaseDC bdc = (BaseDC) dc;
         getDesklets().remove(bdc);
@@ -325,6 +352,7 @@ public class BufferedWM extends WindowManager {
         jdc.setVisible(false);
         jdc.frame.dispose();
         core.getCollapseWindowAction().doExpand();
+         */
     }
     
     
@@ -333,15 +361,17 @@ public class BufferedWM extends WindowManager {
     }
     
     public void showContainer(DeskletContainer dc) {
-        
-        final BaseDC bdc = (BaseDC) dc;
+        final BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+        bdc.setVisible(true);
+        /*
         getDesklets().add(bdc);
         if(bdc instanceof BufferedDeskletContainer) {
             hidden.add(((BufferedDeskletContainer)dc).comp);
-        }
+        }*/
+        
         Animator anim = creationTransition.createAnimation(new TransitionEvent(this,null,(BufferedDeskletContainer)dc));
-        if(panel instanceof JComponent) {
-            anim.addTarget(new AnimRepainter((JComponent)panel));
+        if(getRenderPanel() instanceof JComponent) {
+            anim.addTarget(new AnimRepainter((JComponent)getRenderPanel()));
         }
         anim.start();
     }
@@ -357,35 +387,44 @@ public class BufferedWM extends WindowManager {
                 realdestroyContainer(dc);
             }
         });
-        if(panel instanceof JComponent) {
-            anim.addTarget(new AnimRepainter((JComponent)panel));
+        if(getRenderPanel() instanceof JComponent) {
+            anim.addTarget(new AnimRepainter((JComponent)getRenderPanel()));
         }
         anim.start();
     }
     
     private void realdestroyContainer(DeskletContainer dc) {
+        BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
         //panel.remove(((BufferedDeskletContainer)dc).comp);
-        getDesklets().remove(dc);
-        panel.repaint();
+        getProxies().remove(bdc.getProxy());
+        bdc.setVisible(false);
+        getRenderPanel().repaint();
     }
     
     /* === methods to manipulate desklet containers ===== */
     
     public DeskletContainer createDialog(DeskletContainer deskletContainer) {
         try {
-            if(deskletContainer instanceof BufferedDeskletContainer) {
-                BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
+            BufferedDeskletContainer bdc = (BufferedDeskletContainer) deskletContainer;
+            DeskletProxy proxy = bdc.getProxy();
+            if(bdc.getPeer() instanceof Buffered2DPeer) {
+               
+                /*
                 BufferedDeskletContainer dialog = new BufferedDialogContainer(this,bdc.getContext(),bdc);
                 addDialog(bdc,dialog);
                 hidden.add(dialog.comp);
                 panel.repaint();
-                return dialog;
+                return dialog;*/
+                return null;
             }
-            if(deskletContainer instanceof JFrameDeskletContainer) {
+            if(bdc.getPeer() instanceof JFramePeer) {
+                /*
                 JFrameDeskletContainer dc = (JFrameDeskletContainer) deskletContainer;
                 JDialogDeskletContainer dialog = new JDialogDeskletContainer(this,dc.getContext(),dc);
                 addDialog(dc,dialog);
-                return dialog;
+                return dialog;*
+                 */
+                return null;
             }
         } catch (Throwable thr) {
             u.p(thr);
@@ -394,7 +433,7 @@ public class BufferedWM extends WindowManager {
                 "The Buffered Window Manager cannot accept DeskletContainer's of type: "
                 + deskletContainer.getClass().getName());
     }
-    
+    /*
     public List<BaseDC> getDesklets() {
         return desklets;
     }
@@ -402,15 +441,15 @@ public class BufferedWM extends WindowManager {
     void setDesklets(List<BaseDC> desklets) {
         this.desklets = desklets;
     }
-    
-    
+    */
+    /*
     private void addDialog(BaseDC dc, BaseDC dialog) {
         if(!dialogMap.containsKey(dc)) {
             dialogMap.put(dc,new ArrayList<BaseDC>());
         }
         dialogMap.get(dc).add(dialog);
-    }
-    
+    }*/
+    /*
     List<BaseDC> getWindows() {
         List<BaseDC> windows = new ArrayList<BaseDC>();
         windows.addAll(desklets);
@@ -425,15 +464,15 @@ public class BufferedWM extends WindowManager {
             dialogMap.put(dc,new ArrayList<BaseDC>());
         }
         return dialogMap.get(dc);
-    }
-    
+    }*/
+    /*
     private void setupPopupHacking() {
         PopupFactory.setSharedInstance(new PopupFactory() {
             public Popup getPopup(final Component owner, final Component contents, int x, int y) throws IllegalArgumentException {
                 return new BufferedPopup(BufferedWM.this, owner, contents);
             }
         });
-    }
+    }*/
     
     Component getTopParent(Component comp, Class targetClass) {
         if(targetClass.isAssignableFrom(comp.getClass())) {
@@ -448,6 +487,26 @@ public class BufferedWM extends WindowManager {
     
     public DeskletContainer createExternalContainer(DefaultContext context) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public List<DeskletProxy> getProxies() {
+        return proxies;
+    }
+
+    public void setProxies(List<DeskletProxy> proxies) {
+        this.proxies = proxies;
+    }
+
+    public boolean isManageMode() {
+        return manageMode;
+    }
+
+    public void setManageMode(boolean manageMode) {
+        this.manageMode = manageMode;
+    }
+
+    public Component getRenderPanel() {
+        return renderPanel;
     }
     
     

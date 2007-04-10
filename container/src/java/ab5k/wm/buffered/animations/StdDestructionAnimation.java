@@ -7,11 +7,17 @@
  * and open the template in the editor.
  */
 
-package ab5k.wm.buffered;
+package ab5k.wm.buffered.animations;
 
 import ab5k.desklet.DeskletContainer;
 import ab5k.util.AnimRepainter;
 import ab5k.wm.WindowManager;
+import ab5k.wm.buffered.Buffered2DPeer;
+import ab5k.wm.buffered.Buffered2DSubSurface;
+import ab5k.wm.buffered.BufferedDeskletContainer;
+import ab5k.wm.buffered.JFramePeer;
+import ab5k.wm.buffered.animations.TransitionAnimation;
+import ab5k.wm.buffered.animations.TransitionEvent;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -38,23 +44,24 @@ public class StdDestructionAnimation extends TransitionAnimation {
         if(oldAnim) {
             Animator anim = new Animator(500);
             //anim.addTarget(new PropertySetter(dc,"location",new Point(0,0), new Point(200,200)));
-            anim.addTarget(new PropertySetter(dc,"alpha",dc.getAlpha(),0f));
+            Buffered2DPeer peer = (Buffered2DPeer) dc.getPeer();
+            anim.addTarget(new PropertySetter(peer,"alpha",peer.getAlpha(),0f));
             //anim.addTarget(new PropertySetter(dc,"rotation",0f,(float)Math.PI*2f*5f));
-            anim.addTarget(new PropertySetter(dc,"scale",dc.getScale(),0.3));
+            anim.addTarget(new PropertySetter(peer,"scale",peer.getScale(),0.3));
             return anim;
         } else {
             
             Animator anim = new Animator(1000);
             int num = 5;
-            BSurface[][] surfaces = new BSurface[num][num];
+            Buffered2DSubSurface[][] surfaces = new Buffered2DSubSurface[num][num];
             int w = (int)dc.getSize().getWidth()/num;
             int h = (int)dc.getSize().getHeight()/num;
             
             Point2D pt = dc.getLocation();
             for(int i=0; i<num; i++) {
-                surfaces[i] = new BSurface[num];
+                surfaces[i] = new Buffered2DSubSurface[num];
                 for(int j = 0; j<num; j++) {
-                    BSurface s  = new BSurface();
+                    Buffered2DSubSurface s  = new Buffered2DSubSurface();
                     s.setSize(new Dimension(w,h));//img.getWidth(), img.getHeight()));
                     
                     s.subRect = new Rectangle(0+i*w, 0+j*h, w, h);
@@ -83,6 +90,7 @@ public class StdDestructionAnimation extends TransitionAnimation {
                     dc.showSurfaces = true;
                 }
                 public void end() {
+                    dc.showSurfaces = false;
                 }
                 public void repeat() {
                 }
@@ -90,8 +98,10 @@ public class StdDestructionAnimation extends TransitionAnimation {
                 }
             });
             Animator astart = new Animator(250);
-            astart.addTarget(new AnimRepainter((JComponent)evt.getWindowManager().panel));
-            astart.addTarget(new PropertySetter(dc,"scale",dc.getScale(), 1.0));
+            astart.addTarget(new AnimRepainter((JComponent)evt.getWindowManager().getRenderPanel()));
+            if(dc.getPeer() instanceof Buffered2DPeer) {
+                astart.addTarget(new PropertySetter(dc.getPeer(), "scale",((Buffered2DPeer)dc.getPeer()).getScale(), 1.0));
+            }
             astart.addTarget(new StartAnimAfter(anim));
             astart.addTarget(new TimingTarget() {
                 public void begin() {
@@ -106,5 +116,5 @@ public class StdDestructionAnimation extends TransitionAnimation {
             return anim;
         }
     }
-
+    
 }

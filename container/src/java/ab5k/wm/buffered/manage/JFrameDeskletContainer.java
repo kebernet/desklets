@@ -32,32 +32,33 @@ import org.joshy.util.u;
  *
  * @author joshy
  */
-public class JFrameDeskletContainer extends BaseDC {
+public class JFrameDeskletContainer extends DCPeer {
     JFrame frame;
     RootPaneContainer root;
     Window window;
+    JComponent content;
     
     private boolean packed = false;
 
     private boolean shaped = false;
     
     /** Creates a new instance of JFrameDeskletContainer */
-    public JFrameDeskletContainer(final BufferedWM wm, DefaultContext context) {
-        super(wm, context);
+    public JFrameDeskletContainer(final BufferedDeskletContainer bdc) {
+        super(bdc);
         this.frame = new JFrame();
         this.root = this.frame;
-        this.window = frame;
+        this.window = this.frame;
         this.frame.addComponentListener(new ComponentListener() {
             public void componentHidden(ComponentEvent e) {
             }
             public void componentMoved(ComponentEvent e) {
                 u.p("frame moved! " + e);
                 if(frame.getLocation().getX() >
-                        wm.core.getCollapseWindowAction().getClosedBounds().getX()) {
+                        bdc.wm.core.getCollapseWindowAction().getClosedBounds().getX()) {
                     u.p("once more into the dock!");
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            wm.convertExternalToInternalContainer(JFrameDeskletContainer.this);
+                            //bdc.wm.convertExternalToInternalContainer(JFrameDeskletContainer.this);
                         }
                     });
                 }

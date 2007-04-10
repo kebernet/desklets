@@ -1,5 +1,6 @@
 package ab5k.wm.buffered;
 
+import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import ab5k.util.MoveMouseListener;
 import java.awt.BorderLayout;
@@ -14,66 +15,58 @@ import java.util.List;
 import javax.swing.JComponent;
 
 
-public class BufferedDeskletContainer extends BaseDC {
-    JComponent comp;
-    private Point2D location = new Point(-1, -1);
-    
+public class BufferedDeskletContainer extends DeskletContainer {
+    private JComponent topComponent;
+    private JComponent content;
+    private DefaultContext context;
+    private DeskletProxy proxy;
+    private DCPeer peer;
     private boolean draggable = false;
-    MoveMouseListener mml;
-    
-    private BufferedImage buffer;
-    private float alpha = 1f;
-    private double rotation = 0;
-    private double scale = 1.0;
-    
-    private boolean dirty = true;
-    
     private boolean visible = false;
-    
     private Shape clip = null;
     
-    List<BufferedPopup> popups;
-    List<BSurface> surfaces;
-    boolean showSurfaces = false;
+    protected BufferedWM wm;
     
-    BufferedDeskletContainer(BufferedWM wm, DefaultContext context) {
-        super(wm, context);
-        comp = new DeskletToplevel(this);
+    MoveMouseListener mml;
+    public List<Buffered2DSubSurface> surfaces;
+    public boolean showSurfaces = false;
+    boolean isBuffered = true;
+    
+    
+    
+    public BufferedDeskletContainer(BufferedWM wm, DefaultContext context, DeskletProxy proxy) {
+        this.wm = wm;
+        this.setProxy(proxy);
+        this.setContext(context);
+        topComponent = new DeskletToplevel(this);
         //comp.setBorder(BorderFactory.createLineBorder(Color.RED));
-        comp.setLayout(new BorderLayout());
+        getTopComponent().setLayout(new BorderLayout());
         mml = new MoveMouseListener(this, wm);
         setBackgroundDraggable(false);
-        popups = new ArrayList<BufferedPopup>();
-        surfaces = new ArrayList<BSurface>();
+        //popups = new ArrayList<BufferedPopup>();
+        surfaces = new ArrayList<Buffered2DSubSurface>();
     }
     
-    Dimension2D size = new Dimension(50, 50);
     
     public Dimension2D getSize() {
-        return size;
+        return getPeer().getSize();
     }
     
     public void setSize(Dimension2D dimension2D) {
-        Dimension2D old = this.size;
+        Dimension2D old = getPeer().getSize();
         if(!old.equals(dimension2D)) {
-            setDirty(true);
-            comp.setSize((Dimension) dimension2D);
-            this.size = dimension2D;
+            getTopComponent().setSize((Dimension) dimension2D);
+            getPeer().setSize(dimension2D);
         }
     }
     
-    public double getScale() {
-        return scale;
-    }
     
     public Point2D getLocation() {
-        return location;
+        return getPeer().getLocation();
     }
     
     public void setLocation(Point2D point) {
-        this.location = point;
-        setDirty(true);
-        wm.panel.repaint();
+        getPeer().setLocation(point);
     }
     
     
@@ -84,72 +77,41 @@ public class BufferedDeskletContainer extends BaseDC {
             return;
         }
         if(backgroundDraggable) {
-            comp.addMouseListener(mml);
-            comp.addMouseMotionListener(mml);
+            getTopComponent().addMouseListener(mml);
+            getTopComponent().addMouseMotionListener(mml);
         } else {
-            comp.removeMouseListener(mml);
-            comp.removeMouseMotionListener(mml);
+            getTopComponent().removeMouseListener(mml);
+            getTopComponent().removeMouseMotionListener(mml);
         }
     }
     public boolean isBackgroundDraggable() {
         return this.draggable;
     }
     
+    
+    public JComponent getContent() {
+        return this.content;
+    }
+    
     public void setContent(JComponent content) {
         if(this.content != null) {
-            comp.remove(this.content);
+            getTopComponent().remove(this.content);
         }
         this.content = content;
-        comp.add(content,"Center");
+        getTopComponent().add(content,"Center");
         pack();
     }
     
     
     public void setVisible(boolean b) {
         this.visible = b;
+        getPeer().setVisible(b);
     }
-    
-    public BufferedImage getBuffer() {
-        return buffer;
-    }
-    
-    public void setBuffer(BufferedImage buffer) {
-        this.buffer = buffer;
-    }
-    
-    public float getAlpha() {
-        return alpha;
-    }
-    
-    public void setAlpha(float alpha) {
-        this.alpha = alpha;
-    }
-    
-    public double getRotation() {
-        return rotation;
-    }
-    
-    public void setRotation(double rotation) {
-        this.rotation = rotation;
-    }
-    
-    public void setScale(double scale) {
-        this.scale = scale;
-    }
-    
-    void setDirty(boolean b) {
-        this.dirty = b;
-    }
-    
-    boolean isDirty() {
-        return this.dirty;
-    }
-    
     
     public void pack() {
-        comp.setSize(comp.getLayout().preferredLayoutSize(comp));
-        setSize(comp.getSize());
-        setDirty(true);
+        getTopComponent().setSize(getTopComponent().getLayout().preferredLayoutSize(getTopComponent()));
+        setSize(getTopComponent().getSize());
+        //setSize(new Dimension(100,100));
     }
     
     public boolean isVisible() {
@@ -173,5 +135,56 @@ public class BufferedDeskletContainer extends BaseDC {
     }
     public boolean isShaped() {
         return true;
+    }
+    
+    public void setShape(Shape arg0) {
+    }
+    
+    public Shape getShape() {
+        return null;
+    }
+    
+    public void setResizable(boolean arg0) {
+    }
+    
+    public boolean isResizable() {
+        return false;
+    }
+    
+    public DefaultContext getContext() {
+        return this.context;
+    }
+    
+    public DeskletProxy getProxy() {
+        return proxy;
+    }
+    
+    public void setProxy(DeskletProxy proxy) {
+        this.proxy = proxy;
+    }
+    
+    public DCPeer getPeer() {
+        return peer;
+    }
+    
+    public void setPeer(DCPeer peer) {
+        DCPeer old = getPeer();
+        this.peer = peer;
+        if(peer instanceof Buffered2DPeer) {
+            this.isBuffered = true;
+        } else {
+            this.isBuffered = false;
+        }
+        if(old != null) {
+            this.peer.setShaped(old.isShaped());
+        }
+    }
+    
+    public JComponent getTopComponent() {
+        return topComponent;
+    }
+    
+    public void setContext(DefaultContext context) {
+        this.context = context;
     }
 }
