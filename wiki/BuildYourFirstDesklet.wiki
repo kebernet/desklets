@@ -16,7 +16,7 @@
 
 Create a new class like _MyAppDesklet_.
 
-Make MyAppDesklet  subclass _ab5k.AbstractDesklet_ and implement the abstract methods
+Make MyAppDesklet  subclass _ab5k.Desklet_ and implement the abstract methods
 
 Make a main method like this:
 {{{
@@ -30,8 +30,8 @@ This main method will run your desklet in a test environment. This lets you test
 In your MyAppDesklet class go to the init() method and type something like this:
 
 {{{
-        context.getContainer().setContent(new JButton("Greetings earthling!");
-        context.getContainer().setVisible(true);
+        getContext().getContainer().setContent(new JButton("Greetings earthling!");
+        getContext().getContainer().setVisible(true);
 }}}
 
 Compile your code and run the main method in MyAppDesklet.  The DeskletTester will start your desklet in a test environment and you should see a window appear with your desklet in it. 
