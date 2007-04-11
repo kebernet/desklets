@@ -163,7 +163,10 @@ public class ManagePanelAnimations {
     public void hideManagePanel() {
         Animator startAnim = new Animator(1);
         Animator prevAnim = startAnim;
-        int animlen = transitionLength / manageButtons.size();
+        int animlen = 20;
+        if(manageButtons.size() > 0) {
+            animlen = transitionLength / manageButtons.size();
+        }
         // create the animators in reverse order
         for(int i=manageButtons.size()-1; i>=0; i--) {
             final JPanel panel = manageButtons.get(i);

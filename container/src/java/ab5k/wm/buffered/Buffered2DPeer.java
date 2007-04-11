@@ -10,35 +10,35 @@
 package ab5k.wm.buffered;
 
 import ab5k.util.AnimRepainter;
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.jdesktop.swingx.graphics.GraphicsUtilities;
+import org.joshy.util.u;
 
 /**
  *
  * @author joshy
  */
-public class Buffered2DPeer extends DCPeer {
-    private BufferedImage buffer;
-    private float alpha = 1f;
-    private double rotation = 0;
-    private double scale = 1.0;
-    private boolean dirty = true;
-    Dimension2D size = new Dimension(50, 50);
+public class Buffered2DPeer extends BufferedPeer {
     private Point2D location = new Point(-1, -1);
 
     private boolean visible = true;
     private boolean isDialog = false;
 
-    private Shape clip;
     
     /** Creates a new instance of Buffered2DPeer */
     public Buffered2DPeer(BufferedDeskletContainer bdc, boolean dialog) {
@@ -50,17 +50,6 @@ public class Buffered2DPeer extends DCPeer {
         this(bdc,false);
     }
 
-    public Dimension2D getSize() {
-        return size;
-    }
-
-    public void setSize(Dimension2D dimension2D) {
-        Dimension2D old = this.size;
-        if(!old.equals(dimension2D)) {
-            setDirty(true);
-            this.size = dimension2D;
-        }
-    }
     
     public Point2D getLocation() {
         return location;
@@ -72,45 +61,6 @@ public class Buffered2DPeer extends DCPeer {
         bdc.wm.getRenderPanel().repaint();
     }
     
-    public BufferedImage getBuffer() {
-        return buffer;
-    }
-    
-    public void setBuffer(BufferedImage buffer) {
-        this.buffer = buffer;
-    }
-    
-    public float getAlpha() {
-        return alpha;
-    }
-    
-    public void setAlpha(float alpha) {
-        this.alpha = alpha;
-    }
-    
-    public double getRotation() {
-        return rotation;
-    }
-    
-    public void setRotation(double rotation) {
-        this.rotation = rotation;
-    }
-    
-    public double getScale() {
-        return scale;
-    }
-    
-    public void setScale(double scale) {
-        this.scale = scale;
-    }
-    
-    void setDirty(boolean b) {
-        this.dirty = b;
-    }
-    
-    boolean isDirty() {
-        return this.dirty;
-    }
 
     public void setVisible(boolean visible) {
         
@@ -139,7 +89,6 @@ public class Buffered2DPeer extends DCPeer {
                 anim.start();
             }
         }
-        //this.bdc.wm.getRenderPanel().repaint();
     }
 
     private void center() {
@@ -155,53 +104,6 @@ public class Buffered2DPeer extends DCPeer {
     public boolean isVisible() {
         return visible;
     }
-    /*
-     *   public void setVisible(boolean visible) {
-        if(!packed) {
-            pack();
-            packed = true;
-            double x = parent.getLocation().getX() + parent.getSize().getWidth()/2 - getSize().getWidth()/2;
-            double y = parent.getLocation().getY() + parent.getSize().getHeight()/2 - getSize().getHeight()/2;
-            setLocation(new Point2D.Double(x,y));
-            setDirty(true);
-        }
-        if(visible) {
-            super.setVisible(visible);
-            startOpenAnimation().start();
-        } else {
-            Animator anim = startOpenAnimation();
-            anim.setDirection(Animator.Direction.BACKWARD);
-            anim.setInitialFraction(1f);
-            anim.addTarget(new TimingTarget() {
-                public void begin() {
-                }
-                public void end() {
-                    BufferedDialogContainer.super.setVisible(false);
-                }
-                public void repeat() {
-                }
-                public void timingEvent(float f) {
-                }
-            });
-            anim.start();
-        }
-    }
-    
-    private Animator startCloseAnimation() {
-        Animator anim = new Animator(600);
-        final Rectangle clip = new Rectangle(0,0,0,0);
-        anim.addTarget(new PropertySetter(clip,"location",
-                new Point((int)getSize().getWidth()/2,0),
-                new Point(0,0)));
-        anim.addTarget(new PropertySetter(clip,"size",
-                new Dimension(0,(int)getSize().getHeight()), getSize()));
-        setClip(clip);
-        anim.addTarget(new AnimRepainter(wm.panel));
-        return anim;
-    }
-    
-    
-    */
     
     private Animator startOpenAnimation() {
         Animator anim = new Animator(400);
@@ -220,11 +122,6 @@ public class Buffered2DPeer extends DCPeer {
         return anim;
     }
 
-    public void setClip(Shape clip) {
-        this.clip = clip;
-    }
     
-    public Shape getClip() {
-        return this.clip;
-    }
+    
 }

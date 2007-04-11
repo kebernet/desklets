@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComponent;
+import org.joshy.util.u;
 
 
 public class BufferedDeskletContainer extends DeskletContainer {
@@ -96,6 +97,7 @@ public class BufferedDeskletContainer extends DeskletContainer {
             getTopComponent().remove(this.content);
         }
         this.content = content;
+        u.p("content set to: " + content);
         getTopComponent().add(content,"Center");
         pack();
     }
@@ -108,6 +110,7 @@ public class BufferedDeskletContainer extends DeskletContainer {
     public void pack() {
         getTopComponent().setSize(getTopComponent().getLayout().preferredLayoutSize(getTopComponent()));
         setSize(getTopComponent().getSize());
+        u.p("packed the contents to: " + getTopComponent().getSize());
     }
     
     public boolean isVisible() {
