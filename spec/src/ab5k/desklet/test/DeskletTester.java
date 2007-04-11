@@ -45,6 +45,7 @@ public class DeskletTester {
                     desklet.init();
                     frame.pack();
                     frame.setVisible(true);
+                    desklet.getContext().getContainer().getContent().requestFocusInWindow();
                     desklet.start();
                     dockingFrame.pack();
                     dockingFrame.setVisible(true);
