@@ -53,7 +53,10 @@ Create a _desklet.xml_ file in the _META-INF_ directory. The contents of the des
 </desklet>
 }}}
 
-Build a jar of your class files, including the _META-INF_ directory and the desklet.xml.   Rename your _.jar_ file as a _.desklet_ file. Now you are done!  You can run AB5k and add your desklet using the 'add' button in the manage dialog.
+Build a jar of your class files, including the _META-INF_ directory and the desklet.xml.   Rename your _.jar_ file as a _.desklet_ file. Now you are done!  You can run AB5k and add your desklet using the 'add' button in the manage dialog. _we might also want to mention that there is a quick
+change in the project properties you can do so that the built jar has
+the .desklet extension instead of .jar. Maybe we just need a NB /
+Eclipse specific wiki page_
 
 = Testing =
 
