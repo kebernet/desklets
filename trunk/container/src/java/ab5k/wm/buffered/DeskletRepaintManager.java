@@ -25,7 +25,7 @@ class DeskletRepaintManager extends RepaintManager {
                 super.addDirtyRegion(bdc.getTopComponent(), 0, 0, bdc.getTopComponent().getWidth(), bdc.getTopComponent().getHeight());
             }
             
-            ((Buffered2DPeer)bdc.getPeer()).setDirty(true);
+            ((BufferedPeer)bdc.getPeer()).setDirty(true);
             super.addDirtyRegion((JComponent)wm.getRenderPanel(),
                     (int)bdc.getLocation().getX(), (int)bdc.getLocation().getY(),
                     (int)bdc.getSize().getWidth(), (int)bdc.getSize().getHeight());
@@ -54,7 +54,7 @@ class DeskletRepaintManager extends RepaintManager {
     }
     
     private boolean foundDesklet(BufferedDeskletContainer c, Component invalidComponent) {
-        if(c.getPeer() instanceof Buffered2DPeer) {
+        if(c.getPeer() instanceof BufferedPeer) {
             if(c.getTopComponent() == invalidComponent) {
                 return true;
             }

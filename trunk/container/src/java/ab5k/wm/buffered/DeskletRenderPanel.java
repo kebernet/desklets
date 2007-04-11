@@ -6,6 +6,7 @@ import ab5k.util.GraphicsUtil;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,6 +21,9 @@ import javax.swing.JPanel;
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.painter.Painter;
 import org.joshy.util.u;
+
+
+// this just lays out components using their preferred size. it does not
 
 
 // this just lays out components using their preferred size. it does not
@@ -118,20 +122,8 @@ public class DeskletRenderPanel extends JPanel {
     private void drawWindow(final Graphics2D g2, final BufferedDeskletContainer bdc, final Buffered2DPeer peer) {
         Dimension size = new Dimension((int) bdc.getSize().getWidth(), (int) bdc.getSize().getHeight());
         Point2D pt = bdc.getLocation();
-        boolean wasDirty = false;
-        if (peer.getBuffer() == null || peer.isDirty()) {
-            if(peer.getSize().getWidth() < 1 || peer.getSize().getHeight() < 1) {
-                // too small. just skip it
-                return;
-            }
-            BufferedImage img = drawToBuffer(bdc.getTopComponent(), size, peer.getBuffer());
-            peer.setBuffer(img);
-            rendererPane.removeAll();
-            peer.setDirty(false);
-            //move back to the hidden parent
-            this.bufferedWM.hidden.add(bdc.getTopComponent());
-            wasDirty = true;
-        }
+        //boolean wasDirty = false;
+        peer.updateTexture(rendererPane, size);
         
         // draw to the screen
         Graphics2D g3 = (Graphics2D) g2.create();
@@ -154,11 +146,11 @@ public class DeskletRenderPanel extends JPanel {
         }
         
         if (this.bufferedWM.DEBUG_BORDERS) {
-            if (wasDirty) {
-                g3.setColor(Color.CYAN);
-            }  else {
+            //if (wasDirty) {
+              //  g3.setColor(Color.CYAN);
+            //}  else {
                 g3.setColor(Color.BLACK);
-            }
+            //}
             g3.setStroke(new BasicStroke(3));
             g3.drawRect(0, 0, size.width, size.height);
         }
@@ -171,41 +163,6 @@ public class DeskletRenderPanel extends JPanel {
             g3.drawString(text,6,17);
             g3.dispose();
         }
-    }
-    
-    private BufferedImage drawToBuffer(final JComponent comp, final Dimension size, BufferedImage img) {
-        int pad = 0;
-        // decide if we need to create a new image
-        if(img == null ||
-                img.getWidth()-pad != (int)size.getWidth() ||
-                img.getHeight()-pad != (int)size.getHeight()) {
-            //img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth()+pad, (int)size.getHeight()+pad);
-        }
-        // josh: there's some bug I can't fix. always recreating instead
-        img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth()+pad, (int)size.getHeight()+pad);
-        
-        // draw the component into the image
-        Graphics2D gx = img.createGraphics();
-        gx.setColor(new Color(0,0,0,0));
-        gx.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-        gx.fillRect(0,0,img.getWidth(),img.getHeight());
-        rendererPane.add(comp);
-        rendererPane.paintComponent(gx, comp, this,
-                pad/2,pad/2,  size.width, size.height,
-                true);
-        
-        // draw debugging info
-        if (this.bufferedWM.DEBUG_BORDERS) {
-            gx.setColor(Color.GREEN);
-            gx.drawLine(0,0,size.width,size.height);
-            gx.drawLine(size.width,0,0,size.height);
-        }
-        //gx.setColor(Color.RED);
-        //gx.drawString("comps: "+ comp.getComponentCount(),2,15);
-        
-        // dispose and return
-        gx.dispose();
-        return img;
     }
     
     public boolean isAnimating() {

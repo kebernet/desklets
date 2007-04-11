@@ -16,6 +16,8 @@ public class DeskletToplevel extends JPanel {
         //g.setColor(Color.GREEN);
         //g.fillRect(0, 0, getWidth(), getHeight());
         super.paintComponent(g);
+        //g.setColor(Color.RED);
+        //g.drawString("desklet top level",5,15);
     }
 
     BufferedDeskletContainer getContainer() {
