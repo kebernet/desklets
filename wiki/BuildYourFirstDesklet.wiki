@@ -38,7 +38,7 @@ Compile your code and run the main method in MyAppDesklet.  The DeskletTester wi
 
 = Packaging your desklet =
 
-Create a _META-INF_ directory in your src directory (*will NB let you do this?*).  This directory must end up in your finished jar, so if you are not using NetBeans then you may need to modify your build environment to ensure that the _META-INF_ directory and it's contents are copied to the compiled jar.
+Create a _META-INF_ directory in your src directory.  This directory must end up in your finished jar, so if you are not using NetBeans then you may need to modify your build environment to ensure that the _META-INF_ directory and it's contents are copied to the compiled jar.
 
 Create a _desklet.xml_ file in the _META-INF_ directory. The contents of the desklets should be something like this:
 
