@@ -45,15 +45,20 @@ public class MoveMouseListener implements MouseListener, MouseMotionListener {
         this.start_loc = GraphicsUtil.toPoint(dc.getLocation());
         JComponent target = dc.getContent();
         if( target.getComponents() != null && target.getComponents().length >0 ){
+            // use discouraged -&gt; see docs
             target.getComponents()[0].requestFocus();
         }
     }
 
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+        JComponent target = dc.getContent();
+        if(target != null) {
+            target.requestFocusInWindow();
+        }
+    }
 
     public void mouseDragged(MouseEvent e) {
         Point current = this.getScreenLocation(e);
-        u.p("start = " + start_drag);
         Point offset = new Point(
             (int)current.getX()-(int)start_drag.getX(),
             (int)current.getY()-(int)start_drag.getY());
