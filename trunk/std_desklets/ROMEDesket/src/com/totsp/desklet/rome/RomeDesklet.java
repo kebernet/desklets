@@ -34,9 +34,8 @@ import org.w3c.tidy.Tidy;
  *
  * @author cooper
  */
-public class RomeDesklet implements Desklet{
+public class RomeDesklet extends Desklet{
     
-    private DeskletContext context;
     private MainForm form = new MainForm();
     SyndFeedInput input = new SyndFeedInput();
     SyndFeed feed = null;
@@ -97,7 +96,7 @@ public class RomeDesklet implements Desklet{
     public void stop() throws Exception {
         form.display.shutdown();
         timer.cancel();
-        context.notifyStopped();
+        getContext().notifyStopped();
     }
     
     public void start() throws Exception {
@@ -120,7 +119,7 @@ public class RomeDesklet implements Desklet{
                 try{
                     int index = itemIndex -1;
                     if( index < 0 ) index = feed.getEntries().size() - 2;
-                    context.showURL( new URI( ((SyndEntry)feed.getEntries().get( index)).getLink() ));
+                    getContext().showURL( new URI( ((SyndEntry)feed.getEntries().get( index)).getLink() ));
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -144,7 +143,7 @@ public class RomeDesklet implements Desklet{
                 String newFeedUrl = JOptionPane.showInputDialog( form, "Feed URL:", feedUrl );
                 if( newFeedUrl != null && newFeedUrl.length() > 0 ){
                     feedUrl = newFeedUrl;
-                    context.setPreference( "feed.url", feedUrl );
+                    getContext().setPreference( "feed.url", feedUrl );
                     fetch.run();
                 }
             }
@@ -213,15 +212,14 @@ public class RomeDesklet implements Desklet{
         
     }
     
-    public void init(DeskletContext context) throws Exception {
-        this.context = context;
-        DeskletContainer container = context.getContainer();
+    public void init() throws Exception {
+        DeskletContainer container = getContext().getContainer();
         container.setShaped( true );
         container.setResizable( false);
         container.setContent( form );
         container.setVisible(true);
         container.setBackgroundDraggable(true);
-        feedUrl = context.getPreference( "feed.url", "http://feeds.feedburner.com/screaming-penguin");
+        feedUrl = getContext().getPreference( "feed.url", "http://feeds.feedburner.com/screaming-penguin");
     }
     
     /**
