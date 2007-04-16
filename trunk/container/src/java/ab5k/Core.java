@@ -103,12 +103,14 @@ public class Core {
                 new Thread(new Runnable() {
                     public void run() {
                         u.p("this is the first run so we must auto-install the standard desklets");
-                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/WeatherDesklet.desklet");
-                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/ROMEDesket.desklet");
-                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/ColorChooserDesklet.desklet");
-                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet");
-                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet");
-                        preinstall("http://www.ab5k.org/downloads/daily/pre-install/Eyeball.desklet");
+                        String baseurl = "http://www.ab5k.org/downloads/daily/new_window_manager/pre-install/";
+                        preinstall(baseurl+"WeatherDesklet.desklet");
+                        preinstall(baseurl+"ROMEDesket.desklet");
+                        preinstall(baseurl+"WoWDesklet.desklet");
+                        preinstall(baseurl+"ClockDesklet.desklet");
+                        preinstall(baseurl+"Calendar.desklet");
+                        preinstall(baseurl+"Countdown.desklet");
+                        preinstall(baseurl+"Eyeball.desklet");
                     }
                 }).start();
             }
