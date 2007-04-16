@@ -51,11 +51,7 @@ public class Core {
     private ContainerFactory containerFactory;
     private BackgroundManager backgroundManager;
     public PreferencesPanel prefs;
-    
-    public MainPanel mainPanel;
-    
-    //public JFrame frame;
-    
+    public MainPanel mainPanel;    
     private PrefsBean prefsBean;
     
     private WindowManager windowManager;
