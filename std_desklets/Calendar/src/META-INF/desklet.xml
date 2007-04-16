@@ -7,13 +7,13 @@
     <class>calendar.CalendarDesklet</class>
     
     
-    <source>http://www.ab5k.org/downloads/daily/pre-install/Calendar.desklet</source>
+    <source>http://www.ab5k.org/downloads/daily/new_window_manager/pre-install/Calendar.desklet</source>
 
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
         <groupId>swingx</groupId>
         <artifactId>swingx</artifactId>
-        <version>0.1</version>
+        <version>ab5k.02</version>
         <type>jar</type>
     </dependency>
     <dependency>
