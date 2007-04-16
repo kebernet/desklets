@@ -135,7 +135,7 @@
     <target name="init-ftp">
         <property name="upload.username" value="web54_ab5kadmin"/>
         <property name="upload.hostname" value="www.ab5k.org"/>
-        <property name="upload.path" value="web/downloads/daily/"/>
+        <property name="upload.path" value="web/downloads/daily/new_window_manager/"/>
         <property name="user.overrides" location="${user.home}/.antoverrides/build.properties"/>
         <property file="${user.overrides}"/>
     </target>
