@@ -15,13 +15,13 @@
     <description>What do you think this does?</description>
     <class>clockdesklet.Desklet</class>
     
-    <source>http://www.ab5k.org/downloads/daily/pre-install/ClockDesklet.desklet</source>
+    <source>http://www.ab5k.org/downloads/daily/new_window_manager/pre-install/ClockDesklet.desklet</source>
 
     <repository>http://www.ab5k.org/maven/</repository>
     <dependency>
         <groupId>swingx</groupId>
         <artifactId>swingx</artifactId>
-        <version>0.1</version>
+        <version>ab5k.02</version>
         <type>jar</type>
     </dependency>
     <dependency>
