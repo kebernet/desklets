@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc.//DTD JNLP 1.5//EN" "http://www.netbeans.org/jnlp/DTD/jnlp.dtd">
-<jnlp codebase="http://www.ab5k.org/downloads/daily/" href="AB5k.jnlp">
+<jnlp codebase="http://www.ab5k.org/downloads/daily/new_window_manager" href="AB5k.jnlp">
   <information>
     <title>AB5k</title>
     <vendor>AB5k</vendor>
@@ -50,8 +50,8 @@
 <!-- common libs -->
     <jar download="eager" href="lib/rome-0.8.jar" main="false" version=""/>
     <jar download="eager" href="lib/jdom-1.0.jar" main="false" version=""/>
-    <jar download="eager" href="lib/TimingFramework.jar" version=""/>
-    <jar download="eager" href="lib/joda-time-1.4.jar" version=""/>
+    <jar download="eager" href="lib/TimingFramework-001.jar" version=""/>
+<!--    <jar download="eager" href="lib/joda-time-1.4.jar" version=""/>-->
 
 <!-- http libs. Why do we need these? -->
     <jar download="eager" href="lib/commons-httpclient-3.0.1.jar" version=""/>
@@ -60,8 +60,10 @@
 
 <!-- swingx -->
     <jar download="eager" href="lib/swing-worker.jar" version=""/>
-    <jar download="eager" href="lib/swingx.jar" version=""/>
-    <jar download="eager" href="lib/MultipleGradientPaint.jar" version=""/>
+    <jar download="eager" href="lib/swingx-ab5k.02.jar" version=""/>
+    <jar download="eager" href="lib/joshy-swingx-incubator-ab5k.001.jar" version=""/>
+<!--    <jar download="eager" href="lib/MultipleGradientPaint.jar" version=""/>-->
+<!--    <jar download="eager" href="lib/Filters.jar" version=""/>-->
 
   </resources>
 
