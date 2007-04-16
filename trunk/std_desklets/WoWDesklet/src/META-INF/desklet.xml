@@ -19,7 +19,7 @@
     <dependency>
         <groupId>swingx</groupId>
         <artifactId>swingx</artifactId>
-        <version>0.1</version>
+        <version>ab5k.02</version>
         <type>jar</type>
     </dependency>
 </desklet>
