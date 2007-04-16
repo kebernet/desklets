@@ -28,6 +28,7 @@ import ab5k.util.PlafUtil;
 import ab5k.wm.buffered.BufferedWM;
 import ab5k.wm.DesktopPaneWM;
 import ab5k.wm.WindowManager;
+import ab5k.wm.buffered.Buffered3DWM;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -262,10 +263,18 @@ public class Core {
     }
     
     private void setupWindowManager() {
-        if(System.getProperty("org.ab5k.test.useDesktopPane") != null) {
+        String wm = System.getProperty("org.ab5k.test.useWindowManager");
+        if(wm != null) {
+            if("buffered".equals(wm)) {
+                windowManager = new BufferedWM(this);
+            }
+            if("JDesktopPane".equals(wm)) {
+                windowManager = new DesktopPaneWM();
+            }
+        }
+        // if still null, the use desktop version by default
+        if(windowManager == null) {
             windowManager = new DesktopPaneWM();
-        } else {
-            windowManager = new BufferedWM(this);
         }
         windowManager.init();
     }
