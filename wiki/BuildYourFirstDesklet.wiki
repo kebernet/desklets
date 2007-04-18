@@ -25,6 +25,12 @@ Make a main method like this:
 	}
 }}}
 
+= Stopping your desklet =
+
+In your stop() method you should be sure to call getContext().notifyStopped() after you have killed any threads or other resources you have created. If you don't call notifyStopped() it will take your widget 20 seconds (the default timeout) to actually quit.
+
+= Starting your desklet =
+
 This main method will run your desklet in a test environment. This lets you test your desklet without running it in the full AB5k container
 
 In your MyAppDesklet class go to the init() method and type something like this:
