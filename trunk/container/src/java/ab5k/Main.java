@@ -71,7 +71,7 @@ public abstract class Main {
     // do the rest of startup on the EDT
     private static void doStartup(final String args[], final Core main) {
         try {
-            new ShowSplashscreen().show();
+            //new ShowSplashscreen().show();
             setupMainFrame(main);
             doServerLogin(main);
             startCommandlineDesklets(main, args);
