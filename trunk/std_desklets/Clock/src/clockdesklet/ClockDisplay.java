@@ -250,7 +250,7 @@ public class ClockDisplay extends JXPanel {
     public void setTime() {
         currentTime.setText(format.format(new Date()));
         this.repaint();
-        if(ampm.format(new Date()).equals("am")) {
+        if(ampm.format(new Date()).equalsIgnoreCase("am")) {
             amLabel.setForeground(Color.RED);
             pmLabel.setForeground(Color.RED.darker().darker());
         } else {
