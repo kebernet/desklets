@@ -54,7 +54,7 @@ public abstract class Main {
         
         //todo: turn off dynamic layout. why do we do this???
         Toolkit.getDefaultToolkit().setDynamicLayout(false);
-        setupSecurityManager();
+        setupSecurityManager(core);
         setupRegistry(core);
         
         u.p("main(args)");
@@ -137,8 +137,8 @@ public abstract class Main {
     }
     
     // install the security manager
-    private static void setupSecurityManager() {
-        Policy.setPolicy( new SecurityPolicy() );
+    private static void setupSecurityManager(Core core) {
+        Policy.setPolicy( new SecurityPolicy(core) );
         System.setSecurityManager( new SecurityManager() );
     }
     
