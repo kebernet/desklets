@@ -22,6 +22,9 @@ public final class Environment {
     public static final boolean autoGrantAll = 
             System.getProperty("org.ab5k.test.autoGrantAll") == null ? false : true;
 
+    public static final boolean allowMultipleInstances = 
+            System.getProperty("org.ab5k.test.allowMultipleInstances") == null ? false : true;
+    
     private static final String AB5K_HOME = 
             System.getProperty("org.ab5k.test.althomedirname") == null ? ".ab5k" :
         System.getProperty("org.ab5k.test.althomedirname");

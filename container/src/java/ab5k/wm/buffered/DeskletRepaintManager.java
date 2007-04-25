@@ -15,7 +15,7 @@ class DeskletRepaintManager extends RepaintManager {
     }
     
     public void addDirtyRegion(JComponent comp, int x, int y, int w, int h) {
-        //u.p("adding as dirty: " + comp.getClass().getName() + " " + x + "," + y + " " + w + "x" + h);
+        u.p("adding as dirty: " + comp.getClass().getName() + " " + x + "," + y + " " + w + "x" + h);
         
         // find the top of this desklet's heirarchy so we can repaint the whole thing
         BufferedDeskletContainer bdc = findDesklet(comp);

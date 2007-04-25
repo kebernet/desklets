@@ -108,6 +108,7 @@ public abstract class BufferedPeer extends DCPeer {
                 // too small. just skip it
                 return;
             }
+            //u.p("updating buffer because it's dirty");
             BufferedImage img = drawToBuffer(bdc.getTopComponent(), size, getBuffer(), rendererPane);
             setBuffer(img);
             rendererPane.removeAll();
@@ -119,32 +120,36 @@ public abstract class BufferedPeer extends DCPeer {
     }
     private BufferedImage drawToBuffer(final JComponent comp, final Dimension size, BufferedImage img, CellRendererPane rendererPane) {
         //JComponent comp = bdc.getTopComponent();
-        u.p("drawing to a buffer");
-        u.p("rendererpane = ");
+        //u.p("drawing to a buffer");
+        //u.p("rendererpane = ");
         Component ct = rendererPane;
         while(ct.getParent() != null) {
-            u.p("" + ct);
+            //u.p("" + ct);
             ct = ct.getParent();
         }
-        u.p("children = " + comp);
+        //u.p("children = " + comp);
         for(Component c : comp.getComponents()) {
-            u.p("     c = " + c);
+            //u.p("     c = " + c);
         }
         int pad = 0;
         // decide if we need to create a new image
         if(img == null ||
-                img.getWidth()-pad != (int)size.getWidth() ||
-                img.getHeight()-pad != (int)size.getHeight()) {
-            //img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth()+pad, (int)size.getHeight()+pad);
+                img.getWidth() != (int)size.getWidth() ||
+                img.getHeight() != (int)size.getHeight()) {
+            //u.p("the size is different!");
+            //u.p("building new buffered image");
+            img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth(), (int)size.getHeight());
         }
         // josh: there's some bug I can't fix. always recreating instead
-        img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth()+pad, (int)size.getHeight()+pad);
+        //img = GraphicsUtilities.createCompatibleTranslucentImage((int)size.getWidth()+pad, (int)size.getHeight()+pad);
         
         // draw the component into the image
         Graphics2D gx = img.createGraphics();
+        //clear the buffer
         gx.setColor(new Color(0,0,0,0));
         gx.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
         gx.fillRect(0,0,img.getWidth(),img.getHeight());
+        
         rendererPane.add(comp);
         rendererPane.paintComponent(gx, comp, null,
                 pad/2,pad/2,  size.width, size.height,

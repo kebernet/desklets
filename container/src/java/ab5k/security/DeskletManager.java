@@ -266,7 +266,8 @@ public class DeskletManager {
         checkSecurity();
 
         ArrayList<String> uuids = this.getRunningDeskletIds();
-        if( uuids.contains(uuid) ){
+        
+        if(!Environment.allowMultipleInstances && uuids.contains(uuid) ){
             DeskletManager.main.handleError("Error","That desklet is already running",null);
             return;
         }

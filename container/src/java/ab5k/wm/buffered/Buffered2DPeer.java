@@ -57,7 +57,7 @@ public class Buffered2DPeer extends BufferedPeer {
     
     public void setLocation(Point2D point) {
         this.location = point;
-        setDirty(true);
+        //setDirty(true);
         bdc.wm.getRenderPanel().repaint();
     }
     
