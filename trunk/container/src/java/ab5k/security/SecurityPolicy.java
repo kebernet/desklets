@@ -8,7 +8,9 @@
  */
 package ab5k.security;
 
+import ab5k.Core;
 import ab5k.Environment;
+import ab5k.PermissionManager;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +37,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.joshy.util.u;
 
 
 /**
@@ -59,9 +62,11 @@ public class SecurityPolicy extends Policy {
     private Hashtable<CodeSource, Permissions> permissions = new Hashtable<CodeSource, Permissions>();
     
     private Properties prefs = new java.util.Properties();
+    private Core core;
     /** Creates a new instance of SecurityPolicy */
-    public SecurityPolicy() {
+    public SecurityPolicy(Core core) {
         super();
+        this.core = core;
         if(!SECURITY_PROPS.exists()) {
             System.out.println("security properties not created yet: " + SECURITY_PROPS.getAbsolutePath());
         } else {
@@ -196,22 +201,24 @@ public class SecurityPolicy extends Policy {
             StringBuffer sb = new StringBuffer();
             sb.append(loader.getName());
             sb.append(" has asked for permission " + permission.getName());
-            sb.append(". \n Would you like to grant this permission?");
-            
+            //sb.append(". \n Would you like to grant this permission?");
+            PermissionManager.Permission value = core.getPermissionManager().requestPermission(sb.toString());
+            //u.p("permission value = " + value);
+            /*
             String[] options = { "Yes", "No", "Always", "Never" };
             Window win = DeskletManager.main.getFrame();
             int value = JOptionPane.showOptionDialog(win, sb.toString(),
                     "Grant Permission", JOptionPane.YES_NO_CANCEL_OPTION,
                     JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-            
+            */
             switch(value) {
-            case 0:
+            case YES:
                 perms.add(permission);
                 permissions.put(protectionDomain.getCodeSource(), perms);
                 
                 return true;
                 
-            case 2:
+            case ALWAYS:
                 perms.add(permission);
                 permissions.put(protectionDomain.getCodeSource(), perms);
                 if(!grants.contains(permissionValue)) {
@@ -230,7 +237,7 @@ public class SecurityPolicy extends Policy {
                 
                 return true;
                 
-            case 3:
+            case NEVER:
                 
                 if(!denies.contains(permissionValue)) {
                     denies.add(permissionValue);

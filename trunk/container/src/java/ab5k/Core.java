@@ -53,8 +53,8 @@ public class Core {
     public PreferencesPanel prefs;
     public MainPanel mainPanel;    
     private PrefsBean prefsBean;
-    
     private WindowManager windowManager;
+    private PermissionManager permissionManager;
     
     /** Creates a new instance of Main */
     public Core() {
@@ -70,6 +70,7 @@ public class Core {
         
         containerFactory = ContainerFactory.getInstance();
         containerFactory.init( getWindowManager(), mainPanel.getDockPanel() );
+        setupPermissionManager();
         deskletManager = DeskletManager.getInstance();
         
         try{
@@ -80,6 +81,15 @@ public class Core {
         setupMoreMacSupport();
         setupPrefs();
         preinstallStandardDesklets();
+    }
+    
+    private void setupPermissionManager() {
+        permissionManager = new PermissionManager(this);
+        System.out.println("setup perm = " + permissionManager);
+    }
+    
+    public PermissionManager getPermissionManager() {
+        return permissionManager;
     }
     
     private void preinstallStandardDesklets() {
