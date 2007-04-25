@@ -26,6 +26,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.joshy.util.u;
 
 
 /**
@@ -52,7 +53,11 @@ public class DeskletManager {
         super();
 
         try {
-            prefs.load(new FileInputStream(STARTUP_PROPS));
+            if(!STARTUP_PROPS.exists()) {
+                u.p("file doesn't exist: " + STARTUP_PROPS.getAbsolutePath());
+            } else {
+                prefs.load(new FileInputStream(STARTUP_PROPS));
+            }
         } catch(Exception e) {
             e.printStackTrace();
         }
