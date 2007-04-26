@@ -67,8 +67,8 @@ public abstract class BufferedPeer extends DCPeer {
     public void setSize(Dimension2D dimension2D) {
         Dimension2D old = this.size;
         if(!old.equals(dimension2D)) {
-            setDirty(true);
             this.size = dimension2D;
+            setDirty(true);
         }
     }
     
@@ -146,7 +146,11 @@ public abstract class BufferedPeer extends DCPeer {
         // draw the component into the image
         Graphics2D gx = img.createGraphics();
         //clear the buffer
-        gx.setColor(new Color(0,0,0,0));
+        if(isShaped()) {
+            gx.setColor(new Color(0,0,0,0));
+        } else {
+            gx.setColor(Color.WHITE);
+        }
         gx.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
         gx.fillRect(0,0,img.getWidth(),img.getHeight());
         

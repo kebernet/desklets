@@ -60,6 +60,14 @@ public class Buffered2DPeer extends BufferedPeer {
         //setDirty(true);
         bdc.wm.getRenderPanel().repaint();
     }
+
+    @Override
+    public void setSize(Dimension2D dimension2D) {
+        super.setSize(dimension2D);
+        bdc.wm.getRenderPanel().repaint();
+    }
+    
+    
     
 
     public void setVisible(boolean visible) {

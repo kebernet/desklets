@@ -20,6 +20,7 @@ import javax.swing.JComponent;
  */
 public abstract class DCPeer {
     protected BufferedDeskletContainer bdc;
+    protected boolean shaped = false;
     
     /** Creates a new instance of DPeer */
     public DCPeer(BufferedDeskletContainer bdc) {
@@ -52,10 +53,11 @@ public abstract class DCPeer {
     public abstract boolean isVisible();
 
     public boolean isShaped() {
-        return false;
+        return shaped;
     }
     
     public void setShaped(boolean shaped) {
+        this.shaped = shaped;
     }
 
     
