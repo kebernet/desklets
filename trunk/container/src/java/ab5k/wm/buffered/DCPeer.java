@@ -59,6 +59,8 @@ public abstract class DCPeer {
     public void setShaped(boolean shaped) {
         this.shaped = shaped;
     }
-
     
+    public void contentChanged() {
+        
+    }
 }

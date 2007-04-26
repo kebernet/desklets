@@ -1,6 +1,7 @@
 package ab5k.wm.buffered;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -60,6 +61,9 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
         if(!bufferedWM.getProxies().isEmpty()) {
             BufferedDeskletContainer bdc = bufferedWM.findContainer(e.getPoint());
             if(bdc != null) {
+                if(e.getID() == e.MOUSE_PRESSED) {
+                    u.p("redispatching to: " + bdc.toString() + " " + bdc.getContext().toString());
+                }
                 lastDC = bdc;
                 redispatch(e, bdc);
             }
@@ -91,18 +95,36 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
         redispatchToLowest(comp,e,ept);
     }
     
+    private void showVis(Container c, String tab) {
+        if(c == null) {
+            u.p(tab + " null");
+            return;
+        }
+        u.p(tab + " " + c.hashCode() + " " + c);
+        //u.p(tab + " vis = " + c.isVisible());
+        //u.p(tab + " bounds = " + c.getBounds());
+        for(Component cc : c.getComponents()) {
+            showVis((Container)cc,tab+"  ");
+        }
+    }
     private void redispatchToLowest(JComponent comp, MouseEvent e, Point ept) {
-        //u.p("comp = " + comp.getClass());
-        //u.p("e = " + e);
         
         // translate into the top component space
         //e.translatePoint(comp.getX(),comp.getY());
         ept.translate(comp.getX(), comp.getY());
-        //u.p("e = " + e);
-        //u.p("point = " + e.getPoint());
-        
+        /*
+        if(e.getID() == e.MOUSE_PRESSED) {
+            u.p("it's an action");
+            u.p("comp = " + comp);
+            u.p("e = " + e);
+            u.p("point = " + e.getPoint());
+            u.p("ept = " + ept);
+            showVis(comp,"");
+            
+        }*/
         // find the deepest child to send this event to
         Component child = SwingUtilities.getDeepestComponentAt(comp,ept.x,ept.y);
+        //Component child = getDeepestComponentAt(comp,ept.x,ept.y);
         if(e.getID() == e.MOUSE_DRAGGED) {
             child = lastComp;
         }
@@ -121,7 +143,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
                 pt2.translate(child.getX(),child.getY());
                 child = child.getParent();
                 if(child == null) {
-                    u.p("fell off the end. this is an orphan!");
+                    //u.p("fell off the end. this is an orphan!");
                     return;
                 }
                 //u.p("back up to parent " + child);
@@ -144,4 +166,27 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
         //child.dispatchEvent(e);
     }
 
+    public static Component getDeepestComponentAt(Component parent, int x, int y) {
+        if (!parent.contains(x, y)) {
+            return null;
+        }
+        if (parent instanceof Container) {        
+            Component components[] = ((Container)parent).getComponents();
+            for (int i = 0 ; i < components.length ; i++) {
+                Component comp = components[i];
+                if (comp != null && comp.isVisible()) {
+                    Point loc = comp.getLocation();
+                    if (comp instanceof Container) {
+                        comp = getDeepestComponentAt(comp, x - loc.x, y - loc.y);
+                    } else {
+                        comp = comp.getComponentAt(x - loc.x, y - loc.y);
+                    }
+                    if (comp != null && comp.isVisible()) {
+                        return comp;
+                    }
+                }
+            }
+        }
+        return parent;
+    }
 }
