@@ -119,10 +119,11 @@ public class BufferedDeskletContainer extends DeskletContainer {
     }
     
     
-    public void setShaped(boolean b) {
+    public void setShaped(boolean shaped) {
+        getPeer().setShaped(shaped);
     }
     public boolean isShaped() {
-        return true;
+        return getPeer().isShaped();
     }
     
     public void setShape(Shape arg0) {

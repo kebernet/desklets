@@ -228,11 +228,12 @@ public class BufferedWM extends WindowManager {
     BufferedDeskletContainer findContainer(Point pt) {
         for(int i=getProxies().size() -1; i>=0; i--) {
             DeskletProxy proxy = getProxies().get(i);
-            if(findContainer(pt,proxy.contentContainer)) {
-                return proxy.contentContainer;
-            }
+            //dialogs of a desklet should always be above the desklet itself, so search them first
             if(findContainer(pt,proxy.configContainer)) {
                 return proxy.configContainer;
+            }
+            if(findContainer(pt,proxy.contentContainer)) {
+                return proxy.contentContainer;
             }
         }
         return null;
