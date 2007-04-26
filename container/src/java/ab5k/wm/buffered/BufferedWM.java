@@ -11,6 +11,7 @@ package ab5k.wm.buffered;
 
 import ab5k.Core;
 import ab5k.DesktopBackground;
+import ab5k.Environment;
 import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.ContainerFactory;
@@ -77,7 +78,7 @@ public class BufferedWM extends WindowManager {
     
     static final boolean DEBUG_BORDERS = false;
     static final boolean DEBUG_REPAINT_AREA = false;
-    static final boolean SHOW_FRAME_TITLE_BAR = false;
+    static final boolean SHOW_FRAME_TITLE_BAR = Environment.showFrameTitleBar;
     static final boolean TRANSPARENT_DOCK = false;
     
     private List<DeskletProxy> proxies;

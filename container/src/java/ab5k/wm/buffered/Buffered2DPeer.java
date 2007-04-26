@@ -95,6 +95,8 @@ public class Buffered2DPeer extends BufferedPeer {
                 });
                 anim.start();
             }
+        } else {
+            this.visible = visible;
         }
     }
 
