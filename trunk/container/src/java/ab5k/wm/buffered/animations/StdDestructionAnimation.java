@@ -26,6 +26,7 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
+import org.joshy.util.u;
 
 /**
  *
@@ -42,7 +43,7 @@ public class StdDestructionAnimation extends TransitionAnimation {
     public Animator createAnimation(TransitionEvent evt) {
         final BufferedDeskletContainer dc = evt.getContainer();
         if(oldAnim) {
-            Animator anim = new Animator(500);
+            Animator anim = new Animator(1000);
             //anim.addTarget(new PropertySetter(dc,"location",new Point(0,0), new Point(200,200)));
             Buffered2DPeer peer = (Buffered2DPeer) dc.getPeer();
             anim.addTarget(new PropertySetter(peer,"alpha",peer.getAlpha(),0f));
@@ -51,7 +52,7 @@ public class StdDestructionAnimation extends TransitionAnimation {
             return anim;
         } else {
             
-            Animator anim = new Animator(1000);
+            final Animator anim = new Animator(1000);
             int num = 5;
             Buffered2DSubSurface[][] surfaces = new Buffered2DSubSurface[num][num];
             int w = (int)dc.getSize().getWidth()/num;
@@ -84,7 +85,7 @@ public class StdDestructionAnimation extends TransitionAnimation {
                 }
             }
             
-            anim.addTarget(new TimingTarget() {
+            anim.addTarget(new TimingTargetAdapter() {
                 public void begin() {
                     dc.setVisible(false);
                     dc.showSurfaces = true;
@@ -92,28 +93,31 @@ public class StdDestructionAnimation extends TransitionAnimation {
                 public void end() {
                     dc.showSurfaces = false;
                 }
-                public void repeat() {
-                }
-                public void timingEvent(float f) {
-                }
             });
-            Animator astart = new Animator(250);
+            final Animator astart = new Animator(250);
             astart.addTarget(new AnimRepainter((JComponent)evt.getWindowManager().getRenderPanel()));
             if(dc.getPeer() instanceof Buffered2DPeer) {
                 astart.addTarget(new PropertySetter(dc.getPeer(), "scale",((Buffered2DPeer)dc.getPeer()).getScale(), 1.0));
             }
-            astart.addTarget(new StartAnimAfter(anim));
-            astart.addTarget(new TimingTarget() {
+            //astart.addTarget(new StartAnimAfter(anim));
+            Animator a2 = new Animator(1250);
+            a2.addTarget(new TimingTarget() {
                 public void begin() {
+                    astart.start();
                 }
                 public void end() {
                 }
                 public void repeat() {
                 }
                 public void timingEvent(float f) {
+                    if(f > 250f/1250f) {
+                        if(!anim.isRunning()) {
+                            anim.start();
+                        }
+                    }
                 }
             });
-            return anim;
+            return a2;
         }
     }
     

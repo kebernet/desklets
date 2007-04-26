@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.graphics.GraphicsUtilities;
 import org.jdesktop.swingx.painter.Painter;
 import org.joshy.util.u;
@@ -27,13 +28,10 @@ import org.joshy.util.u;
 
 
 // this just lays out components using their preferred size. it does not
-
-
-// this just lays out components using their preferred size. it does not
 // move them around at all.
 // it also leaves the parent at whatever size it was set at
 
-public class DeskletRenderPanel extends JPanel {
+public class DeskletRenderPanel extends JXPanel {
     private final BufferedWM bufferedWM;
     
     
@@ -84,6 +82,7 @@ public class DeskletRenderPanel extends JPanel {
         
         // draw the main desklet content first
         if(bdc.isBuffered) {
+            //u.p("drawing bdc: " + bdc.hashCode() + " " + bdc.isVisible() + " " + bdc.getContext().getConfig().getName());
             if(bdc.isVisible()) {
                 drawWindow(g2, bdc, (Buffered2DPeer)bdc.getPeer());
             }
@@ -99,6 +98,7 @@ public class DeskletRenderPanel extends JPanel {
                 drawPopup(g2, popup, bdc);
             }*/
             if(bdc.showSurfaces) {
+                //u.p("surfaces for: " + bdc.hashCode() + " " + bdc.isVisible() + " " + bdc.getContext().getConfig().getName());
                 for(Buffered2DSubSurface s : bdc.surfaces) {
                     drawSurface(g2, s, bdc);
                 }
