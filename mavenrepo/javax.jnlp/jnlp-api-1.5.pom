@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>javax.jnlp</groupId>
+  <artifactId>jnlp-api</artifactId>
+  <version>1.5</version>
+  <description>JNLP API</description>
+  <distributionManagement>
+    <status>deployed</status>
+  </distributionManagement>
+</project>
