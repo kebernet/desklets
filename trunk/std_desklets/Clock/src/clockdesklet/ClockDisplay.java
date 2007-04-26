@@ -230,6 +230,7 @@ public class ClockDisplay extends JXPanel {
         SetupPanel setup = new SetupPanel();
         setup.display = this;
         setupContainer.setContent(setup);
+        setupContainer.setShaped(true);
         setupContainer.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
     
