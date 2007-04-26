@@ -9,27 +9,27 @@
 
 package wikipediadesklet;
 
-import ab5k.desklet.AbstractDesklet;
+
+import ab5k.desklet.Desklet;
 import ab5k.desklet.DeskletContext;
-import java.awt.BorderLayout;
 
 /**
  *
  * @author joshy
  */
-public class MainDesklet extends AbstractDesklet {
+public class MainDesklet extends Desklet {
     MainForm form;
     /** Creates a new instance of MainDesklet */
     public MainDesklet() {
     }
 
-    public void init(DeskletContext context) throws Exception {
-        this.context = context;
+    public void init() throws Exception {
+        DeskletContext context = getContext();
         this.form = new MainForm();
         form.setOpaque(false);
         form.context = context;
         context.getContainer().setContent( form );
-        context.getContainer().setShaped(true);
+        //context.getContainer().setShaped(true);
         context.getContainer().setBackgroundDraggable(true);
         context.getContainer().setResizable(false);
         context.getContainer().setVisible(true);
@@ -39,7 +39,7 @@ public class MainDesklet extends AbstractDesklet {
     }
 
     public void stop() throws Exception {
-        context.notifyStopped();
+        getContext().notifyStopped();
     }
 
     public void destroy() throws Exception {
