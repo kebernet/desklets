@@ -173,4 +173,12 @@ public abstract class BufferedPeer extends DCPeer {
         gx.dispose();
         return img;
     }
+
+    @Override
+    public void contentChanged() {
+        super.contentChanged();
+        setDirty(true);
+    }
+    
+    
 }

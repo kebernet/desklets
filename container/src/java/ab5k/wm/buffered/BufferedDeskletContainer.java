@@ -95,22 +95,23 @@ public class BufferedDeskletContainer extends DeskletContainer {
     public void setContent(JComponent content) {
         if(this.content != null) {
             getTopComponent().remove(this.content);
+            getPeer().contentChanged();
         }
         this.content = content;
-        u.p("content set to: " + content);
         getTopComponent().add(content,"Center");
+        getPeer().contentChanged();
         pack();
     }
     
     
     public void setVisible(boolean b) {
+        pack();
         getPeer().setVisible(b);
     }
     
     public void pack() {
         getTopComponent().setSize(getTopComponent().getLayout().preferredLayoutSize(getTopComponent()));
         setSize(getTopComponent().getSize());
-        u.p("packed the contents to: " + getTopComponent().getSize());
     }
     
     public boolean isVisible() {

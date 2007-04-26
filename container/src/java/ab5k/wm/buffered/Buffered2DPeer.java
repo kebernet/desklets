@@ -71,7 +71,6 @@ public class Buffered2DPeer extends BufferedPeer {
     
 
     public void setVisible(boolean visible) {
-        
         // center it
         if(isDialog) {
             if(visible) {
