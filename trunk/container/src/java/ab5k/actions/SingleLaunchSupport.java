@@ -97,7 +97,7 @@ public class SingleLaunchSupport {
                         }
                     }
                 }
-            }).start();
+            },"SingleLaunch:LocalPort").start();
             firstMain(args);
             return false;
         } catch (IOException ioex) {
