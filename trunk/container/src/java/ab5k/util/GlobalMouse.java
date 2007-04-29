@@ -95,7 +95,7 @@ public class GlobalMouse extends ab5k.desklet.services.GlobalMouse{
                     }
                 }
             }
-        });
+        },"Global Mouse");
         go = true;
         thread.start();
     }
