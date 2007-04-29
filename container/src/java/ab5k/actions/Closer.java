@@ -36,7 +36,7 @@ public class Closer {
     /** Creates a new instance of CloseState */
     public Closer(Core main) {
         this.main = main;
-        new Thread(new MicroCloser()).start();
+        new Thread(new MicroCloser(),"Closer").start();
     }
     
     
