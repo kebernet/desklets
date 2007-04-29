@@ -20,7 +20,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
 
     private final BufferedWM bufferedWM;
 
-    private Component lastComp;
+    Component lastComp;
     private BufferedDeskletContainer lastDC;
     
 
@@ -39,6 +39,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     
     public void mousePressed(MouseEvent e) {
         bufferedWM.raiseWindow(e);
+        bufferedWM.getRenderPanel().requestFocus();
         redispatch(e);
     }
     
@@ -62,7 +63,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
             BufferedDeskletContainer bdc = bufferedWM.findContainer(e.getPoint());
             if(bdc != null) {
                 if(e.getID() == e.MOUSE_PRESSED) {
-                    u.p("redispatching to: " + bdc.toString() + " " + bdc.getContext().toString());
+                    //u.p("redispatching to: " + bdc.toString() + " " + bdc.getContext().toString());
                 }
                 lastDC = bdc;
                 redispatch(e, bdc);
@@ -161,6 +162,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
                     e.getButton());
             //u.p("e2 = " + e2);
             lastComp = child;
+            //u.p("last comp = " + lastComp);
             child.dispatchEvent(e2);
         }
         //child.dispatchEvent(e);

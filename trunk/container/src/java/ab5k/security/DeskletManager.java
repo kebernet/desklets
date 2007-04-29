@@ -63,7 +63,7 @@ public class DeskletManager {
         }
 
         DeskletUpdater updater = new DeskletUpdater(this, prefs);
-        Thread t = new Thread(updater);
+        Thread t = new Thread(updater,"Updater");
         t.start();
     }
 

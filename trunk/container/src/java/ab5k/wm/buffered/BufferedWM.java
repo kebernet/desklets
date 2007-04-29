@@ -119,7 +119,8 @@ public class BufferedWM extends WindowManager {
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(getRenderPanel(), "Center");
         
-        MouseRedispatcher mouse = new MouseRedispatcher(this);
+        // setup the mouse hacks
+        final MouseRedispatcher mouse = new MouseRedispatcher(this);
         getRenderPanel().addMouseListener(mouse);
         getRenderPanel().addMouseMotionListener(mouse);
         
@@ -147,15 +148,22 @@ public class BufferedWM extends WindowManager {
         setDeskletCreationTransition(new StdCreationAnimation());
         setDeskletDestructionTransition(new StdDestructionAnimation());
     }
+    private void printParents(Component comp, String tab) {
+        if(comp == null) return;
+        u.p(tab + "comp " + comp.getClass().getName() + " " + comp.bounds());
+        printParents(comp.getParent(), tab + "  ");
+    }
     
     protected Component createRenderPanel() {
-        return new DeskletRenderPanel(this);
+        DeskletRenderPanel panel = new DeskletRenderPanel(this);
+        panel.setFocusable(true);
+        return panel;
     }
     
     void setupManageButtons() {
         final JXBoxPanel buttonPanel = new JXBoxPanel();
         buttonPanel.setBackgroundPainter(new RectanglePainter(3,3,3,3, 20,20, true,
-                Color.ORANGE, 3, Color.BLACK));
+                new Color(0x9eeb06), 3, Color.WHITE));
         buttonPanel.setPadding(new Insets(5,5,5,5));
         buttonPanel.setOpaque(false);
         final ManagePanelAnimations mpa = new ManagePanelAnimations(this);
@@ -223,7 +231,7 @@ public class BufferedWM extends WindowManager {
                     ex.printStackTrace();
                 }
             }
-        }).start();
+        },"BufferedWM:start").start();
     }
     
     BufferedDeskletContainer findContainer(Point pt) {
