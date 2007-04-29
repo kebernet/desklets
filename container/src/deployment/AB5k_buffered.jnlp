@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc.//DTD JNLP 1.5//EN" "http://www.netbeans.org/jnlp/DTD/jnlp.dtd">
+<jnlp codebase="http://www.ab5k.org/downloads/daily/new_window_manager" href="AB5k_buffered.jnlp">
+  <information>
+    <title>AB5k Buffered</title>
+    <vendor>AB5k</vendor>
+    <homepage href="http://www.ab5k.org/"/>
+    <description>Runs AB5k widgets</description>
+    <offline-allowed/>
+    <shortcut >
+      <desktop/>    
+      <menu submenu="AB5k.org"/>
+    </shortcut>
+
+    <association mime-type="application/x-ab5k" extensions="desklet">
+        <description>AB5k Desklet</description> 
+        <icon href="ying-yang-desklet-icon.32.png" width="32" height="32"/>
+        <icon href="ying-yang-desklet-icon.png"/>
+        <icon href="ying-yang-desklet-icon.icns"/>
+    </association>
+
+    <icon kind="splash" href="ying-yang-splash.png"/>
+
+    <icon href="ying-yang.icon.32.png" width="32" height="32"/>
+    <icon href="ying-yang.icns" width="128" height="128"/>
+    
+  </information>
+  
+<!-- check in the background and alert next time. don't do this for dailies
+  because you must double launch -->
+<!--
+  <update check="background" policy="prompt-update"/>
+  -->
+  <resources locale="" os="">
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.6+"/>
+  </resources>
+
+  <resources locale="" os="">
+<!-- turn on buffered mode -->
+    <property name="org.ab5k.test.useWindowManager" value="buffered"/>
+
+<!-- ab5k itself -->
+    <jar download="eager" href="lib/AB5k.jar" main="true" version=""/>
+    <jar download="eager" href="lib/DeskletSpecification.jar" main="false" version=""/>
+    <jar download="eager" href="lib/AB5kUtils.jar" version=""/>
+    <jar download="eager" href="lib/JoshUtil.jar" version=""/>
+
+<!-- early loads -->
+    <!-- we shouldn't need this. ab5k itself is 1.6 only -->
+    <jar download="eager" href="lib/swing-layout.jar" version=""/>
+    
+<!-- common libs -->
+    <jar download="eager" href="lib/rome-0.8.jar" main="false" version=""/>
+    <jar download="eager" href="lib/jdom-1.0.jar" main="false" version=""/>
+    <jar download="eager" href="lib/TimingFramework-001.jar" version=""/>
+<!--    <jar download="eager" href="lib/joda-time-1.4.jar" version=""/>-->
+
+<!-- http libs. Why do we need these? -->
+    <jar download="eager" href="lib/commons-httpclient-3.0.1.jar" version=""/>
+    <jar download="eager" href="lib/commons-logging-1.1.jar" version=""/>
+    <jar download="eager" href="lib/commons-codec-1.3.jar" version=""/>
+
+<!-- swingx -->
+    <jar download="eager" href="lib/swing-worker.jar" version=""/>
+    <jar download="eager" href="lib/swingx-ab5k.02.jar" version=""/>
+    <jar download="eager" href="lib/joshy-swingx-incubator-ab5k.001.jar" version=""/>
+<!--    <jar download="eager" href="lib/MultipleGradientPaint.jar" version=""/>-->
+<!--    <jar download="eager" href="lib/Filters.jar" version=""/>-->
+
+  </resources>
+
+
+
+  <application-desc main-class="ab5k.Main"/>
+  <security>
+    <all-permissions/>
+  </security>
+</jnlp>
