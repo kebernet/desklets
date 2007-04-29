@@ -12,6 +12,7 @@ package ab5k.wm.buffered;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
 import ab5k.util.GraphicsUtil;
+import ab5k.util.PlafUtil;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -104,13 +105,15 @@ public class JFramePeer extends DCPeer {
     public void setShaped(boolean shaped) {
         if(this.shaped != shaped) {
             //if(isDialog) {
+            if(PlafUtil.isMacOSX()) {
                 if(shaped) {
                     frame.setUndecorated(true);
                     frame.setBackground(new Color(0,0,0,0));
                 } else {
                     frame.setBackground(new Color(255,255,255,255));
                 }
-                this.shaped = shaped;
+            }
+            this.shaped = shaped;
             //}
         }
     }
