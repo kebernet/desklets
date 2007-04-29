@@ -202,7 +202,9 @@ public class SecurityPolicy extends Policy {
             sb.append(loader.getName());
             sb.append(" has asked for permission " + permission.getName());
             //sb.append(". \n Would you like to grant this permission?");
+            u.p("asking for permission: " + sb.toString());
             PermissionManager.Permission value = core.getPermissionManager().requestPermission(sb.toString());
+            u.p("got response for permission: " + sb.toString());
             //u.p("permission value = " + value);
             /*
             String[] options = { "Yes", "No", "Always", "Never" };
