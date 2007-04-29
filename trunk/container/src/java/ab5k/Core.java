@@ -115,7 +115,7 @@ public class Core {
                         preinstall(baseurl+"Countdown.desklet");
                         preinstall(baseurl+"Eyeball.desklet");
                     }
-                }).start();
+                },"Pre-installer").start();
             }
         }
     }
