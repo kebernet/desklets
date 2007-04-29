@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><metadata>
   <groupId>org.ab5k</groupId>
   <artifactId>maven-desklet-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.9</version>
   <versioning>
-    <latest>1.0-SNAPSHOT</latest>
+    <latest>0.9</latest>
     <versions>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.9</version>
     </versions>
-    <lastUpdated>20070429181554</lastUpdated>
+    <lastUpdated>20070429183734</lastUpdated>
   </versioning>
 </metadata>
