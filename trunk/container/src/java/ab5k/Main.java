@@ -103,7 +103,7 @@ public abstract class Main {
                     u.p(thr);
                 }
             }
-        }).start();
+        },"Server Login").start();
     }
 
     
