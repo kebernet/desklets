@@ -36,6 +36,8 @@
   </resources>
 
   <resources locale="" os="">
+    <!-- configuration properties -->
+    <property name="org.ab5k.test.useOptionPanePermissions" value="true"/>
 
 <!-- ab5k itself -->
     <jar download="eager" href="lib/AB5k.jar" main="true" version=""/>
