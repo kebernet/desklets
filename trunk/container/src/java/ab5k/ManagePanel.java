@@ -334,7 +334,7 @@ public class ManagePanel extends javax.swing.JPanel {
                             e);
                 }
             }
-        }).start();
+        },"Manage:Add").start();
         
     }//GEN-LAST:event_addButtonActionPerformed
     
@@ -472,7 +472,7 @@ public class ManagePanel extends javax.swing.JPanel {
                 }
                 busyPanel.stop();
             }
-        }).start();
+        },"Manage:Stop").start();
         
     }//GEN-LAST:event_stopButtonActionPerformed
     
@@ -498,7 +498,7 @@ public class ManagePanel extends javax.swing.JPanel {
                 }
                 busyPanel.stop();
             }
-        }).start();
+        },"Manage:Stop").start();
         
     }//GEN-LAST:event_startButtonActionPerformed
     
@@ -535,7 +535,7 @@ public class ManagePanel extends javax.swing.JPanel {
                 }
                 busyPanel.stop();
             }
-        }).start();
+        },"Manage:Uninstall").start();
     }//GEN-LAST:event_uninstallButtonActionPerformed
     
     
