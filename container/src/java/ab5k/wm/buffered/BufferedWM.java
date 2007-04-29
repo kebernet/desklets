@@ -53,6 +53,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
@@ -107,9 +108,16 @@ public class BufferedWM extends WindowManager {
     
     public void init() {
         RepaintManager.setCurrentManager(new DeskletRepaintManager(this));
-        hidden = new JDialog();
         renderPanel = createRenderPanel();
         frame = new JFrame("AB5k");
+        
+        //JPanel p2 = new JPanel();
+        //((Container)renderPanel).add(p2);
+        //p2.setLocation(-1000,-1000);
+        //hidden = p2;
+        hidden = new JDialog();
+        //hidden = (Container) renderPanel;
+        
         if(!SHOW_FRAME_TITLE_BAR) {
             frame.setUndecorated(true);
         }
