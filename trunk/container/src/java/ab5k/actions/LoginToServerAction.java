@@ -67,8 +67,8 @@ public class LoginToServerAction {
                     ex.printStackTrace();
                 }
             }
-        }
-        ).start();
+        },
+        "LoginToServerAction").start();
     }
 
     public void setShouldLogin(boolean b) {
