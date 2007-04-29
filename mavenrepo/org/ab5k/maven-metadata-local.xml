@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <plugins>
+    <plugin>
+      <name>Desklet Maven Plugin</name>
+      <prefix>desklet</prefix>
+      <artifactId>maven-desklet-plugin</artifactId>
+    </plugin>
+    <plugin>
+      <name>Desklet Project Archetype</name>
+      <prefix>desklet-archetype</prefix>
+      <artifactId>desklet-archetype</artifactId>
+    </plugin>
+  </plugins>
+</metadata>
