@@ -65,7 +65,7 @@ public class JFramePeer extends DCPeer {
                 public void componentHidden(ComponentEvent e) {
                 }
                 public void componentMoved(ComponentEvent e) {
-                    u.p("frame moved! " + e);
+                    //u.p("frame moved! " + e);
                     if(frame.getLocation().getX() >
                             bdc.wm.core.getCollapseWindowAction().getClosedBounds().getX()) {
                         u.p("once more into the dock!");
@@ -103,14 +103,15 @@ public class JFramePeer extends DCPeer {
     
     public void setShaped(boolean shaped) {
         if(this.shaped != shaped) {
-            if(isDialog) {
+            //if(isDialog) {
                 if(shaped) {
                     frame.setUndecorated(true);
                     frame.setBackground(new Color(0,0,0,0));
                 } else {
                     frame.setBackground(new Color(255,255,255,255));
                 }
-            }
+                this.shaped = shaped;
+            //}
         }
     }
     public boolean isShaped() {
