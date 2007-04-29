@@ -10,24 +10,15 @@
 package ab5k.wm.buffered;
 
 import ab5k.util.AnimRepainter;
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
-import org.jdesktop.swingx.graphics.GraphicsUtilities;
-import org.joshy.util.u;
 
 /**
  *

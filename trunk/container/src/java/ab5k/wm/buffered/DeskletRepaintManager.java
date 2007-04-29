@@ -12,6 +12,7 @@ class DeskletRepaintManager extends RepaintManager {
     BufferedWM wm;
     DeskletRepaintManager(BufferedWM wm) {
         this.wm = wm;
+        this.setDoubleBufferingEnabled(false);
     }
     
     public void addDirtyRegion(JComponent comp, int x, int y, int w, int h) {
@@ -21,11 +22,14 @@ class DeskletRepaintManager extends RepaintManager {
         BufferedDeskletContainer bdc = findDesklet(comp);
         if(bdc != null) {
             // check that we don't add it twice
+            //repaint the top component
             if(comp != bdc.getTopComponent()) {
                 super.addDirtyRegion(bdc.getTopComponent(), 0, 0, bdc.getTopComponent().getWidth(), bdc.getTopComponent().getHeight());
             }
             
+            
             ((BufferedPeer)bdc.getPeer()).setDirty(true);
+            //repainting the whole render panel
             super.addDirtyRegion((JComponent)wm.getRenderPanel(),
                     (int)bdc.getLocation().getX(), (int)bdc.getLocation().getY(),
                     (int)bdc.getSize().getWidth(), (int)bdc.getSize().getHeight());

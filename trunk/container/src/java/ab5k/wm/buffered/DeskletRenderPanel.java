@@ -44,8 +44,14 @@ public class DeskletRenderPanel extends JXPanel {
     public DeskletRenderPanel(BufferedWM bufferedWM) {
         super();
         this.bufferedWM = bufferedWM;
-        rendererPane = new CellRendererPane();
+        rendererPane = new CustomCellRendererPane();
         add(rendererPane);
+        Dimension size = new Dimension(300,300);
+        rendererPane.setMinimumSize(size);
+        rendererPane.setMaximumSize(size);
+        rendererPane.setPreferredSize(size);
+        rendererPane.setSize(size);
+        rendererPane.setVisible(true);
         this.setLayout(new AbsLayout());
     }
     
@@ -57,7 +63,6 @@ public class DeskletRenderPanel extends JXPanel {
     
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        //u.p("repainting main panel");
         if(painter != null) {
             painter.paint(g2,this,getWidth(),getHeight());
         } else {
@@ -122,7 +127,6 @@ public class DeskletRenderPanel extends JXPanel {
     private void drawWindow(final Graphics2D g2, final BufferedDeskletContainer bdc, final Buffered2DPeer peer) {
         Dimension size = new Dimension((int) bdc.getSize().getWidth(), (int) bdc.getSize().getHeight());
         Point2D pt = bdc.getLocation();
-        //boolean wasDirty = false;
         peer.updateTexture(rendererPane, size);
         
         // draw to the screen
@@ -146,11 +150,7 @@ public class DeskletRenderPanel extends JXPanel {
         }
         
         if (this.bufferedWM.DEBUG_BORDERS) {
-            //if (wasDirty) {
-              //  g3.setColor(Color.CYAN);
-            //}  else {
-                g3.setColor(Color.BLACK);
-            //}
+            g3.setColor(Color.BLACK);
             g3.setStroke(new BasicStroke(3));
             g3.drawRect(0, 0, size.width, size.height);
         }
