@@ -1,0 +1,46 @@
+AB5K Maven Build Notes - spec:
+==============================
+
+Prerequisite:
+------------
+Requires Maven 2 - http://maven.apache.org/.
+Install/unpack Maven 2, define MVN_HOME environment variable directed at install location.
+Add MVN_HOME to the PATH. 
+Run "mvn --version" to ensure Maven 2 is present.
+
+1. Download ab5k project (URL HERE). 
+Main project (trunk) has sub projects for "container" and "spec" 
+(standard desklets and www are also present but not addressed here). 
+Trunk has a "pom.xml" Maven project descriptor, *and* so do sub projects container and spec. 
+
+2. "spec" build, cd to PROJ_TRUNK/spec and issue maven commands to build.
+
+PROJ_TRUNK\spec>mvn clean package
+
+The Maven package plugin will create an artifact, in this case a jar, for the project.
+The "spec" jar is then used as a dependency for the container and desklets. Building
+the spec is not required (unless you want to hack on the spec itself). An existing
+jar of the latest spec is in the ab5k google code repo (/mavenrepo). 
+
+
+IDE Notes:
+----------
+Maven is the "authoritative" build.  Using the Maven files though you can easily
+create projects that are accessible to various IDEs, including Netbeans and Eclipse.
+
+Netbeans: Use Mevenide to create an nbproject (http://mevenide.codehaus.org/m2-site/).
+TODO - more detail here.
+
+Eclipse: Use the Maven Eclipse plugin to create an Eclipse project:
+"mvn eclipse:eclipse"
+This will generate the .classpath and .project files needed for Eclipse. 
+From there you can import the project into Eclipse (import existing project).
+You must also bind the Eclipse Classpath Variable "M2_REPO" to your local 
+repository (typically ~/.m2/repository).
+
+
+Repository Notes:
+-----------------
+Currently ab5k is built from several Maven repositories.  This is something
+we plan to clean up and eventually rely on only two main, organized, repos. 
+(Maven/Ibiblio for global deps, and a specificab5k repository hosted at Google Code).
