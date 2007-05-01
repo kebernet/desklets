@@ -118,6 +118,10 @@ These are pretty self explanitory. It is good to fill these out, though. When yo
     <class>eyeball.EyeballDesklet</class>
 }}}
 This is the fully qualified name of your Desklet implementation class.
+{{{
+    <version>1.0.1</version>
+}}}
+The version of this desklet, as opposed to the version of the specification on the <desklet> tag.
 {{{      
     <repository>http://www.ab5k.org/maven/</repository>
 }}}
