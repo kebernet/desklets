@@ -4,10 +4,12 @@
   <part id="general">
     <title>General</title>
    
-    <faq id="example">
-      <question>Question</question>
-      <answer>Answer</answer>
+    <faq id="container">
+      <question>What is the ab5k "container"?</question>
+      <answer>A cross platform (Java) desktop context for running desklets. 
+      For more information see the Wiki pages: http://code.google.com/p/desklets/w/list</answer>
     </faq>
+   
 
   </part>
 </faqs>
