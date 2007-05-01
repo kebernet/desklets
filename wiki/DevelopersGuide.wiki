@@ -27,7 +27,7 @@ This will create a basic project with a simple MyDesklet class. If you use IDEA 
   mvn idea:idea
   mvn eclipse:eclipse
 }}}
-Using [http://mevenide.codehaus.org Mevenide] plugin fo NetBeans you can make this an IDE supported archetype by clicking the "Custom" button in the New Project -> Maven 2 -> Archetype dialog and entering the archetype* values above.
+Using [http://mevenide.codehaus.org Mevenide] plugin fo NetBeans you can make this an IDE supported archetype by clicking the "Custom" button in the New Project -> Maven 2 -> Archetype dialog and entering the archetype{*} values above.
 
 
 = The Basic Desklet Lifecycle =
