@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jnlp PUBLIC "-//Sun Microsystems, Inc.//DTD JNLP 1.5//EN" "http://www.netbeans.org/jnlp/DTD/jnlp.dtd">
+<jnlp spec="1.0+" codebase="http://www.ab5k.org/downloads/daily/" href="$outputFile">
+	<information>
+		<title>ab5k</title>
+		<vendor>ab5k.org</vendor>
+		<homepage>http://www.ab5k.org</homepage>
+		<description kind="one-line">
+			ab5k
+		</description>
+		<offline-allowed />
+		<shortcut>
+			<desktop />
+			<menu submenu="AB5k.org" />
+		</shortcut>
+
+		<!-- 
+			<association mime-type="application/x-ab5k" extensions="desklet">
+			<description>AB5k Desklet</description> 
+			<icon href="ying-yang-desklet-icon.32.png" width="32" height="32"/>
+			<icon href="ying-yang-desklet-icon.png"/>
+			<icon href="ying-yang-desklet-icon.icns"/>
+			</association>
+			
+			<icon kind="splash" href="ying-yang-splash.png"/>
+			
+			<icon href="ying-yang.icon.32.png" width="32" height="32"/>
+			<icon href="ying-yang.icns" width="128" height="128"/>
+		-->
+
+	</information>
+
+	<resources locale="" os="">
+		<j2se href="http://java.sun.com/products/autodl/j2se"
+			version="1.6+" initial-heap-size="32m" max-heap-size="128m" />
+		$dependencies
+	</resources>
+
+	<security>
+		<all-permissions />
+	</security>
+
+	<application-desc main-class="$mainClass" />
+
+</jnlp>

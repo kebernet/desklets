@@ -1,0 +1,6 @@
+AB5K Maven Build Notes - container:
+===================================
+
+mvn clean site cobertura:cobertura 
+
+(I cant get cobetura to run correctly within site, if your run it after, on its own, it works.)

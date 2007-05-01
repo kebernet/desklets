@@ -1,0 +1,424 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ab5k</groupId>
+	<artifactId>ab5k.container</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0</version>
+
+	<name>ab5k.Container</name>
+	<description>
+		ab5k container, desktop Java based widget system - see http://www.ab5k.org
+	</description>
+	<url>http://desklets.googlecode.com/svn/trunk/container/</url>
+	<inceptionYear>2007</inceptionYear>
+	<licenses>
+		<license>
+			<name>GPL2</name>
+			<url>http://www.gnu.org/copyleft/gpl.html</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>abk5</name>
+		<url>http://ab5k.org</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>joshy</id>
+			<name>Josh Marinacci</name>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>cooper</id>
+			<name>Robert Cooper</name>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Dave Cohen</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Charlie Collins</name>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>User List</name>
+			<archive>http://groups.google.com/group/desklets</archive>
+		</mailingList>
+		<mailingList>
+			<name>Developer List</name>
+			<archive>
+				http://groups.google.com/group/desklets-contributors
+			</archive>
+		</mailingList>
+	</mailingLists>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>
+					maven-project-info-reports-plugin
+				</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jdepend-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<scm>
+		<connection>
+			scm:svn:http://desklets.googlecode.com/svn/
+		</connection>
+		<developerConnection>
+			scm:svn:https://desklets.googlecode.com/svn/
+		</developerConnection>
+		<url>http://desklets.googlecode.com/svn/</url>
+	</scm>
+
+	<distributionManagement>
+		<site>
+			<id>website</id>
+			<url>scp://TODO/</url>
+		</site>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>ab5k.repo</id>
+			<name>ab5k Repository</name>
+			<url>http://desklets.googlecode.com/svn/mavenrepo/</url>
+			<layout>legacy</layout>
+		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>ab5k.snap.repo</id>
+			<name>ab5k Snapshot Repository</name>
+			<url>http://desklets.googlecode.com/svn/mavenrepo/</url>
+			<layout>legacy</layout>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/desklets/issues/list</url>
+	</issueManagement>
+
+	<!--  TODO -->
+	<!-- 
+		<ciManagement>
+		<system>continuum</system>
+		<url>http://127.0.0.1:8080/continuum</url>
+		<notifiers>
+		<notifier>
+		<type>mail</type>
+		<sendOnError>true</sendOnError>
+		<sendOnFailure>true</sendOnFailure>
+		<sendOnSuccess>false</sendOnSuccess>
+		<sendOnWarning>false</sendOnWarning>
+		<configuration>
+		<address>continuum@127.0.0.1</address>
+		</configuration>
+		</notifier>
+		</notifiers>
+		</ciManagement>
+	-->
+
+	<repositories>
+		<!--  should ultimately be *the* repo for ab5k specific stuff -->
+		<repository>
+			<id>ab5k</id>
+			<name>ab5k gCode Repository</name>
+			<layout>legacy</layout>
+			<url>http://desklets.googlecode.com/svn/mavenrepo/</url>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+		<!--  temporary, until we can get all files in repo sorted out and on gCode -->
+		<!--  (we don't need to host half the crap in this repo, and other stuff that we do seems misplaced) -->
+		<repository>
+			<id>ab5k-josh</id>
+			<name>ab5k Joshy Repository</name>
+			<layout>legacy</layout>
+			<url>http://www.ab5k.org/maven/</url>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+
+		<!--  addtl repos for non ab5k specific resources -->
+		<repository>
+			<id>central</id>
+			<name>Maven Legacy Repository Switchboard</name>
+			<layout>legacy</layout>
+			<url>http://repo1.maven.org/maven</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>java.net</id>
+			<name>java.net Maven Repo</name>
+			<layout>legacy</layout>
+			<url>http://download.java.net/maven/1/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ibiblio</id>
+			<name>Ibiblio Maven Repo</name>
+			<layout>legacy</layout>
+			<url>http://www.ibiblio.org/maven/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>apache.snapshots</id>
+			<name>Apache Development Repository</name>
+			<layout>default</layout>
+			<url>http://cvs.apache.org/maven-snapshot-repository</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+
+				<!--  assembly creates a pseudo uber jar - assembly:assembly -->
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<configuration>
+						<descriptorRefs>
+							<descriptorRef>
+								jar-with-dependencies
+							</descriptorRef>
+						</descriptorRefs>
+					</configuration>
+				</plugin>
+
+				<!--  cobertura coverage -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>cobertura-maven-plugin</artifactId>
+					<version>2.0</version>
+					<configuration>
+						<check>
+							<branchRate>80</branchRate>
+							<lineRate>80</lineRate>
+							<totalBranchRate>80</totalBranchRate>
+							<totalLineRate>80</totalLineRate>
+							<packageLineRate>80</packageLineRate>
+							<packageBranchRate>80</packageBranchRate>
+							<haltOnFailure>false</haltOnFailure>
+						</check>
+					</configuration>
+					 
+					 <!-- 
+					<executions>
+						<execution>
+							<goals>
+								<goal>clean</goal>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+					-->
+				</plugin>
+
+				<!--  jnlp -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>webstart-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<goals>
+								<goal>jnlp</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<jnlp>
+							<inputTemplate>
+								src/main/jnlp/template.vm.xml
+							</inputTemplate>
+							<outputFile>ab5k.jnlp</outputFile>
+							<mainClass>ab5k.Main</mainClass>
+						</jnlp>
+						<sign>
+							<keystore>
+								c:\docume~1\ccollins\.keystore
+							</keystore>
+							<keypass>ab5kpassword</keypass>
+							<storepass>ab5kpassword</storepass>
+							<storetype />
+							<alias>ab5k</alias>
+							<validity />
+
+							<dnameCn>Josh Marinacci</dnameCn>
+							<dnameOu>ab5k.org</dnameOu>
+							<dnameO>ab5k</dnameO>
+							<dnameL />
+							<dnameSt />
+							<dnameC>US</dnameC>
+							<verify>true</verify>
+						</sign>
+						<keystore>
+							<delete>true</delete>
+							<gen>true</gen>
+						</keystore>
+						<gzip>true</gzip>
+						<verbose>true</verbose>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ab5k</groupId>
+			<artifactId>desklet.spec</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ab5k</groupId>
+			<artifactId>AB5kUtils</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ab5k</groupId>
+			<artifactId>AppleStubs</artifactId>
+			<version>0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>JoshUtil</groupId>
+			<artifactId>JoshUtil</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>JoshUtil</groupId>
+			<artifactId>javaws</artifactId>
+			<version>0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>swingx</groupId>
+			<artifactId>swingx</artifactId>
+			<version>ab5k.02</version>
+		</dependency>
+		<dependency>
+			<groupId>swingx</groupId>
+			<artifactId>joshy-swingx-incubator</artifactId>
+			<version>ab5k.001</version>
+		</dependency>
+		<dependency>
+			<groupId>swingx</groupId>
+			<artifactId>TimingFramework</artifactId>
+			<version>001</version>
+		</dependency>
+		<dependency>
+			<groupId>swingx</groupId>
+			<artifactId>Filters</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.java.dev.swing-layout</groupId>
+			<artifactId>swing-layout</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>rome</groupId>
+			<artifactId>rome</artifactId>
+			<version>0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
