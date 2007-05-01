@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>FX Calculator</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>A calculator written in JavaFX</description>
+    <class>fxwidget.FXCalculator</class>
+</desklet>
