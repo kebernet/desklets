@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.5.0_07" class="java.beans.XMLDecoder"> 
+ <object class="org.jdesktop.swingx.painter.CompoundPainter"> 
+  <void property="clipPreserved"> 
+   <boolean>true</boolean> 
+  </void> 
+  <void id="BufferedImageOpArray0" property="filters"/> 
+  <void property="filters"> 
+   <object idref="BufferedImageOpArray0"/> 
+  </void> 
+  <void property="painters"> 
+   <array class="org.jdesktop.swingx.painter.Painter" length="4"> 
+    <void index="0"> 
+     <object class="org.jdesktop.swingx.painter.MattePainter"> 
+      <void property="fillPaint"> 
+       <object class="java.awt.Color"> 
+        <int>0</int> 
+        <int>0</int> 
+        <int>0</int> 
+        <int>255</int> 
+       </object> 
+      </void> 
+      <void id="BufferedImageOpArray1" property="filters"/> 
+      <void property="filters"> 
+       <object idref="BufferedImageOpArray1"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="1"> 
+     <object class="org.jdesktop.swingx.painter.RectanglePainter"> 
+      <void property="borderPaint"> 
+       <object class="org.apache.batik.ext.awt.LinearGradientPaint"> 
+        <object class="java.awt.geom.Point2D$Double"> 
+         <double>200.0</double> 
+         <double>12.0</double> 
+        </object> 
+        <object class="java.awt.geom.Point2D$Double"> 
+         <double>200.0</double> 
+         <double>182.0</double> 
+        </object> 
+        <array class="float" length="3"> 
+         <void index="1"> 
+          <float>0.12891985</float> 
+         </void> 
+         <void index="2"> 
+          <float>0.88</float> 
+         </void> 
+        </array> 
+        <array class="java.awt.Color" length="3"> 
+         <void index="0"> 
+          <object id="Color0" class="java.awt.Color"> 
+           <int>0</int> 
+           <int>0</int> 
+           <int>0</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+         <void index="1"> 
+          <object class="java.awt.Color"> 
+           <int>255</int> 
+           <int>255</int> 
+           <int>255</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+         <void index="2"> 
+          <object idref="Color0"/> 
+         </void> 
+        </array> 
+       </object> 
+      </void> 
+      <void property="borderWidth"> 
+       <float>8.0</float> 
+      </void> 
+      <void property="fillPaint"> 
+       <object class="java.awt.Color"> 
+        <int>0</int> 
+        <int>51</int> 
+        <int>153</int> 
+        <int>255</int> 
+       </object> 
+      </void> 
+      <void id="BufferedImageOpArray2" property="filters"/> 
+      <void property="filters"> 
+       <object idref="BufferedImageOpArray2"/> 
+      </void> 
+      <void property="insets"> 
+       <object class="java.awt.Insets"> 
+        <int>20</int> 
+        <int>20</int> 
+        <int>20</int> 
+        <int>20</int> 
+       </object> 
+      </void> 
+      <void property="roundHeight"> 
+       <int>5</int> 
+      </void> 
+      <void property="roundWidth"> 
+       <int>5</int> 
+      </void> 
+      <void property="rounded"> 
+       <boolean>true</boolean> 
+      </void> 
+      <void property="snapPaint"> 
+       <boolean>true</boolean> 
+      </void> 
+      <void property="style"> 
+       <object class="org.jdesktop.swingx.painter.AbstractAreaPainter$Style" field="OUTLINE"/> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="2"> 
+     <object class="org.jdesktop.swingx.painter.TextPainter"> 
+      <void property="fillPaint"> 
+       <object class="java.awt.Color"> 
+        <int>223</int> 
+        <int>11</int> 
+        <int>11</int> 
+        <int>255</int> 
+       </object> 
+      </void> 
+      <void id="BufferedImageOpArray3" property="filters"/> 
+      <void property="filters"> 
+       <object idref="BufferedImageOpArray3"/> 
+      </void> 
+      <void property="snapPaint"> 
+       <boolean>true</boolean> 
+      </void> 
+      <void property="text"> 
+       <string>12:30</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="3"> 
+     <object class="org.jdesktop.swingx.painter.GlossPainter"> 
+      <void id="BufferedImageOpArray4" property="filters"/> 
+      <void property="filters"> 
+       <object idref="BufferedImageOpArray4"/> 
+      </void> 
+     </object> 
+    </void> 
+   </array> 
+  </void> 
+ </object> 
+</java> 
