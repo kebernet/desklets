@@ -60,17 +60,22 @@ Sometimes, however, you might have a desklet that needs to be doing something re
 You can use regular Swing widgets to draw your desklet. Soon we hope to add support for HTML and F3 UIs, but for now, Swing is it. To add your desklet's UI to the screen, you will use the three DeskletContainer objects provided by the DeskletContext.
 
 {{{
-   DeskletContainer main = this.getContext().getContainer();
-   main.setContent( mySwingComponent );
-   // This is the main ui for your desklet.
+   SwingUtilties.invokeAndWait( new Runnable(){ 
+          public void run(){
+              DeskletContainer main = getContext().getContainer();
+              main.setContent( mySwingComponent );
+              // This is the main ui for your desklet.
 
-   DeskletContainer config = this.getContext().getConfigurationContainer();
-   // This is the configuration ui for setting preferences, etc.
+              DeskletContainer config = getContext().getConfigurationContainer();
+              // This is the configuration ui for setting preferences, etc.
 
-   DeskletContainer dock = this.getContext().getDockingContainer();
-   // This is the ui for your desklet on the dock bar.
+              DeskletContainer dock = getContext().getDockingContainer();
+              // This is the ui for your desklet on the dock bar.
 
+          } } );
 }}}
+
+Here we used SwingUtilities to make sure the initialization takes place on the Swing EDT. Remember, your desklet doesn't run on the EDT by default, so if you are attempting operations that must take place in Swing's thread, you should use SwingUtilities.
 
 You are not required to use any of these containers. Of course, it is logical you would use at least one of the main container or the dock container.
 
