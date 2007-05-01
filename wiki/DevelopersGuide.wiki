@@ -81,7 +81,7 @@ You are not required to use any of these containers. Of course, it is logical yo
 
 When using the containers, there are several option you can specify that will determine how your JComponent is rendered in Glossitope:
 
-  * setBackgroundDraggable( boolean ) : Determines whether the default action for mouse drags will let the used reposition the desklet.
+  * setBackgroundDraggable( boolean ) : Determines whether the default action for mouse drags will let the user reposition the desklet.
   * setResizable( boolean ) : Toggles the resizability of the desklet container.
   * setShaped( boolean ) : Toggles the default window decorations and the transparency of the default background.
   * setSize( Dimension2D ) : Sets the size the desklet container.
