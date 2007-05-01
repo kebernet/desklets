@@ -1,0 +1,20 @@
+Webstart/JNLP Notes
+===================
+
+Currently using the Codehaus:
+http://mojo.codehaus.org/webstart-maven-plugin-parent/webstart-maven-plugin/introduction.html.
+
+To use you must have the correct settings in the POM file (the checked in passwords and such 
+are nonsense) and you must have a local keystore (keystore can be created with keytool). 
+http://java.sun.com/javase/6/docs/technotes/tools/windows/jarsigner.html
+http://java.sun.com/javase/6/docs/technotes/tools/windows/keytool.html
+
+The webstart plugin will use jarsigner, against the container jar (which must be present)
+to sign and overwrite.
+
+"mvn clean package webstart:jnlp"
+
+This will create a target/jnlp directory with webstart files. 
+The src/jnlp/template.vm
+
+(Also, I left the src/deployment dir as is, we can build JNLP the old fashioned way too.)
