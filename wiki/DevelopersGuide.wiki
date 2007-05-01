@@ -178,3 +178,15 @@ These files are then shared by all the desklets. However, each desklet will get 
 = How Roaming Profiles Work ==
 
 The roaming profile mechanism is really quite simple. It simply saves out the UUID of the users desklets, the preferences they have saved, and the <source> location to an XML file called filename.ab5k. When the user opens this file, the container will download each desklet, place it in its original UUID locations, install (as above) and restore the preferences. We will be working to expand this functionality in the future.
+
+= Building and Uploading =
+
+Using the Maven project template, building your desklet jar is easy. Simply invoke:
+
+{{{
+mvn install
+}}}
+
+This will give you a jar file you can rename to .desklet, or upload to the Glossitope gallery for users to begin using. There is one more file you might want to include in your project before uploading.
+
+Packaging a PNG file as META-INF/preview.png will give the gallery an image to associate with your desklet. It should be (but doesn't have to be) a square image at 300x300 pixels or better. Be advised, though, it might be scaled down to smaller sizes, so something that looks OK in a smaller size is a good idea too.
