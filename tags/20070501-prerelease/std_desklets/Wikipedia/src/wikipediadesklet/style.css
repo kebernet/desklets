@@ -1,0 +1,27 @@
+    html { 
+    background-image: url(wp_damask_028.gif); 
+    background-repeat: repeat-y; 
+    }
+    body { 
+        margin: 0;
+        padding: 0;
+        background-color: #efdebd; margin-left: 93px; padding-left: 2em;
+        font-size: 130%;
+        padding-right: 2em;
+
+        padding-bottom: 3em;
+        margin-bottom: 0px;
+        border: solid #443300 1px;
+        border-width: 0px 0px 0px 4px;
+    }
+    h1, h2, h3 {
+        padding-top: 0.8em;
+        font-family: Georgia;
+        color: #443300;
+    }
+    h1 { text-transform: capitalize; font-weight: bold; }
+    p {
+        font-family: Serif;
+    }
+    i, a { color: #443300; font-weight: bold; }
+    a { text-decoration: underline; }

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.5.0_06" class="java.beans.XMLDecoder"> 
+ <object class="org.jdesktop.swingx.painter.CompoundPainter"> 
+  <void id="EffectArray0" property="effects"/> 
+  <void property="effects"> 
+   <object idref="EffectArray0"/> 
+  </void> 
+  <void property="painters"> 
+   <array class="org.jdesktop.swingx.painter.Painter" length="2"> 
+    <void index="0"> 
+     <object class="org.jdesktop.swingx.painter.TextPainter"> 
+      <void id="EffectArray1" property="effects"/> 
+      <void property="effects"> 
+       <object idref="EffectArray1"/> 
+      </void> 
+      <void property="font"> 
+       <object class="java.awt.Font"> 
+        <string>Dialog</string> 
+        <int>1</int> 
+        <int>48</int> 
+       </object> 
+      </void> 
+      <void property="insets"> 
+       <object class="java.awt.Insets"> 
+        <int>2</int> 
+        <int>2</int> 
+        <int>0</int> 
+        <int>0</int> 
+       </object> 
+      </void> 
+      <void property="paint"> 
+       <object class="java.awt.Color"> 
+        <int>0</int> 
+        <int>0</int> 
+        <int>0</int> 
+        <int>123</int> 
+       </object> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="1"> 
+     <object class="org.jdesktop.swingx.painter.TextPainter"> 
+      <void id="EffectArray2" property="effects"/> 
+      <void property="effects"> 
+       <object idref="EffectArray2"/> 
+      </void> 
+      <void property="font"> 
+       <object class="java.awt.Font"> 
+        <string>Dialog</string> 
+        <int>1</int> 
+        <int>48</int> 
+       </object> 
+      </void> 
+      <void property="paint"> 
+       <object class="org.apache.batik.ext.awt.LinearGradientPaint"> 
+        <object class="java.awt.geom.Point2D$Double"> 
+         <double>100.0</double> 
+         <double>21.0</double> 
+        </object> 
+        <object class="java.awt.geom.Point2D$Double"> 
+         <double>99.0</double> 
+         <double>86.0</double> 
+        </object> 
+        <array class="float" length="5"> 
+         <void index="0"> 
+          <float>0.099303134</float> 
+         </void> 
+         <void index="1"> 
+          <float>0.24390244</float> 
+         </void> 
+         <void index="2"> 
+          <float>0.5261324</float> 
+         </void> 
+         <void index="3"> 
+          <float>0.8066202</float> 
+         </void> 
+         <void index="4"> 
+          <float>0.9547038</float> 
+         </void> 
+        </array> 
+        <array class="java.awt.Color" length="5"> 
+         <void index="0"> 
+          <object id="Color0" class="java.awt.Color"> 
+           <int>0</int> 
+           <int>0</int> 
+           <int>0</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+         <void index="1"> 
+          <object class="java.awt.Color"> 
+           <int>102</int> 
+           <int>102</int> 
+           <int>102</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+         <void index="2"> 
+          <object class="java.awt.Color"> 
+           <int>255</int> 
+           <int>255</int> 
+           <int>255</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+         <void index="3"> 
+          <object class="java.awt.Color"> 
+           <int>102</int> 
+           <int>102</int> 
+           <int>102</int> 
+           <int>255</int> 
+          </object> 
+         </void> 
+         <void index="4"> 
+          <object idref="Color0"/> 
+         </void> 
+        </array> 
+       </object> 
+      </void> 
+      <void property="snapPaint"> 
+       <boolean>true</boolean> 
+      </void> 
+     </object> 
+    </void> 
+   </array> 
+  </void> 
+ </object> 
+</java> 

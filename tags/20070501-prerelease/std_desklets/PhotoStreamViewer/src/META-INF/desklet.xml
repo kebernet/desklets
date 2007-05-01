@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>Photo Viewer</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Shows photos from Flickr</description>
+    <class>photoviewerdesklet.Main</class>
+</desklet>

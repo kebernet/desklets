@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<desklet version="0.1">
+    <name>World Map</name>
+    <author>Joshua Marinacci</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>Lets you find addresses on the world map</description>
+    <class>worldmap.WorldMapDesklet</class>
+    
+    
+    
+    <repository>http://www.ab5k.org/maven/</repository>
+    <dependency>
+        <groupId>swingx</groupId>
+        <artifactId>swingx</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>swingx-ws</groupId>
+        <artifactId>swingx-ws</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>swingx</groupId>
+        <artifactId>swing-layout</artifactId>
+        <version>1.0.1</version>
+        <type>jar</type>
+    </dependency>
+    
+    <dependency>
+        <groupId>JoshUtil</groupId>
+        <artifactId>JoshUtil</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    
+</desklet>

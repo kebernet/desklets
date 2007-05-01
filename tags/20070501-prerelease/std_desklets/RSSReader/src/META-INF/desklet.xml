@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : desklet.xml
+    Created on : August 4, 2006, 8:29 PM
+    Author     : cooper
+    Description:
+        Purpose of the document follows.
+-->
+
+<desklet version="0.1">
+    <name>Java.net Desklet</name>
+    <author>Robert Cooper</author>
+    <homepage>http://svn.joshy.org</homepage>
+    <description>This is a description!</description>
+    <class>net.java.rss.Desklet</class>
+    <repository>https://maven-repository.dev.java.net/nonav/repository/</repository>
+    <dependency>
+        <groupId>rome</groupId>
+        <artifactId>rome</artifactId>
+        <version>0.8</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
+        <groupId>jdom</groupId>
+        <artifactId>jdom</artifactId>
+        <version>1.0</version>
+    </dependency>
+    
+</desklet>
