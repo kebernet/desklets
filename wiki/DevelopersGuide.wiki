@@ -1,4 +1,4 @@
-#Your complete introduction to the world of Desklet development.
+#summary Your complete introduction to the world of Desklet development.
 
 = Introduction =
 
