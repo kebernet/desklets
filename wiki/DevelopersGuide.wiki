@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Small is the new big. While desktop application have certainly not gone anywhere, the rise of connected applications has brought about new uses. Yahoo! Widget engine (formerly Konfabulator) was the first to bring small, web like application to the desktop. A variation on the old "Desk Accessories" applications from early WIMP operating systems, these make developing small, single purpose apps easy, and usually wrap them in a bit of fancy chrome so they are visually appealing. Glossitope brings this to the world of Java.
+Small is the new big. While desktop applications have certainly not gone anywhere, the rise of connected applications has brought about new uses. Yahoo! Widget engine (formerly Konfabulator) was the first to bring small, web like apps to the desktop. A variation on the old "Desk Accessories" applications from early WIMP operating systems, these make developing small, single purpose apps easy, and usually wrap them in a bit of fancy chrome so they are visually appealing. Glossitope brings this to the world of Java.
 
 In the Glossitope world, you begin by building a Desklet. This is a small class that expresses the lifecycle of your application in the container. If you have written Xlets or MIDlets before, it will look very familiar. If you haven't that is OK too.
 
@@ -27,7 +27,7 @@ This will create a basic project with a simple MyDesklet class. If you use IDEA 
   mvn idea:idea
   mvn eclipse:eclipse
 }}}
-Using [http://mevenide.codehaus.org Mevenide] plugin fo NetBeans you can make this an IDE supported archetype by clicking the "Custom" button in the New Project -> Maven 2 -> Archetype dialog and entering the archetype... values above.
+Using [http://mevenide.codehaus.org Mevenide] plugin for NetBeans you can make this an IDE supported archetype by clicking the "Custom" button in the New Project -> Maven 2 -> Archetype dialog and entering the archetype... values above.
 
 
 = The Basic Desklet Lifecycle =
@@ -77,7 +77,7 @@ You can use regular Swing widgets to draw your desklet. Soon we hope to add supp
 
 Here we used SwingUtilities to make sure the initialization takes place on the Swing EDT. Remember, your desklet doesn't run on the EDT by default, so if you are attempting operations that must take place in Swing's thread, you should use SwingUtilities.
 
-You are not required to use any of these containers. Of course, it is logical you would use at least one of the main container or the dock container.
+You are not required to use any particular one of these containers but you will need to use one of them or you won't have anything to show on screen. You cannot create your own JFrames and JDialogs.
 
 When using the containers, there are several option you can specify that will determine how your JComponent is rendered in Glossitope:
 
@@ -90,11 +90,11 @@ When using the containers, there are several option you can specify that will de
 
 = Local Storage = 
 
-There are two ways your desklet might persist data inside the container. The fist is through the preferences on the desklet context. The getPreference and setPreference methods will let you store name-value pairs. This is an easy way to save user preferences or state information you might need across lifecycles of the desklet. 
+There are two ways your desklet might persist data inside the container. The first is through the preferences on the desklet context. The getPreference and setPreference methods will let you store name-value pairs. This is an easy way to save user preferences or state information you might need across lifecycles of the desklet. 
 
 The other way is by using the filesystem. Your desklet has a directory deemed "safe" to work with. It is available as a java.io.File reference by calling getWorkingDirectory() on the DeskletContext. You can use the filesystem anywhere on the local machine, but doing so will cause the user to be prompted to grant your desklet permission to access any files outside of this folder, so it is best if your desklet remains inside this area. Upon installation of the desklet, this folder will contain the contents of your .desklet file (a simple JAR file renamed .desklet).
 
-Using the DeskletContext.setPreference method is the recommended way to safe preferences information. The reason is this: when a user creates a portable profile, these preferences will be preserved when your desklet is installed on a new container. Files you create will not be present in the users new copy, and must be re-created by you or by the user herself.
+Using the DeskletContext.setPreference method is the recommended way to save preferences information. The reason is this: when a user creates a portable profile, these preferences will be preserved when your desklet is installed on a new container. Files you create will not be present in the users new copy, and must be re-created by you or by the user herself.
 
 = The Desklet Descriptor =
 
