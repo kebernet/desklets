@@ -65,8 +65,8 @@ public class ManagePanelAnimations {
         this.wm = wm;
         rootPanel = (DeskletRenderPanel)wm.getRenderPanel();
         try {
-            closeIcon = new ImageIcon(ImageIO.read(getClass().getResource("close2.png")));
-            closeOverIcon = new ImageIcon(ImageIO.read(getClass().getResource("close2_over.png")));
+            closeIcon = new ImageIcon(ImageIO.read(getClass().getResource("/images/close2.png")));
+            closeOverIcon = new ImageIcon(ImageIO.read(getClass().getResource("/images/close2_over.png")));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
