@@ -26,6 +26,7 @@ import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 import ab5k.CustomDesktopPane;
 import ab5k.DesktopBackground;
+import ab5k.Environment;
 import ab5k.MainPanel;
 import ab5k.desklet.DeskletContainer;
 import ab5k.security.DefaultContext;
@@ -47,7 +48,10 @@ public class DesktopPaneWM extends WindowManager {
     /** Creates a new instance of DesktopPaneWM */
     public DesktopPaneWM() {
         this.desktop = new CustomDesktopPane();
-        frame = new JFrame("AB5k");
+        frame = new JFrame("Glossitope");
+        if(!Environment.showFrameTitleBar) {
+            frame.setUndecorated(true);
+        }
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(desktop,"Center");
     }
@@ -65,6 +69,10 @@ public class DesktopPaneWM extends WindowManager {
     public void showContainer(DeskletContainer dc) {
         final InternalFrameContainer ifc = (InternalFrameContainer) dc;
         desktop.add(ifc.iframe);
+        if(!ifc.isVisible()) {
+            ifc.pack();
+            ifc.setVisible(true);
+        }
     }
     
     public void destroyContainer(DeskletContainer dc) {
