@@ -26,7 +26,8 @@ public final class Environment {
             System.getProperty("org.ab5k.test.allowMultipleInstances") == null ? false : true;
     
     public static final boolean showFrameTitleBar = 
-            System.getProperty("org.ab5k.test.showFrameTitleBar") == null ? false : true;
+            "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.showFrameTitleBar")) ?
+                true : true;
     
     private static final String AB5K_HOME = 
             System.getProperty("org.ab5k.test.althomedirname") == null ? ".ab5k" :
