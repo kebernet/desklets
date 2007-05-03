@@ -27,7 +27,7 @@ public final class Environment {
     
     public static final boolean showFrameTitleBar = 
             "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.showFrameTitleBar")) ?
-                true : true;
+                true : false;
     
     private static final String AB5K_HOME = 
             System.getProperty("org.ab5k.test.althomedirname") == null ? ".ab5k" :
