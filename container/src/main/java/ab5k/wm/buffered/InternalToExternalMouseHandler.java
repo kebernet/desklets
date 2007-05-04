@@ -86,13 +86,13 @@ class InternalToExternalMouseHandler extends MouseAdapter {
             if(wm.selectedDesklet != null) {
                 if(wm.selectedDesklet instanceof BufferedDeskletContainer) {
                     BufferedDeskletContainer bdc = (BufferedDeskletContainer) wm.selectedDesklet;
-                    /*
+                    
                     Point pt = wm.getRenderPanel().getLocation();
                     pt.translate((int)bdc.getLocation().getX(),
                             (int)bdc.getLocation().getY());
                     g.drawImage(((Buffered2DPeer)bdc.getPeer()).getBuffer(),
                             (int)pt.getX(),
-                            (int)pt.getY(), null);*/
+                            (int)pt.getY(), null);
                 }
             }
         }

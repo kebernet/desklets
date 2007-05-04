@@ -146,13 +146,15 @@ public class BufferedWM extends WindowManager {
     }
     
     protected Component createRenderPanel() {
-        return new DeskletRenderPanel(this);
+        DeskletRenderPanel panel = new DeskletRenderPanel(this);
+        panel.setFocusable(true);
+        return panel;
     }
     
     void setupManageButtons() {
         final JXBoxPanel buttonPanel = new JXBoxPanel();
         buttonPanel.setBackgroundPainter(new RectanglePainter(3,3,3,3, 20,20, true,
-                Color.ORANGE, 3, Color.BLACK));
+                new Color(0x9eeb06), 3, Color.WHITE));
         buttonPanel.setPadding(new Insets(5,5,5,5));
         buttonPanel.setOpaque(false);
         final ManagePanelAnimations mpa = new ManagePanelAnimations(this);
@@ -220,7 +222,7 @@ public class BufferedWM extends WindowManager {
                     ex.printStackTrace();
                 }
             }
-        }).start();
+        },"BufferedWM:start").start();
     }
     
     BufferedDeskletContainer findContainer(Point pt) {

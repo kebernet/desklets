@@ -28,7 +28,7 @@ public class DeskletRunner extends Thread {
     /** Creates a new instance of DeskletRunner */
     public DeskletRunner(Core main, DefaultContext context)
     throws LifeCycleException {
-        super();
+        super("DeskletRunner: " + context.getConfig().getName());
         this.context = context;
         this.main = main;
         context.setBrowserHandler(new BrowserHandler() {
