@@ -40,6 +40,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     public void mousePressed(MouseEvent e) {
         bufferedWM.raiseWindow(e);
         redispatch(e);
+        bufferedWM.getRenderPanel().requestFocus();
     }
     
     public void mouseReleased(MouseEvent e) {

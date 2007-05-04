@@ -31,7 +31,7 @@ class CustomGlobalMouseService extends GlobalMouse {
         Component topParent = getTopParent(comp);
         
         // if this is a component in a buffered desklet container.
-        if(topParent == wm.hidden) {
+        if(topParent == wm.hidden || topParent == null || topParent == wm.hidden) {
             DeskletToplevel top = (DeskletToplevel)wm.getTopParent(comp,DeskletToplevel.class);
             BufferedDeskletContainer bdc = top.getContainer();
             Point pt2 = new Point(pt);

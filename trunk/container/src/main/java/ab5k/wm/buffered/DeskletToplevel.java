@@ -11,6 +11,7 @@ public class DeskletToplevel extends JPanel {
     DeskletToplevel(BufferedDeskletContainer container) {
         setOpaque(false);
         this.container = container;
+        //this.setDoubleBuffered(false);
     }
     protected void paintComponent(Graphics g) {
         //g.setColor(Color.GREEN);

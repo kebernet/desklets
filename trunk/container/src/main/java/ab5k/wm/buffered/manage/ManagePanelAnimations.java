@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GradientPaint;
+import java.awt.MultipleGradientPaint;
+import java.awt.LinearGradientPaint;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -88,7 +90,12 @@ public class ManagePanelAnimations {
     private Icon closeOverIcon;
     private DeskletRenderPanel rootPanel;
     
-    public void showManagePanel() {
+    private static final MultipleGradientPaint buttonGradient = new LinearGradientPaint(
+             new Point(0,20), new Point(0,10),
+             new float[] { 0f, 0.49f, 0.5f, 1f},
+             new Color[] { new Color(0x2C7FA8), new Color(0x308AB7), new Color(0x359BCD), new Color(0x4BA5D2) }
+             );
+     public void showManagePanel() {
         manageButtons = new ArrayList<JPanel>();
         List<DeskletConfig> configs = Registry.getInstance().getDeskletConfigs();
         
@@ -113,11 +120,11 @@ public class ManagePanelAnimations {
             });
             panel.setOpaque(false);
             panel.setPadding(new JXInsets(3));
-            RectanglePainter rect = new RectanglePainter(2,2,2,2, 10,10, true,
-                    new GradientPaint(
+            RectanglePainter rect = new RectanglePainter(2,2,2,2, 10,10, true, buttonGradient, 2, Color.WHITE);
+/*                    new GradientPaint(
                     new Point(0,0), Color.ORANGE,
                     new Point(0,1), ColorUtil.setSaturation(Color.ORANGE,0.5f)),
-                    3, Color.BLACK);
+                    3, Color.BLACK);*/
             rect.setPaintStretched(true);
             panel.setBackgroundPainter(rect);
             manageButtons.add(panel);

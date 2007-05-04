@@ -10,6 +10,7 @@ class DeskletRepaintManager extends RepaintManager {
     BufferedWM wm;
     DeskletRepaintManager(BufferedWM wm) {
         this.wm = wm;
+        //this.setDoubleBufferingEnabled(false);
     }
     
     public void addDirtyRegion(JComponent comp, int x, int y, int w, int h) {

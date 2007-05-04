@@ -9,15 +9,17 @@
 
 package ab5k;
 
-import java.awt.Dialog;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.JDialog;
-import javax.swing.SwingUtilities;
-
 import ab5k.ui.GrantPanel;
 import ab5k.ui.PermissionsPanel;
+import java.awt.Dialog;
+import java.awt.Window;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import org.joshy.util.u;
 
 /**
  *
@@ -44,20 +46,23 @@ public class PermissionManager {
     }
     
     public Permission requestPermission(String message) {
-        setupDialog();
-        return requestPermissionOnEDT(message);
-        //String[] options = { "Yes", "No", "Always", "Never" };
-        /*
-        Window win = core.getFrame();
-        int value = JOptionPane.showOptionDialog(win, message.toString(),
-                "Grant Permission", JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-        switch(value) {
-        case 0: return Permission.YES;
-        case 2: return Permission.ALWAYS;
-        case 3: return Permission.NEVER;
-        default: return Permission.NO;
-        }*/
+        if(Environment.useOptionPanePermissions) {
+            String[] options = { "Yes", "No", "Always", "Never" };
+
+            Window win = core.getFrame();
+            int value = JOptionPane.showOptionDialog(win, message.toString(),
+                    "Grant Permission", JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            switch(value) {
+                case 0: return Permission.YES;
+                case 2: return Permission.ALWAYS;
+                case 3: return Permission.NEVER;
+                default: return Permission.NO;
+            }
+        } else {
+            setupDialog();
+            return requestPermissionOnEDT(message);
+        }
     }
     
     private Permission requestPermissionOnEDT(final String message) {

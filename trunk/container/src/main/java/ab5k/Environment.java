@@ -20,10 +20,16 @@ import org.joshy.util.u;
 public final class Environment {
     // if autograntall is set to anything then make it true
     public static final boolean autoGrantAll = 
-            System.getProperty("org.ab5k.test.autoGrantAll") == null ? false : true;
+            "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.autoGrantAll")) ?
+                false : true;
 
+    public static final boolean useOptionPanePermissions = 
+            "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.useOptionPanePermissions")) ?
+                false : true;
+            
     public static final boolean allowMultipleInstances = 
-            System.getProperty("org.ab5k.test.allowMultipleInstances") == null ? false : true;
+            "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.allowMultipleInstances")) ?
+                false : true;
     
     public static final boolean showFrameTitleBar = 
             "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.showFrameTitleBar")) ?

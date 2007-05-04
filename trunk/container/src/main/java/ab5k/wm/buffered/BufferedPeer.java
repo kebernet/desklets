@@ -120,19 +120,6 @@ public abstract class BufferedPeer extends DCPeer {
         }
     }
     private BufferedImage drawToBuffer(final JComponent comp, final Dimension size, BufferedImage img, CellRendererPane rendererPane) {
-        //JComponent comp = bdc.getTopComponent();
-        //u.p("drawing to a buffer");
-        //u.p("rendererpane = ");
-        Component ct = rendererPane;
-        while(ct.getParent() != null) {
-            //u.p("" + ct);
-            ct = ct.getParent();
-        }
-        //u.p("children = " + comp);
-        for(Component c : comp.getComponents()) {
-            //u.p("     c = " + c);
-        }
-        int pad = 0;
         // decide if we need to create a new image
         if(img == null ||
                 img.getWidth() != (int)size.getWidth() ||
@@ -157,18 +144,8 @@ public abstract class BufferedPeer extends DCPeer {
         
         rendererPane.add(comp);
         rendererPane.paintComponent(gx, comp, null,
-                pad/2,pad/2,  size.width, size.height,
+                0, 0,  size.width, size.height,
                 true);
-        
-        // draw debugging info
-        /*
-        if (this.bufferedWM.DEBUG_BORDERS) {
-            gx.setColor(Color.GREEN);
-            gx.drawLine(0,0,size.width,size.height);
-            gx.drawLine(size.width,0,0,size.height);
-        }*/
-        //gx.setColor(Color.RED);
-        //gx.drawString("comps: "+ comp.getComponentCount(),2,15);
         
         // dispose and return
         gx.dispose();
