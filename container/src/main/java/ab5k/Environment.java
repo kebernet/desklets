@@ -21,15 +21,15 @@ public final class Environment {
     // if autograntall is set to anything then make it true
     public static final boolean autoGrantAll = 
             "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.autoGrantAll")) ?
-                false : true;
+                true : false;
 
     public static final boolean useOptionPanePermissions = 
             "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.useOptionPanePermissions")) ?
-                false : true;
+                true : false;
             
     public static final boolean allowMultipleInstances = 
             "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.allowMultipleInstances")) ?
-                false : true;
+                true : false;
     
     public static final boolean showFrameTitleBar = 
             "true".equalsIgnoreCase(System.getProperty("org.ab5k.test.showFrameTitleBar")) ?
