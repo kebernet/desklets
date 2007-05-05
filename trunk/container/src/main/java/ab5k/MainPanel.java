@@ -42,7 +42,7 @@ public class MainPanel extends javax.swing.JPanel {
         
         
         logoButton.setText("");
-        logoButton.setIcon(new ImageIcon(getClass().getResource("/images/logo 1.png")));
+        //logoButton.setIcon(new ImageIcon(getClass().getResource("/images/logo 1.png")));
         
         JXButton logo = (JXButton) logoButton;
         logo.setContentAreaFilled(false);
