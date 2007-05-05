@@ -29,4 +29,8 @@ public final class Bugs {
         //return true;
     }
     
+    public static boolean isSystemLookAndFeelRepaintBroken() {
+        return PlafUtil.isMacOSX();
+    }
+    
 }
