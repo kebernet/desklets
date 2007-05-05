@@ -27,6 +27,7 @@ import ab5k.actions.MacSupport;
 import ab5k.actions.SingleLaunchSupport;
 import ab5k.security.Registry;
 import ab5k.security.SecurityPolicy;
+import ab5k.util.Bugs;
 
 /**
  *
@@ -168,7 +169,14 @@ public abstract class Main {
     private static void setupLookAndFeel() {
         // set up the look and feel
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            if(System.getProperty("swing.defaultlaf") == null) {
+                if(Bugs.isSystemLookAndFeelRepaintBroken()) {
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                } else {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                }
+            }
+            //UIManager.setLookAndFeel("org.jdesktop.swingx.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
