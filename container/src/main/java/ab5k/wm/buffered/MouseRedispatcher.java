@@ -20,7 +20,7 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
 
     private final BufferedWM bufferedWM;
 
-    private Component lastComp;
+    Component lastComp;
     private BufferedDeskletContainer lastDC;
     
 
