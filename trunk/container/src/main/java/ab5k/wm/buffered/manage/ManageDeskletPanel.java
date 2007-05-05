@@ -6,6 +6,11 @@
 
 package ab5k.wm.buffered.manage;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import org.jdesktop.swingx.JXBoxPanel;
 
 /**
@@ -17,6 +22,11 @@ public class ManageDeskletPanel extends JXBoxPanel {
     /** Creates new form NewJPanel */
     public ManageDeskletPanel() {
         initComponents();
+        try {
+            addButton.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/images/plus.png"))));
+        } catch (IOException ex) {
+            Logger.getLogger("global").log(Level.SEVERE, null, ex);
+        }
     }
     
     /** This method is called from within the constructor to
@@ -49,24 +59,21 @@ public class ManageDeskletPanel extends JXBoxPanel {
         gridBagConstraints.weighty = 10.0;
         add(jTextArea1, gridBagConstraints);
 
-        addButton.setText("+");
+        addButton.setBorderPainted(false);
+        addButton.setContentAreaFilled(false);
+        addButton.setIconTextGap(0);
         addButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
         addButton.setMinimumSize(new java.awt.Dimension(30, 30));
         addButton.setOpaque(false);
         addButton.setPreferredSize(new java.awt.Dimension(30, 30));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        add(addButton, gridBagConstraints);
+        addButton.setRolloverEnabled(true);
+        add(addButton, new java.awt.GridBagConstraints());
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel1.setText("Desklet Name");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(jLabel1, gridBagConstraints);
-
     }// </editor-fold>//GEN-END:initComponents
 
     void setDeskletName(String string) {
