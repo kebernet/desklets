@@ -23,7 +23,9 @@ public class ManageDeskletPanel extends JXBoxPanel {
     public ManageDeskletPanel() {
         initComponents();
         try {
-            addButton.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/images/plus.png"))));
+            addButton.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("/images/plus-normal.png"))));
+            addButton.setRolloverIcon(new ImageIcon(ImageIO.read(getClass().getResource("/images/plus-rollover.png"))));
+            addButton.setPressedIcon(new ImageIcon(ImageIO.read(getClass().getResource("/images/plus-pressed.png"))));
         } catch (IOException ex) {
             Logger.getLogger("global").log(Level.SEVERE, null, ex);
         }
@@ -63,15 +65,24 @@ public class ManageDeskletPanel extends JXBoxPanel {
         addButton.setContentAreaFilled(false);
         addButton.setIconTextGap(0);
         addButton.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        addButton.setMinimumSize(new java.awt.Dimension(30, 30));
+        addButton.setMaximumSize(null);
+        addButton.setMinimumSize(null);
         addButton.setOpaque(false);
-        addButton.setPreferredSize(new java.awt.Dimension(30, 30));
+        addButton.setPreferredSize(null);
         addButton.setRolloverEnabled(true);
-        add(addButton, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(addButton, gridBagConstraints);
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         jLabel1.setText("Desklet Name");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(jLabel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents

@@ -80,7 +80,8 @@ public class ManagePanelAnimations {
     private final int transitionLength = 500;
     private final int manageButtonGap = 60;
     private final int manageButtonSpacing = 10;
-    private final int manageButtonWidth = 200;
+    private final int manageButtonWidth = 270;
+    private final int manageButtonHeight = 55;
     private static final int firstColumnX = 100;
     final static int scaledWidth = 200;
     final static int scaledHeight = 100;
@@ -103,7 +104,7 @@ public class ManagePanelAnimations {
         Animator prevAnim = firstAnim;
         Animator lastAnim = firstAnim;
         int y = 0;
-        final int x = wm.getRenderPanel().getWidth()-manageButtonWidth-50;
+        final int x = wm.getRenderPanel().getWidth()-manageButtonWidth-20;
         int animlen = 20;
         if(configs.size() > 0) {
             animlen = transitionLength / configs.size();
@@ -137,12 +138,16 @@ public class ManagePanelAnimations {
                 public void begin() {
                     rootPanel.add(panel);
                     panel.setLocation(x,startY);
-                    int manageButtonHeight = panel.getPreferredSize().height;
-                    manageButtonHeight = 60;
+                    //int manageButtonHeight = panel.getPreferredSize().height;
+                    //manageButtonHeight = 45;
                     Dimension dim = new Dimension(manageButtonWidth,
                             manageButtonHeight);
                     panel.setPreferredSize(dim);
                     panel.setSize(dim);
+                    //pack
+                    //panel.setPreferredSize(panel.getLayout().preferredLayoutSize(panel));
+                    //panel.setPreferredSize(panel.getLayout().minimumLayoutSize(panel));
+                    //panel.setSize(panel.getPreferredSize());
                     panel.validate();
                 }
                 public void end() {
@@ -156,7 +161,7 @@ public class ManagePanelAnimations {
             prevAnim.addTarget(new StartAnimAfter(propAnim));
             prevAnim = propAnim;
             lastAnim = propAnim;
-            y+=60+20;//manageButtonGap;
+            y+=40+20;//manageButtonGap;
         }
         firstAnim.start();
     }
@@ -221,16 +226,17 @@ public class ManagePanelAnimations {
                     public void end() {
                         // the close button
                         final JButton close = new JButton();
+                        close.setText("");
                         close.setIcon(closeIcon);
                         close.setRolloverIcon(closeOverIcon);
                         close.setBorderPainted(false);
                         close.setOpaque(false);
                         close.setContentAreaFilled(false);
-                        close.setLocation((int)peer.getLocation().getX()-44-10,
+                        close.setLocation((int)peer.getLocation().getX()-80,
                                 (int)peer.getLocation().getY());
                         ((JComponent)wm.getRenderPanel()).add(close);
-                        close.setPreferredSize(new Dimension(40,40));
-                        close.setSize(new Dimension(40,40));
+                        //close.setPreferredSize(new Dimension(40,40));
+                        //close.setSize(new Dimension(40,40));
                         stopButtons.put(bdc,close);
                         
                         // the overlay rollover panel
