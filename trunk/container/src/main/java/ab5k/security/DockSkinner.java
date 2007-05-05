@@ -141,7 +141,8 @@ public class DockSkinner {
             }
             if(theme == Theme.DARK) {
                 logo.setIcon(new ImageIcon(
-                        DockSkinner.class.getResource("/skins/dock/dark/images/dock3.logo.png")));
+                        DockSkinner.class.getResource(
+                        "/skins/dock/dark/images/glossitopesmaller.png")));
                 BufferedImage bg = ImageIO.read(DockSkinner.class.getResource("/skins/dock/dark/images/dock3b.bg.png"));
                 BufferedImage bg2 = ImageIO.read(DockSkinner.class.getResource("/skins/dock/dark/images/dock4.bg.png"));
                 ImagePainter ptr = new ImagePainter(bg, ImagePainter.HorizontalAlignment.LEFT, ImagePainter.VerticalAlignment.TOP);
