@@ -41,6 +41,7 @@ public class SecurityPolicy extends Policy {
     private static final Logger LOG = Logger.getLogger("AB5K");
     private static final File SECURITY_PROPS = new File( Environment.HOME, "security.properties");
     private static final ArrayList<String> SAFE_RUNTIME = new ArrayList<String>();
+    private static final ArrayList<String> SAFE_ACCESS_CLASS_IN_PACKAGE = new ArrayList<String>();
 
     
     static{
@@ -49,6 +50,8 @@ public class SecurityPolicy extends Policy {
         SAFE_RUNTIME.add( "stopThread");
         SAFE_RUNTIME.add( "getClassLoader");
         SAFE_RUNTIME.add( "createClassLoader");
+        SAFE_RUNTIME.add( "accessClassInPackage");
+        SAFE_ACCESS_CLASS_IN_PACKAGE.add( "sun.util.logging.resources");
     }
     private Hashtable<String, ArrayList<String>> always;
     private Hashtable<String, ArrayList<String>> nevers;
@@ -128,11 +131,18 @@ public class SecurityPolicy extends Policy {
             Permission permission) {
         
         if(Environment.autoGrantAll) { return true; }
-        
         if(permission instanceof java.awt.AWTPermission ||
                 permission instanceof java.util.PropertyPermission ||
                 (permission instanceof java.lang.RuntimePermission && SAFE_RUNTIME.contains( permission.getName() )  ) ) {
             return true;
+        }
+        if(permission instanceof java.lang.RuntimePermission) {
+            if(permission.getName().startsWith("accessClassInPackage")) {
+                String clss = permission.getName().substring("accessClassInPackage".length()+1);
+                if(SAFE_ACCESS_CLASS_IN_PACKAGE.contains(clss)) {
+                    return true;
+                }
+            }
         }
         /*System.out.println(protectionDomain.getCodeSource().getLocation() +
                 " requesting permission " + permission.getClass().getName() + " " +
