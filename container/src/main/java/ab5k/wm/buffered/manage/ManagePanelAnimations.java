@@ -225,6 +225,7 @@ public class ManagePanelAnimations {
                         close.setRolloverIcon(closeOverIcon);
                         close.setBorderPainted(false);
                         close.setOpaque(false);
+                        close.setContentAreaFilled(false);
                         close.setLocation((int)peer.getLocation().getX()-44-10,
                                 (int)peer.getLocation().getY());
                         ((JComponent)wm.getRenderPanel()).add(close);
