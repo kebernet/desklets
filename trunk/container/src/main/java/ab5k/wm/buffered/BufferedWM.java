@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Dimension2D;
@@ -65,6 +66,10 @@ import ab5k.wm.buffered.animations.StdDestructionAnimation;
 import ab5k.wm.buffered.animations.TransitionAnimation;
 import ab5k.wm.buffered.animations.TransitionEvent;
 import ab5k.wm.buffered.manage.ManagePanelAnimations;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyListener;
+import org.joshy.util.u;
 
 /**
  * An implementation of WindowManager that uses buffered images instead of
@@ -116,7 +121,7 @@ public class BufferedWM extends WindowManager {
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(getRenderPanel(), "Center");
         
-        MouseRedispatcher mouse = new MouseRedispatcher(this);
+        final MouseRedispatcher mouse = new MouseRedispatcher(this);
         getRenderPanel().addMouseListener(mouse);
         getRenderPanel().addMouseMotionListener(mouse);
         
@@ -143,6 +148,34 @@ public class BufferedWM extends WindowManager {
         // setup the animations
         setDeskletCreationTransition(new StdCreationAnimation());
         setDeskletDestructionTransition(new StdDestructionAnimation());
+        
+        // setup the keyboard hacks
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().
+                addKeyEventDispatcher(new KeyEventDispatcher() {
+                public boolean dispatchKeyEvent(KeyEvent e) {
+                    if(e.getComponent() == mouse.lastComp) {
+                        return false;
+                    }
+                    if(mouse.lastComp != null) {
+                        //u.p("last comp = " + mouse.lastComp);
+                        //u.p("old ke = " + e);
+                        KeyboardFocusManager.getCurrentKeyboardFocusManager().redispatchEvent(mouse.lastComp, e);
+                        /*
+                        KeyEvent ke = new KeyEvent(mouse.lastComp, e.getID(), e.getWhen(),
+                                e.getModifiers(), e.getKeyCode(), e.getKeyChar(),
+                                e.getKeyLocation());
+                        e.consume();*/
+                        /*
+                        mouse.lastComp.dispatchEvent(ke);
+                        for(KeyListener kl : mouse.lastComp.getKeyListeners()) {
+                            kl.keyTyped(ke);
+                        }
+                        u.p("new ke = " + ke);*/
+                        return true;
+                    }
+                    return false;
+                }
+        });
     }
     
     protected Component createRenderPanel() {
