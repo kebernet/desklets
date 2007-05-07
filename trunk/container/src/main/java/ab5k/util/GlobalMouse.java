@@ -92,6 +92,16 @@ public class GlobalMouse extends ab5k.desklet.services.GlobalMouse{
                         pt = pt2;
                     } catch (Throwable ex) {
                         ex.printStackTrace();
+                        /*
+                        try {
+                            Point pt2 = com.apple.eawt.Application.getMouseLocationOnScreen();
+                            if(!pt2.equals(pt)) {
+                                fireMouseListeners(pt2);
+                            }
+                            pt = pt2;
+                        } catch (Throwable ex2) {
+                            ex2.printStackTrace();
+                        }*/
                     }
                 }
             }
