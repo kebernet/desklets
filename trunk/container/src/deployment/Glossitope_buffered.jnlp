@@ -19,10 +19,8 @@
         <icon href="ying-yang-desklet-icon.icns"/>
     </association>
 
-    <icon kind="splash" href="ying-yang-splash.png"/>
-
-    <icon href="ying-yang.icon.32.png" width="32" height="32"/>
-    <icon href="ying-yang.icns" width="128" height="128"/>
+    <icon href="glossitope_core_icon.32.png" width="32" height="32"/>
+    <icon href="glossitope_core_icon.icns" width="128" height="128"/>
     
   </information>
   
@@ -37,8 +35,8 @@
 
   <resources locale="" os="">
 <!-- turn on buffered mode -->
-    <property name="org.ab5k.test.useWindowManager" value="buffered"/>
-    <property name="org.ab5k.test.useOptionPanePermissions" value="true"/>
+    <property name="org.glossitope.test.useWindowManager" value="buffered"/>
+    <property name="org.glossitope.test.useOptionPanePermissions" value="true"/>
 
 <!-- ab5k itself -->
     <jar download="eager" href="ab5k.container-1.0.jar" main="true" version=""/>
@@ -48,7 +46,9 @@
 
 <!-- early loads -->
     <!-- we shouldn't need this. glossitope itself is 1.6 only -->
+    <!--
     <jar download="eager" href="swing-layout-1.0.2.jar" version=""/>
+    -->
     
 <!-- common libs -->
     <jar download="eager" href="rome-0.8.jar" main="false" version=""/>
