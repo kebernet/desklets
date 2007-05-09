@@ -37,7 +37,7 @@ public final class Environment {
     
     private static final String GLOSSITOPE_HOME = 
             System.getProperty("org.glossitope.test.althomedirname") == null ? ".org.glossitope" :
-        System.getProperty("org.glossitope.test.althomedirname");
+            System.getProperty("org.glossitope.test.althomedirname");
     private static boolean justCreated = false;
     public static final File HOME = getUserPreferredHome();
     public static final File REPO = new File(HOME, "repository");
