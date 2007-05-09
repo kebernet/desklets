@@ -1,17 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>ab5k</groupId>
-	<artifactId>ab5k.container</artifactId>
+	<groupId>org.glossitope</groupId>
+	<artifactId>glossitope-container</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0</version>
 
-	<name>ab5k.Container</name>
-	<description>
-		ab5k container, desktop Java based widget system - see http://www.ab5k.org
-	</description>
+	<name>Glossitope</name>
+	<description>Glossitope container, desktop Java based widget system - see http://www.glossitope.org</description>
 	<url>http://desklets.googlecode.com/svn/trunk/container/</url>
 	<inceptionYear>2007</inceptionYear>
 	<licenses>
@@ -22,8 +18,8 @@
 	</licenses>
 
 	<organization>
-		<name>abk5</name>
-		<url>http://ab5k.org</url>
+		<name>Glossitope</name>
+		<url>http://glossitope.org</url>
 	</organization>
 
 	<developers>
@@ -69,18 +65,14 @@
 		</mailingList>
 		<mailingList>
 			<name>Developer List</name>
-			<archive>
-				http://groups.google.com/group/desklets-contributors
-			</archive>
+			<archive>http://groups.google.com/group/desklets-contributors</archive>
 		</mailingList>
 	</mailingLists>
 
 	<reporting>
 		<plugins>
 			<plugin>
-				<artifactId>
-					maven-project-info-reports-plugin
-				</artifactId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -104,12 +96,8 @@
 	</reporting>
 
 	<scm>
-		<connection>
-			scm:svn:http://desklets.googlecode.com/svn/
-		</connection>
-		<developerConnection>
-			scm:svn:https://desklets.googlecode.com/svn/
-		</developerConnection>
+		<connection>scm:svn:http://desklets.googlecode.com/svn/</connection>
+		<developerConnection>scm:svn:https://desklets.googlecode.com/svn/</developerConnection>
 		<url>http://desklets.googlecode.com/svn/</url>
 	</scm>
 
@@ -120,13 +108,12 @@
 		</site>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
-			<id>ab5k.repo</id>
-			<name>ab5k Repository</name>
+			<id>glossitope.repo</id>
+			<name>Glossitope Repository</name>
 			<url>http://desklets.googlecode.com/svn/mavenrepo/</url>
 			<layout>legacy</layout>
 		</repository>
 		<snapshotRepository>
-			<uniqueVersion>true</uniqueVersion>
 			<id>ab5k.snap.repo</id>
 			<name>ab5k Snapshot Repository</name>
 			<url>http://desklets.googlecode.com/svn/mavenrepo/</url>
@@ -167,11 +154,9 @@
 			<layout>legacy</layout>
 			<url>http://desklets.googlecode.com/svn/mavenrepo/</url>
 			<releases>
-				<enabled>true</enabled>
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
 			<snapshots>
-				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 
@@ -183,11 +168,9 @@
 			<layout>legacy</layout>
 			<url>http://www.ab5k.org/maven/</url>
 			<releases>
-				<enabled>true</enabled>
 				<checksumPolicy>ignore</checksumPolicy>
 			</releases>
 			<snapshots>
-				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 
@@ -247,9 +230,7 @@
 					<artifactId>maven-assembly-plugin</artifactId>
 					<configuration>
 						<descriptorRefs>
-							<descriptorRef>
-								jar-with-dependencies
-							</descriptorRef>
+							<descriptorRef>jar-with-dependencies</descriptorRef>
 						</descriptorRefs>
 					</configuration>
 				</plugin>
@@ -296,27 +277,23 @@
 					</executions>
 					<configuration>
 						<jnlp>
-							<inputTemplate>
-								src/main/jnlp/template.vm.xml
-							</inputTemplate>
-							<outputFile>ab5k.jnlp</outputFile>
-							<mainClass>ab5k.Main</mainClass>
+							<inputTemplate>src/main/jnlp/template.vm.xml</inputTemplate>
+							<outputFile>glossitope.jnlp</outputFile>
+							<mainClass>org.glossitope.container.Main</mainClass>
 						</jnlp>
 						<sign>
-							<keystore>
-								c:\docume~1\ccollins\.keystore
-							</keystore>
+							<keystore>c:\docume~1\ccollins\.keystore</keystore>
 							<keypass>ab5kpassword</keypass>
 							<storepass>ab5kpassword</storepass>
-							<storetype />
+							<storetype></storetype>
 							<alias>ab5k</alias>
-							<validity />
+							<validity></validity>
 
 							<dnameCn>Josh Marinacci</dnameCn>
 							<dnameOu>ab5k.org</dnameOu>
 							<dnameO>ab5k</dnameO>
-							<dnameL />
-							<dnameSt />
+							<dnameL></dnameL>
+							<dnameSt></dnameSt>
 							<dnameC>US</dnameC>
 							<verify>true</verify>
 						</sign>
@@ -350,8 +327,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>ab5k</groupId>
-			<artifactId>desklet.spec</artifactId>
+			<groupId>org.glossitope</groupId>
+			<artifactId>desklet-specification</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
