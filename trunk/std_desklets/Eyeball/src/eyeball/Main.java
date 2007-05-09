@@ -9,25 +9,8 @@
 
 package eyeball;
 
-import ab5k.desklet.test.DeskletTester;
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
+import org.glossitope.desklet.test.DeskletTester;
 import java.awt.geom.Point2D;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.AbstractPainter;
-import org.jdesktop.swingx.painter.CompoundPainter;
-import org.jdesktop.swingx.painter.effects.AbstractAreaEffect;
-import org.joshy.util.u;
 
 /**
  *

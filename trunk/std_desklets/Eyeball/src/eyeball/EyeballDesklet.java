@@ -9,23 +9,12 @@
 
 package eyeball;
 
-import ab5k.desklet.Desklet;
-import ab5k.desklet.DeskletContext;
-import ab5k.desklet.services.GlobalMouse;
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
+import org.glossitope.desklet.Desklet;
+import org.glossitope.desklet.services.GlobalMouse;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputListener;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.painter.AbstractPainter;
 import org.jdesktop.swingx.painter.CompoundPainter;
 
 /**
