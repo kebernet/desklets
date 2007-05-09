@@ -6,8 +6,7 @@
 
 package weatherdesklet;
 
-import ab5k.desklet.DeskletContainer;
-import java.awt.Color;
+import org.glossitope.desklet.DeskletContainer;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
@@ -18,13 +17,9 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;
 import org.jdesktop.swingx.painter.ImagePainter;
-import org.jdesktop.swingx.painter.RectanglePainter;
-import org.joshy.util.u;
 import org.joshy.weather.Weather;
 import org.joshy.weather.WeatherFactory;
 

@@ -9,7 +9,7 @@
 
 package weatherdesklet;
 
-import ab5k.desklet.test.DeskletTester;
+import org.glossitope.desklet.test.DeskletTester;
 
 /**
  *
