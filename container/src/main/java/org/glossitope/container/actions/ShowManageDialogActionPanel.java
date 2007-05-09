@@ -35,6 +35,7 @@ public class ShowManageDialogActionPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         closeButton = new javax.swing.JButton();
         tabs = new javax.swing.JTabbedPane();
 
@@ -52,8 +53,8 @@ public class ShowManageDialogActionPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
-                    .addComponent(closeButton))
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
