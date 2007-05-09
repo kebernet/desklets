@@ -106,7 +106,7 @@ public class Core {
                 new Thread(new Runnable() {
                     public void run() {
                         u.p("this is the first run so we must auto-install the standard desklets");
-                        String baseurl = "http://www.glossitope.org/downloads/dail/pre-install/";
+                        String baseurl = "http://www.glossitope.org/downloads/daily/pre-install/";
                         preinstall(baseurl+"WeatherDesklet.desklet");
                         preinstall(baseurl+"ROMEDesket.desklet");
                         preinstall(baseurl+"WoWDesklet.desklet");
