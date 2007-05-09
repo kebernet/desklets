@@ -7,9 +7,8 @@
 
 package com.totsp.desklet.rome;
 
-import ab5k.desklet.Desklet;
-import ab5k.desklet.DeskletContainer;
-import ab5k.desklet.DeskletContext;
+import org.glossitope.desklet.Desklet;
+import org.glossitope.desklet.DeskletContainer;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
@@ -26,6 +25,7 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JOptionPane;
+import org.glossitope.desklet.test.DeskletTester;
 import org.w3c.dom.Document;
 
 import org.w3c.tidy.Tidy;
@@ -35,6 +35,10 @@ import org.w3c.tidy.Tidy;
  * @author cooper
  */
 public class RomeDesklet extends Desklet{
+    
+    public static void main(String ... args) {
+        DeskletTester.start(RomeDesklet.class);
+    }
     
     private MainForm form = new MainForm();
     SyndFeedInput input = new SyndFeedInput();
