@@ -1,8 +1,8 @@
 package org.joshy.countdown;
 
-import ab5k.desklet.Desklet;
-import ab5k.desklet.DeskletContext;
-import ab5k.desklet.test.DeskletTester;
+import org.glossitope.desklet.Desklet;
+import org.glossitope.desklet.DeskletContext;
+import org.glossitope.desklet.test.DeskletTester;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
