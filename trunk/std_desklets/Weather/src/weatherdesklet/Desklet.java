@@ -9,16 +9,15 @@
 
 package weatherdesklet;
 
-import ab5k.desklet.DeskletContext;
+import org.glossitope.desklet.DeskletContext;
 import javax.swing.JLabel;
-import org.joshy.util.u;
 import org.joshy.weather.Weather;
 import org.joshy.weather.WeatherFactory;
 /**
  *
  * @author cooper
  */
-public class Desklet extends ab5k.desklet.Desklet{
+public class Desklet extends org.glossitope.desklet.Desklet{
     
     private WeatherWatcher display;
     JLabel dockLabel;

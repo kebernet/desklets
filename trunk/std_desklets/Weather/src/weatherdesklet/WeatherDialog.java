@@ -5,7 +5,7 @@
  */
 
 package weatherdesklet;
-import ab5k.desklet.DeskletContainer;
+import org.glossitope.desklet.DeskletContainer;
 import java.awt.Component;
 import java.util.List;
 import java.util.Map;
