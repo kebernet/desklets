@@ -9,10 +9,8 @@
 
 package clockdesklet;
 
-import ab5k.desklet.DeskletContext;
-import ab5k.desklet.test.DeskletTester;
-import java.awt.Color;
-import java.awt.Dimension;
+import org.glossitope.desklet.DeskletContext;
+import org.glossitope.desklet.test.DeskletTester;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JLabel;
@@ -22,7 +20,7 @@ import javax.swing.SwingUtilities;
  *
  * @author cooper
  */
-public class Desklet extends ab5k.desklet.Desklet{
+public class Desklet extends org.glossitope.desklet.Desklet{
     public static void main(String[] args) {
         DeskletTester.start(clockdesklet.Desklet.class);
     }

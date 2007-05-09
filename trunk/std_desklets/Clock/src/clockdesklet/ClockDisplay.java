@@ -5,13 +5,12 @@
  */
 
 package clockdesklet;
-import ab5k.desklet.DeskletContainer;
+import org.glossitope.desklet.DeskletContainer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.Point;
