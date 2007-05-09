@@ -9,9 +9,8 @@
 
 package com.totsp.desklet.wow;
 
-import ab5k.desklet.Desklet;
-import ab5k.desklet.DeskletContainer;
-import ab5k.desklet.DeskletContext;
+import org.glossitope.desklet.Desklet;
+import org.glossitope.desklet.DeskletContainer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -20,12 +19,17 @@ import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.ImageIcon;
+import org.glossitope.desklet.test.DeskletTester;
 
 /**
  *
  * @author cooper
  */
 public class WoWDesklet extends Desklet {
+    
+    public static void main(String ... args) {
+        DeskletTester.start(WoWDesklet.class);
+    }
     
     private boolean up = false;
     private MainForm form = new MainForm();
