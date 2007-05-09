@@ -4,7 +4,7 @@
  *
  * Created on August 3, 2006, 7:38 PM
  */
-package ab5k.security;
+package org.glossitope.container.security;
 
 import java.io.File;
 import java.net.URL;
@@ -13,6 +13,9 @@ import java.security.Policy;
 import java.security.ProtectionDomain;
 
 import junit.framework.TestCase;
+import org.glossitope.container.security.Dependency;
+import org.glossitope.container.security.DeskletConfig;
+import org.glossitope.container.security.Registry;
 
 /**
  *
