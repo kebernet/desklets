@@ -1,7 +1,7 @@
-package ab5k.desklet.test;
+package org.glossitope.desklet.test;
 
-import ab5k.desklet.DeskletContainer;
-import ab5k.desklet.DeskletContext;
+import org.glossitope.desklet.DeskletContainer;
+import org.glossitope.desklet.DeskletContext;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;

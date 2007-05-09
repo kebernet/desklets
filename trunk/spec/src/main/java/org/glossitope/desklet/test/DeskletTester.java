@@ -1,7 +1,7 @@
-package ab5k.desklet.test;
+package org.glossitope.desklet.test;
 
-import ab5k.desklet.Desklet;
-import ab5k.desklet.DeskletContext;
+import org.glossitope.desklet.Desklet;
+import org.glossitope.desklet.DeskletContext;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import javax.swing.JFrame;

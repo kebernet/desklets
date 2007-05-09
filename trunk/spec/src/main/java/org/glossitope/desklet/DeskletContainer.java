@@ -5,7 +5,7 @@
 
  */
 
-package ab5k.desklet;
+package org.glossitope.desklet;
 
 import java.awt.Dimension;
 import java.awt.Shape;
