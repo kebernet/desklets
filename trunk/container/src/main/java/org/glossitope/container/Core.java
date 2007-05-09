@@ -268,7 +268,8 @@ public class Core {
     }
     
     private void setupWindowManager() {
-        String wm = System.getProperty("org.org.glossitope.test.useWindowManager");
+        String wm = System.getProperty("org.glossitope.test.useWindowManager");
+        System.out.println("sy prop = " + wm);
         if(wm != null) {
             if("buffered".equals(wm)) {
                 windowManager = new BufferedWM(this);
