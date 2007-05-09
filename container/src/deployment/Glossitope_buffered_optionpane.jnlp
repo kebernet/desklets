@@ -48,7 +48,9 @@
 
 <!-- early loads -->
     <!-- we shouldn't need this. glossitope itself is 1.6 only -->
+    <!--
     <jar download="eager" href="swing-layout-1.0.2.jar" version=""/>
+    -->
     
 <!-- common libs -->
     <jar download="eager" href="rome-0.8.jar" main="false" version=""/>
