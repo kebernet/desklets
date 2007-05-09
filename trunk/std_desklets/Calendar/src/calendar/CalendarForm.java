@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Insets;
 import java.awt.LinearGradientPaint;
 import java.awt.Point;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.jdesktop.swingx.JXPanel;
 import org.jdesktop.swingx.painter.CompoundPainter;

@@ -9,9 +9,9 @@
 
 package calendar;
 
-import ab5k.desklet.Desklet;
-import ab5k.desklet.DeskletContext;
-import ab5k.desklet.test.DeskletTester;
+import org.glossitope.desklet.Desklet;
+import org.glossitope.desklet.DeskletContext;
+import org.glossitope.desklet.test.DeskletTester;
 import javax.swing.JLabel;
 import org.joda.time.DateTime;
 
