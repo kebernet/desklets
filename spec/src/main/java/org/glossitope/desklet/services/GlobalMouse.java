@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package ab5k.desklet.services;
+package org.glossitope.desklet.services;
 
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputListener;
