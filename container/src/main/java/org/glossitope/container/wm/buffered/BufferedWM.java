@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Point;
@@ -26,8 +27,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Dimension2D;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -69,6 +73,7 @@ import org.glossitope.container.wm.buffered.manage.ManagePanelAnimations;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyListener;
+import java.net.URI;
 import org.joshy.util.u;
 
 /**
@@ -111,7 +116,7 @@ public class BufferedWM extends WindowManager {
         RepaintManager.setCurrentManager(new DeskletRepaintManager(this));
         hidden = new JDialog();
         renderPanel = createRenderPanel();
-        frame = new JFrame("org.glossitope");
+        frame = new JFrame("Glossitope");
         if(!SHOW_FRAME_TITLE_BAR) {
             frame.setUndecorated(true);
         }
@@ -210,6 +215,17 @@ public class BufferedWM extends WindowManager {
         buttonPanel.add(manageButton);
         final JButton getMore = new JButton("Get More Widgets");
         getMore.setOpaque(false);
+        getMore.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    java.awt.Desktop dk = java.awt.Desktop.getDesktop();
+                    dk.browse(new java.net.URI("http://www.glossitope.org/site/org.ab5k.web.Gallery/"));
+                } catch (Exception ex) {
+                    Logger.getLogger("global").log(Level.SEVERE, null, ex);
+                }
+            }
+        });
         buttonPanel.add(getMore);
         
         if(getRenderPanel() instanceof Container) {
