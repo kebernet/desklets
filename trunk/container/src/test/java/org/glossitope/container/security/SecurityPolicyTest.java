@@ -5,7 +5,7 @@
  * Created on August 9, 2006, 1:42 PM
  */
 
-package ab5k.security;
+package org.glossitope.container.security;
 
 import junit.framework.TestCase;
 
