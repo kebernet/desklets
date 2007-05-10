@@ -131,6 +131,8 @@ public class ManagePanel extends javax.swing.JPanel {
         desklets = new javax.swing.JList();
         stopButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        sleepAllButton = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         exportButton = new javax.swing.JButton();
         importButton = new javax.swing.JButton();
 
@@ -220,13 +222,31 @@ public class ManagePanel extends javax.swing.JPanel {
 
         jLabel2.setText("Running Desklets");
 
+        sleepAllButton.setText("Sleep All");
+        sleepAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sleepAllButtonActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Wake All");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(stopButton)
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sleepAllButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2)
+                .addContainerGap(55, Short.MAX_VALUE))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
@@ -237,7 +257,10 @@ public class ManagePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(stopButton))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(stopButton)
+                    .addComponent(sleepAllButton)
+                    .addComponent(jButton2)))
         );
 
         jSplitPane1.setLeftComponent(jPanel1);
@@ -290,6 +313,15 @@ public class ManagePanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    manager.resume();    // TODO add your handling code here:
+}//GEN-LAST:event_jButton2ActionPerformed
+
+    private void sleepAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sleepAllButtonActionPerformed
+        manager.pause();
+    // TODO add your handling code here:
+}//GEN-LAST:event_sleepAllButtonActionPerformed
     
     private void importButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_importButtonMouseClicked
         File importFile = openFile(".org.glossitope");
@@ -552,6 +584,7 @@ public class ManagePanel extends javax.swing.JPanel {
     private javax.swing.JButton exportButton;
     private javax.swing.JButton importButton;
     private javax.swing.JList installed;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -560,6 +593,7 @@ public class ManagePanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JButton sleepAllButton;
     private javax.swing.JButton startButton;
     private javax.swing.JButton stopButton;
     private javax.swing.JButton uninstallButton;
