@@ -320,6 +320,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     private void sleepAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sleepAllButtonActionPerformed
         manager.pause();
+        System.gc();
     // TODO add your handling code here:
 }//GEN-LAST:event_sleepAllButtonActionPerformed
     

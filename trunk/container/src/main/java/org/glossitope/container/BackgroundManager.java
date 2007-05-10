@@ -10,6 +10,7 @@
 package org.glossitope.container;
 
 import com.totsp.util.BeanArrayList;
+import org.glossitope.container.wm.DesktopPaneWM;
 
 /**
  *
@@ -27,6 +28,10 @@ public class BackgroundManager {
     
     
     public void setDesktopBackground(DesktopBackground bg) {
+        if(main.getWindowManager() instanceof DesktopPaneWM) {
+            DesktopPaneWM wm = (DesktopPaneWM) main.getWindowManager();
+            wm.setDesktopBackground(bg);
+        }
         //main.getWindowManager().setDesktopBackground(bg);
         //((CustomDesktopPane)main.getDesktop()).setDesktopBackground(bg);
     }
