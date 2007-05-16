@@ -1,5 +1,5 @@
-AB5K Maven Build Notes - container:
-===================================
+Glossitope Maven Build Notes - container:
+========================================
 
 Prerequisite:
 ------------
@@ -8,21 +8,25 @@ Install/unpack Maven 2, define MVN_HOME environment variable directed at install
 Add MVN_HOME to the PATH. 
 Run "mvn --version" to ensure Maven 2 is present.
 
-1. Download ab5k project (URL HERE). 
+1. Download glossitope project (http://desklets.googlecode.com/svn/trunk). 
 Main project (trunk) has sub projects for "container" and "spec" 
 (standard desklets and www are also present but not addressed here). 
 Trunk has a "pom.xml" Maven project descriptor, *and* so do sub projects container and spec. 
 
 2. "container" build, cd to PROJ_TRUNK/container and issue maven commands to build/run, etc.
 
-PROJ_TRUNK\container>mvn clean -Dmaven.test.skip=true assembly:assembly
+PROJ_TRUNK\container>mvn clean assembly:assembly
 
-PROJ_TRUNK\container\target>java -cp ./ab5k.container-1.0-jar-with-dependencies.jar ab5k.Main
+PROJ_TRUNK\container\target>java -cp ./glossitope-container-1.0-jar-withependencies.jar org.glossitope.container.Main
 
-The first step "assembly:assembly" will use the Maven assembly plugin to create an ab5k
-"jar-with-dependencies" uber-jar.  This is a jar that includes the container itself, 
+
+The first step "assembly:assembly" will use the Maven assembly plugin to create a Glossitope
+"jar-with-dependencies" jar.  This is a jar that includes the container itself, 
 and all the dependencies. The second step is running the freshly built from container 
-on the command line via the "jar-with-dependencies" uber-jar. 
+on the command line via the "jar-with-dependencies" jar. 
+
+*NOTE* You can use the Maven -o switch to run faster in "offline" mode once you have
+the dependencies.  You can also use the -Dmaven.test.skip=true system property to skip tests when required. 
 
 
 IDE Notes:
@@ -43,6 +47,6 @@ repository (typically ~/.m2/repository).
 
 Repository Notes:
 -----------------
-Currently ab5k is built from several Maven repositories.  This is something
+Currently Glossitope is built from several Maven repositories.  This is something
 we plan to clean up and eventually rely on only two main, organized, repos. 
-(Maven/Ibiblio for global deps, and a specificab5k repository hosted at Google Code).
+(Maven/Ibiblio for global deps, and a specific Glossitope (ab5k) repository hosted at Google Code).
