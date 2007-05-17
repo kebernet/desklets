@@ -325,7 +325,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_sleepAllButtonActionPerformed
     
     private void importButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_importButtonMouseClicked
-        File importFile = openFile(".org.glossitope");
+        File importFile = openFile(".glossitope");
         ConfigurationImportExport cie = new ConfigurationImportExport();
         try{
             cie.importFromURL(importFile.toURI().toURL());

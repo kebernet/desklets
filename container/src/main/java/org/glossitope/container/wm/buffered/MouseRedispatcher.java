@@ -17,13 +17,13 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
     public MouseRedispatcher(BufferedWM bufferedWM) {
         this.bufferedWM = bufferedWM;
     }
-
+    
     private final BufferedWM bufferedWM;
-
+    
     Component lastComp;
     private BufferedDeskletContainer lastDC;
     
-
+    
     
     public void mouseClicked(MouseEvent e) {
         redispatch(e);
@@ -53,10 +53,54 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
         redispatchDragged(e);
     }
     
+    //private Component enter_exit_curr = null;
+    private Component enter_exit_prev = null;
     public void mouseMoved(MouseEvent e) {
+        
+        //handle mouse entered and exited events
+        Component enter_exit_curr = getDeepestComponentAt(e);
+        if(enter_exit_curr != enter_exit_prev) {
+            redispatch(e, new Point(-1,-1), e.MOUSE_EXITED, enter_exit_prev);
+            redispatch(e, new Point(-1,-1), e.MOUSE_ENTERED, enter_exit_curr);
+            enter_exit_prev = enter_exit_curr;
+        }
+        
         redispatch(e);
     }
     
+    private Component getDeepestComponentAt(MouseEvent e) {
+        if(bufferedWM.getProxies().isEmpty()) {
+            return null;
+        }
+        
+        BufferedDeskletContainer bdc = bufferedWM.findContainer(e.getPoint());
+        if(bdc != null) {
+            Point2D pt = bdc.getLocation();
+            Point ept = e.getPoint();
+            ept.translate((int)-pt.getX(),(int)-pt.getY());
+            JComponent comp = bdc.getTopComponent();
+            ept.translate(comp.getX(), comp.getY());
+            Component child = SwingUtilities.getDeepestComponentAt(comp,ept.x,ept.y);
+            //u.p("child = " + child);
+            return child;
+        }
+        return null;
+    }
+    
+    //redispatch a new event with the point and type specified
+    private void redispatch(MouseEvent e, Point pt, int eventType, Component comp) {
+        if(comp == null) return;
+        MouseEvent e2 = new MouseEvent(comp,
+                eventType,
+                e.getWhen(),
+                e.getModifiers(),
+                pt.x,
+                pt.y,
+                e.getClickCount(),
+                e.isPopupTrigger(),
+                e.getButton());
+        comp.dispatchEvent(e2);
+    }
     
     void redispatch(MouseEvent e) {
         if(!bufferedWM.getProxies().isEmpty()) {
@@ -70,8 +114,8 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
             }
         }
     }
-
-    // redispatches drag events to the desklet being dragged rather 
+    
+    // redispatches drag events to the desklet being dragged rather
     // than to the desklet currently under the mouse
     private void redispatchDragged(MouseEvent e) {
         if(bufferedWM.getProxies().isEmpty()) {
@@ -113,16 +157,6 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
         // translate into the top component space
         //e.translatePoint(comp.getX(),comp.getY());
         ept.translate(comp.getX(), comp.getY());
-        /*
-        if(e.getID() == e.MOUSE_PRESSED) {
-            u.p("it's an action");
-            u.p("comp = " + comp);
-            u.p("e = " + e);
-            u.p("point = " + e.getPoint());
-            u.p("ept = " + ept);
-            showVis(comp,"");
-            
-        }*/
         // find the deepest child to send this event to
         Component child = SwingUtilities.getDeepestComponentAt(comp,ept.x,ept.y);
         //Component child = getDeepestComponentAt(comp,ept.x,ept.y);
@@ -130,8 +164,6 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
             child = lastComp;
         }
         Point pt2 = SwingUtilities.convertPoint(comp,ept,child);
-        //u.p("pt2 = " + pt2);
-        //u.p("final child = " + child);
         
         if(child != null) {
             // pass the mouse event back up the stack if this component doesn't
@@ -166,12 +198,12 @@ class MouseRedispatcher implements MouseListener, MouseMotionListener {
         }
         //child.dispatchEvent(e);
     }
-
+    
     public static Component getDeepestComponentAt(Component parent, int x, int y) {
         if (!parent.contains(x, y)) {
             return null;
         }
-        if (parent instanceof Container) {        
+        if (parent instanceof Container) {
             Component components[] = ((Container)parent).getComponents();
             for (int i = 0 ; i < components.length ; i++) {
                 Component comp = components[i];
