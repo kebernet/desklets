@@ -11,10 +11,12 @@ package org.glossitope.container.wm.buffered;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Shape;
 import java.awt.Window;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 
@@ -27,6 +29,9 @@ import javax.swing.SwingUtilities;
 import org.joshy.util.u;
 
 import org.glossitope.container.util.GraphicsUtil;
+import org.glossitope.container.util.MoveMouseListener;
+import org.glossitope.container.util.PlafUtil;
+import org.jdesktop.swingx.util.WindowUtils;
 
 /**
  *
@@ -94,6 +99,20 @@ public class JFramePeer extends DCPeer {
     }
     
     public void setBackgroundDraggable(boolean b) {
+        u.p("set background draggable to: " + b);
+        this.content.addMouseMotionListener(new MoveMouseListener(bdc,bdc.wm) {
+            Point2D getScreenLocation() {
+                return frame.getLocation();
+            }
+            Point getScreenLocation(MouseEvent e) {
+                Point cursor = e.getPoint();
+                Point2D target_location = frame.getLocation();
+                return new Point(
+                        (int)(target_location.getX()+cursor.getX()),
+                        (int)(target_location.getY()+cursor.getY()));
+            }
+            
+        });
     }
     public boolean isBackgroundDraggable() {
         return false;
@@ -103,13 +122,17 @@ public class JFramePeer extends DCPeer {
     public void setShaped(boolean shaped) {
         if(this.shaped != shaped) {
             //if(isDialog) {
-                if(shaped) {
+            if(shaped) {
+                if(PlafUtil.isMacOSX()) {
                     frame.setUndecorated(true);
                     frame.setBackground(new Color(0,0,0,0));
                 } else {
-                    frame.setBackground(new Color(255,255,255,255));
+                    com.sun.jna.examples.WindowUtils.setWindowTransparent(frame, true);
                 }
-                this.shaped = shaped;
+            } else {
+                frame.setBackground(new Color(255,255,255,255));
+            }
+            this.shaped = shaped;
             //}
         }
     }

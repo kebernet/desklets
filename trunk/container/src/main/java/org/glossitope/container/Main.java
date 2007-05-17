@@ -45,6 +45,7 @@ public abstract class Main {
      * order.
      */
     public static void main(final String ... args) {
+        System.setProperty("sun.java2d.noddraw", "true");
         
         // do all of the pre-startup tasks
         setupLookAndFeel();

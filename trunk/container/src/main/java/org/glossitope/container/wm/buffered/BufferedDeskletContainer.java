@@ -170,6 +170,10 @@ public class BufferedDeskletContainer extends DeskletContainer {
         }
         if(old != null) {
             this.peer.setShaped(old.isShaped());
+            if(this.peer instanceof JFramePeer) {
+                JFramePeer jfp = (JFramePeer) this.peer;
+                jfp.setBackgroundDraggable(this.isBackgroundDraggable());
+            }
         }
     }
     

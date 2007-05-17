@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 
 import org.glossitope.desklet.DeskletContainer;
 import org.glossitope.container.wm.WindowManager;
+import org.joshy.util.u;
 
 public class MoveMouseListener implements MouseListener, MouseMotionListener {
     //JComponent target;
@@ -32,6 +33,9 @@ public class MoveMouseListener implements MouseListener, MouseMotionListener {
         return getFrame(target.getParent());
     }
 */
+    Point2D getScreenLocation() {
+        return dc.getLocation();
+    }
     Point getScreenLocation(MouseEvent e) {
         Point cursor = e.getPoint();
         Point2D target_location = dc.getLocation();
@@ -45,7 +49,7 @@ public class MoveMouseListener implements MouseListener, MouseMotionListener {
     public void mousePressed(MouseEvent e) {
         this.start_drag = this.getScreenLocation(e);
         //this.start_loc = this.getFrame(this.target).getLocation();
-        this.start_loc = GraphicsUtil.toPoint(dc.getLocation());
+        this.start_loc = GraphicsUtil.toPoint(getScreenLocation());
         JComponent target = dc.getContent();
         if( target.getComponents() != null && target.getComponents().length >0 ){
             // use discouraged -&gt; see docs
@@ -62,6 +66,10 @@ public class MoveMouseListener implements MouseListener, MouseMotionListener {
 
     public void mouseDragged(MouseEvent e) {
         Point current = this.getScreenLocation(e);
+        u.p("this = " + this.hashCode());
+        u.p("start drag = " + start_drag);
+        u.p("current = " + current);
+        u.p("start loc = " + start_loc);
         Point offset = new Point(
             (int)current.getX()-(int)start_drag.getX(),
             (int)current.getY()-(int)start_drag.getY());
