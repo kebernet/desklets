@@ -67,11 +67,8 @@ public class JFramePeer extends DCPeer {
         this.top.setBackgroundPainter(new Painter() {
             
             public void paint(Graphics2D arg0, Object arg1, int arg2, int arg3) {
-                arg0.setColor(Color.BLACK);
-                arg0.fillRect(0,0,30,30);
             }
-            //new CheckerboardPainter(Color.BLACK, Color.BLUE)
-        });//new Color(0,0,0,0)));
+        });
         this.top.setOpaque(false);
         
         this.isDialog = isDialog;
@@ -128,11 +125,10 @@ public class JFramePeer extends DCPeer {
     private boolean backgroundDraggable = false;
     public void setBackgroundDraggable(boolean b) {
         this.backgroundDraggable = b;
-        /*
-        u.p("set background draggable to: " + b);
+        
         JFrameMoveMouseListener ml = new JFrameMoveMouseListener();
-        this.content.addMouseListener(ml);
-        this.content.addMouseMotionListener(ml);*/
+        this.top.addMouseListener(ml);
+        this.top.addMouseMotionListener(ml);
     }
     
     private class JFrameMoveMouseListener implements MouseListener, MouseMotionListener {
