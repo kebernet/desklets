@@ -30,6 +30,7 @@ public final class Bugs {
     }
     
     public static boolean isSystemLookAndFeelRepaintBroken() {
+        //return false;
         return PlafUtil.isMacOSX();
     }
     
