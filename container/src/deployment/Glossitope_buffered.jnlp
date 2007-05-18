@@ -39,16 +39,10 @@
     <property name="org.glossitope.test.useOptionPanePermissions" value="true"/>
 
 <!-- ab5k itself -->
-    <jar download="eager" href="glossitope.container-1.0.jar" main="true" version=""/>
-    <jar download="eager" href="desklet.spec-1.0.jar" main="false" version=""/>
+    <jar download="eager" href="glossitope-container-1.0.jar" main="true" version=""/>
+    <jar download="eager" href="desklet-specification-1.0.jar" main="false" version=""/>
     <jar download="eager" href="AB5kUtils-0.1.jar" version=""/>
     <jar download="eager" href="JoshUtil-0.1.jar" version=""/>
-
-<!-- early loads -->
-    <!-- we shouldn't need this. glossitope itself is 1.6 only -->
-    <!--
-    <jar download="eager" href="swing-layout-1.0.2.jar" version=""/>
-    -->
     
 <!-- common libs -->
     <jar download="eager" href="rome-0.8.jar" main="false" version=""/>
@@ -65,8 +59,11 @@
     <jar download="eager" href="swingx-ab5k.02.jar" version=""/>
     <jar download="eager" href="joshy-swingx-incubator-ab5k.001.jar" version=""/>
     
-    <!-- jna for shaped windows -->
+<!-- jna for shaped windows -->
     <jar download="eager" href="jna.jar"/>
+    <jar download="eager" href="win32-x86.jar"/>
+    <jar download="eager" href="linux-i386.jar"/>
+    <jar download="eager" href="examples.jar"/>
   </resources>
 
   <application-desc main-class="org.glossitope.container.Main"/>
