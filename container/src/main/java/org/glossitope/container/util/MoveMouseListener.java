@@ -57,6 +57,11 @@ public class MoveMouseListener implements MouseListener, MouseMotionListener {
         }
     }
 
+    public void jumpstartDrag() {
+        this.start_drag = GraphicsUtil.toPoint(getScreenLocation());
+        this.start_loc = GraphicsUtil.toPoint(getScreenLocation());
+    }
+
     public void mouseReleased(MouseEvent e) {
         JComponent target = dc.getContent();
         if(target != null) {

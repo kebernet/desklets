@@ -29,6 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
+import org.glossitope.container.Core;
 
 import org.joshy.util.u;
 
@@ -56,6 +57,7 @@ public class JFramePeer extends DCPeer {
     private boolean isDialog = false;
     private JComponent content;
     private JXPanel top;
+    private boolean destroyed = false;
     
     /** Creates a new instance of JFrameDeskletContainer */
     public JFramePeer(final BufferedDeskletContainer bdc) {
@@ -82,18 +84,36 @@ public class JFramePeer extends DCPeer {
             this.root = this.frame;
             this.window = frame;
             this.frame.addComponentListener(new ComponentListener() {
+                boolean updateBuffered=false;
+                boolean installedBuffered = false;
                 public void componentHidden(ComponentEvent e) {
                 }
                 public void componentMoved(ComponentEvent e) {
                     //u.p("frame moved! " + e);
-                    if(frame.getLocation().getX() >
+                    if(!installedBuffered && frame.getLocation().getX() >
                             bdc.wm.core.getCollapseWindowAction().getClosedBounds().getX()) {
+                        installedBuffered = true;
+                        updateBuffered = true;
                         //u.p("once more into the dock!");
                         SwingUtilities.invokeLater(new Runnable() {
                             public void run() {
-                                //bdc.wm.convertExternalToInternalContainer(JFramePeer.this);
+                                Core core = bdc.wm.core;
+                                if(bdc.wm.core.getCloser().isWindowClosed()) {
+                                    bdc.wm.convertExternalToInternalContainer(bdc);
+                                    destroyed = true;
+                                    core.getCollapseWindowAction().doExpand();
+                                    //frame.setAlwaysOnTop(true);
+                                    frame.toFront();
+                                }
                             }
                         });
+                    }
+                    if(updateBuffered) {
+                        JFrame wmframe = (JFrame) bdc.wm.getTopLevel();
+                        bdc.setLocation(new Point2D.Double(
+                            frame.getLocation().getX() - wmframe.getLocation().getX(),
+                            frame.getLocation().getY() - wmframe.getLocation().getY()
+                        ));
                     }
                 }
                 public void componentResized(ComponentEvent e) {
@@ -111,6 +131,7 @@ public class JFramePeer extends DCPeer {
         this.root.getContentPane().add(top);
     }
     
+
     public void setContent(JComponent content) {
         if(this.content != null) {
             //root.getContentPane().remove(content);
@@ -139,17 +160,15 @@ public class JFramePeer extends DCPeer {
         }
         
         public void mousePressed(MouseEvent arg0) {
-            u.p("mouse pressed: " + arg0);
             start_drag = arg0.getPoint();
-            u.p("start drag = " + start_drag);
             SwingUtilities.convertPointToScreen(start_drag, frame);
-            u.p("start drag = " + start_drag);
-            //this.start_loc = this.getFrame(this.target).getLocation();
             start_loc = GraphicsUtil.toPoint(frame.getLocation());
-            u.p("start loc = " + start_loc);
         }
         
         public void mouseReleased(MouseEvent arg0) {
+            if(destroyed) {
+                u.p("we need to do some cleanup now");
+            }
         }
         
         public void mouseEntered(MouseEvent arg0) {
@@ -159,7 +178,7 @@ public class JFramePeer extends DCPeer {
         }
         
         public void mouseDragged(MouseEvent e) {
-            u.p("mouse dragged: " + e);
+            //u.p("mouse dragged: " + e);
             Point current = e.getPoint();
             SwingUtilities.convertPointToScreen(current, frame);
             Point offset = new Point(

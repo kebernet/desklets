@@ -357,13 +357,6 @@ public class BufferedWM extends WindowManager {
         Point pt = GraphicsUtil.toPoint(bdc.getLocation());
         SwingUtilities.convertPointToScreen(pt,renderPanel);
         
-        // remove all the old stuff
-        /*
-        if(bdc instanceof BufferedDeskletContainer) {
-            hidden.remove(((BufferedDeskletContainer)bdc).comp);
-        }*/
-        //getDesklets().remove(bdc);
-        
         // create a new container
         JFramePeer peer = new JFramePeer(bdc);
         peer.setContent(bdc.getContent());
@@ -374,24 +367,18 @@ public class BufferedWM extends WindowManager {
     }
     
     public void convertExternalToInternalContainer(DeskletContainer dc) {
-        /*
         if(dc == null) return;
-        BaseDC bdc = (BaseDC) dc;
-        getDesklets().remove(bdc);
-        JFrameDeskletContainer jdc = (JFrameDeskletContainer) dc;
-        jdc.frame.getContentPane().remove(jdc.getContent());
-         
-        BufferedDeskletContainer cont = new BufferedDeskletContainer(this, bdc.getContext());
-        cont.setContent(jdc.getContent());
-        getDesklets().add(cont);
-        hidden.add(cont.comp);
-        cont.setLocation(new Point(100,100));
-        panel.repaint();
-         
-        jdc.setVisible(false);
-        jdc.frame.dispose();
-        core.getCollapseWindowAction().doExpand();
-         */
+
+        BufferedDeskletContainer bdc = (BufferedDeskletContainer) dc;
+        DefaultContext context = bdc.getContext();
+        Point pt = GraphicsUtil.toPoint(bdc.getLocation());
+        Buffered2DPeer peer = new Buffered2DPeer(bdc);
+        bdc.setContent(bdc.getContent());
+        //peer.setContent(bdc.getContent());
+        bdc.setPeer(peer);
+        bdc.pack();
+        bdc.setLocation(pt);
+        bdc.setVisible(true);
     }
     
     
