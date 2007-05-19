@@ -51,6 +51,7 @@ public class SecurityPolicy extends Policy {
         SAFE_RUNTIME.add( "getClassLoader");
         SAFE_RUNTIME.add( "createClassLoader");
         SAFE_RUNTIME.add( "accessClassInPackage");
+        SAFE_RUNTIME.add( "accessDeclaredMembers");
         SAFE_ACCESS_CLASS_IN_PACKAGE.add( "sun.util.logging.resources");
     }
     private Hashtable<String, ArrayList<String>> always;
