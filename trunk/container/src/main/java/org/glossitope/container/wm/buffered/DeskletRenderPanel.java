@@ -19,6 +19,7 @@ import org.glossitope.container.util.AbsLayout;
 
 
 // this just lays out components using their preferred size. it does not
+import org.joshy.util.u;
 
 
 // this just lays out components using their preferred size. it does not
@@ -117,7 +118,11 @@ public class DeskletRenderPanel extends JXPanel {
         Dimension size = new Dimension((int) bdc.getSize().getWidth(), (int) bdc.getSize().getHeight());
         Point2D pt = bdc.getLocation();
         //boolean wasDirty = false;
-        peer.updateTexture(rendererPane, size);
+        try {
+            peer.updateTexture(rendererPane, size);
+        } catch (Throwable thr) {
+            u.p("exception drawing peer: " + thr.getMessage());
+        }
         
         // draw to the screen
         Graphics2D g3 = (Graphics2D) g2.create();
