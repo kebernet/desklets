@@ -32,6 +32,7 @@ import org.glossitope.desklet.DeskletContainer;
 import org.glossitope.container.security.DefaultContext;
 import org.glossitope.container.security.InternalDialogContainer;
 import org.glossitope.container.security.InternalFrameContainer;
+import org.glossitope.container.util.GlobalMouse;
 
 /**
  *
@@ -44,9 +45,13 @@ public class DesktopPaneWM extends WindowManager {
     private JFrame frame;
 
     private JComponent dock;
+    private GlobalMouse globalMouseService;
     
     /** Creates a new instance of DesktopPaneWM */
     public DesktopPaneWM() {
+        this.globalMouseService = new GlobalMouse() {
+            
+        };
         this.desktop = new CustomDesktopPane();
         frame = new JFrame("Glossitope");
         if(!Environment.showFrameTitleBar) {
@@ -62,6 +67,7 @@ public class DesktopPaneWM extends WindowManager {
     public DeskletContainer createInternalContainer(DefaultContext context) {
         InternalFrameContainer ifc = new InternalFrameContainer(context.getConfig()
                 .getName(),this);
+        context.services.put(org.glossitope.desklet.services.GlobalMouse.class, globalMouseService);
         iframes.put(ifc.panel, ifc.iframe);
         return ifc;
     }
