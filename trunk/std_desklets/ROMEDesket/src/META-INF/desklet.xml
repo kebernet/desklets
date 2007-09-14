@@ -20,6 +20,12 @@
     <source>http://www.ab5k.org/downloads/daily/new_window_manager/pre-install/ROMEDesket.desklet</source>
     
     <dependency>
+        <groupId>swingx</groupId>
+        <artifactId>swing-layout</artifactId>
+        <version>1.0.1</version>
+        <type>jar</type>
+    </dependency>
+    <dependency>
         <groupId>jtidy</groupId>
         <artifactId>jtidy</artifactId>
         <version>8.0-20060801.131059-3</version>
