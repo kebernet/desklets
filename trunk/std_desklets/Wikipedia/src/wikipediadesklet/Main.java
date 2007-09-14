@@ -9,9 +9,8 @@
 
 package wikipediadesklet;
 
-import ab5k.desklet.test.DeskletTester;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import org.glossitope.desklet.*;
+import org.glossitope.desklet.test.DeskletTester;
 
 /**
  *
