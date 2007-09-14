@@ -10,8 +10,7 @@
 package wikipediadesklet;
 
 
-import ab5k.desklet.Desklet;
-import ab5k.desklet.DeskletContext;
+import org.glossitope.desklet.*;
 
 /**
  *
