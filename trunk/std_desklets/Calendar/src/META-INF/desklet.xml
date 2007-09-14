@@ -28,4 +28,10 @@
         <version>1.4</version>
         <type>jar</type>
     </dependency>
+    <dependency>
+        <groupId>swingx</groupId>
+        <artifactId>MultipleGradientPaint</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
+    </dependency>
 </desklet>
