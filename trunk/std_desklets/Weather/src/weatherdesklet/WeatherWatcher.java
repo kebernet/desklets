@@ -11,6 +11,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -112,6 +113,7 @@ public class WeatherWatcher extends JXPanel {
             setupButton.setBorder(BorderFactory.createEmptyBorder());
             
             this.setPreferredSize(new Dimension(300,150));
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }

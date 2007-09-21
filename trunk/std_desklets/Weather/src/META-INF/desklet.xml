@@ -17,19 +17,7 @@
     <source>http://www.ab5k.org/downloads/daily/new_window_manager/pre-install/WeatherDesklet.desklet</source>
     -->
 
-    <permission value="weather.gov:80">
-        <description>This is to connect to the national weather service at weather.gov</description>
-    </permission>
-    <permission value="weather.gov">
-        <description>This is to connect to the national weather service at weather.gov</description>
-    </permission>
-    <permission value="140.90.113.200:80">
-        <description>This is to connect to the national weather service at weather.gov</description>
-    </permission>
-    <permission value="www.weather.gov:80">
-        <description>This is to connect to the national weather service at weather.gov</description>
-    </permission>
-    <permission value="www.weather.gov">
+    <permission type="http" value="weather.gov">
         <description>This is to connect to the national weather service at weather.gov</description>
     </permission>
 
