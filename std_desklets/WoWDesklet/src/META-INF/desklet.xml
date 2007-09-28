@@ -15,7 +15,12 @@
     <description>Shows the up or down state of your server! Background image from Skia.net.</description>
     <class>com.totsp.desklet.wow.WoWDesklet</class>
     
-    <repository>http://www.ab5k.org/maven/</repository>
+    <permission type="http" value="www.worldofwarcraft.com">
+        <description>This is to connect to the World of Warcraft Status Pages</description>
+    </permission>
+
+    
+<repository>http://www.ab5k.org/maven/</repository>
     <dependency>
         <groupId>swingx</groupId>
         <artifactId>swing-layout</artifactId>
