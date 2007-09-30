@@ -20,7 +20,8 @@
     </permission>
 
     
-<repository>http://www.ab5k.org/maven/</repository>
+    <repository>http://www.glossitope.org/maven/</repository>
+
     <dependency>
         <groupId>swingx</groupId>
         <artifactId>swing-layout</artifactId>
@@ -30,7 +31,9 @@
     <dependency>
         <groupId>swingx</groupId>
         <artifactId>swingx</artifactId>
-        <version>ab5k.02</version>
+        <version>ab5k.03</version>
         <type>jar</type>
     </dependency>
+
+
 </desklet>
