@@ -7,10 +7,7 @@
     <class>wikipediadesklet.MainDesklet</class>
     
     
-    <source>http://www.ab5k.org/downloads/daily/extras/WikipediaDesklet.desklet</source>
-    
-    
-    <repository>http://www.ab5k.org/maven/</repository>
+    <repository>http://www.glossitope.org/maven/</repository>
     
     <!-- JoshUtil stuff -->
     <dependency><groupId>JoshUtil</groupId>
@@ -18,7 +15,7 @@
     
     <!-- swingx stuff -->
     <dependency><groupId>swingx</groupId>
-        <artifactId>swingx</artifactId><version>0.1</version><type>jar</type></dependency>
+        <artifactId>swingx</artifactId><version>ab5k.03</version><type>jar</type></dependency>
 
     
     
