@@ -1,0 +1,1 @@
+This project, currently codenamed AB5K, is a conatiner for persistent desktop widgets written in Java. It provides access to always on mini-apps that do small tasks very well. It is similar to Mac OS X's Dashboard, Vista's Sidebar, and Yahoo's Widgets.
